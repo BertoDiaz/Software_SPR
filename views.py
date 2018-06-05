@@ -18,33 +18,34 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QApplication
 from PyQt5.QtSerialPort import QSerialPort
 from SerialPort import SerialPort
+# from controller import Controller
 import sys
 
 
-class MainWindow(QWidget):
-    def __init__(self, parent=None):
+class View(QWidget):
+    def __init__(self, parent):
         super().__init__(parent)
 
-        self.numberOfItem = 0
-        self.item = {}
-        self.connected = False
-        self.portOpen = None
-        self.editData = None
-        self.serialData = ''
+        # self.numberOfItem = 0
+        # self.item = {}
+        # self.connected = False
+        # self.portOpen = None
+        # self.editData = None
+        # self.serialData = ''
 
         self.btnOpen = QPushButton('Connect')
         self.btnClose = QPushButton('Disconnect')
         self.btnClose.setDisabled(True)
         self.combo = QComboBox()
 
-        self.serialPort = QSerialPort()
+        # self.serialPort = QSerialPort()
 
-        self.ports = SerialPort.ask_for_port(self)
+        # self.ports = Controller.ask_for_port(self)
 
-        self.combo.addItem("PORTS")
-
-        for port in self.ports:
-            self.combo.addItem(port["port"])
+        # self.combo.addItem("PORTS")
+        #
+        # for port in self.ports:
+        #     self.combo.addItem(port["port"])
 
         layout = QVBoxLayout(self)
         layout.addWidget(self.btnOpen)
@@ -54,7 +55,16 @@ class MainWindow(QWidget):
         self.setGeometry(300, 300, 300, 200)
         self.setWindowTitle('QComboBox')
 
-        self.run()
+        # self.run()
+
+    def setPorts(self, ports):
+        self.combo.addItem("PORTS")
+
+        for port in ports:
+            self.combo.addItem(port["port"])
+
+    def setMessageCritical(self, typeMessage, message):
+        QMessageBox.critical(self, typeMessage, message)
 
     def run(self):
 
@@ -68,11 +78,11 @@ class MainWindow(QWidget):
         self.numberOfItem = numberItem
 
     def open_port(self):
-        if SerialPort.open_port(self):
+        if Controller.open_port(self):
             self.btnOpen.setDisabled(True)
             self.btnClose.setDisabled(False)
 
-            self.serialPort.readyRead.connect(SerialPort.receive_port)
+            # self.serialPort.readyRead.connect(SerialPort.receive_port)
 
             SerialPort.write_port(self)
 
@@ -85,8 +95,8 @@ class MainWindow(QWidget):
         self.btnOpen.setDisabled(False)
 
 
-if __name__ == '__main__':
-    app = QApplication([])
-
-    window = MainWindow()
-    sys.exit(app.exec_())
+# if __name__ == '__main__':
+#     app = QApplication([])
+#
+#     window = View()
+#     sys.exit(app.exec_())

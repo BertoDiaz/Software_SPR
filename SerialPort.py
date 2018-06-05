@@ -22,7 +22,9 @@ from serial.tools.list_ports import comports
 
 class SerialPort:
     def __init__(self):
-        super(SerialPort, self).__init__(self)
+        self.ports = []
+
+        self.serialPort = QSerialPort()
 
     def ask_for_port(self):
         """\
@@ -30,16 +32,15 @@ class SerialPort:
         easier on systems with long device names, also allow the input of an
         index.
         """
-        ports = []
         for n, (port, desc, hwid) in enumerate(sorted(comports()), 1):
             info = {"port": port, "desc": desc, "hwid": hwid}
-            ports.append(info)
+            self.ports.append(info)
 
-        return ports
+        return self.ports
 
-    def open_port(self):
-        if self.numberOfItem != 0:
-            self.item = self.ports[self.numberOfItem - 1]
+    def open_port(self, numberOfItem):
+        if numberOfItem != 0:
+            self.item = self.ports[numberOfItem - 1]
 
             self.serialPort.setPortName(self.item["port"])
             self.portOpen = self.serialPort.open(QIODevice.ReadWrite)
@@ -51,9 +52,12 @@ class SerialPort:
                 self.serialPort.setStopBits(QSerialPort.OneStop)
                 self.serialPort.setFlowControl(QSerialPort.NoFlowControl)
 
+                self.serialPort.readyRead.connect(SerialPort.receive_port)
+
                 # self.serialPort.readyRead.connect(self.serial_receive)
 
                 # self.serialPort.write(b'?')
+                # self.write_port("?")
 
                 return True
 
@@ -68,5 +72,5 @@ class SerialPort:
         data = self.serialPort.readAll()
         self.serialData = self.serialData + data.data().decode('utf8')
 
-    def write_port(self):
-        self.serialPort.write(b'?')
+    def write_port(self, data):
+        self.serialPort.write(data.encode())
