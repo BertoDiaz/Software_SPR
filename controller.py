@@ -57,9 +57,6 @@ class Controller:
 
         self.serialPort.close_port()
 
-    def ask_for_port(self):
-        return self.serialPort.ask_for_port()
-
 
 if __name__ == '__main__':
     app = QApplication([])

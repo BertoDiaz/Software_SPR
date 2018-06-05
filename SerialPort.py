@@ -23,6 +23,7 @@ from serial.tools.list_ports import comports
 class SerialPort:
     def __init__(self):
         self.ports = []
+        self.serialData = ""
 
         self.serialPort = QSerialPort()
 
@@ -40,12 +41,12 @@ class SerialPort:
 
     def open_port(self, numberOfItem):
         if numberOfItem != 0:
-            self.item = self.ports[numberOfItem - 1]
+            item = self.ports[numberOfItem - 1]
 
-            self.serialPort.setPortName(self.item["port"])
-            self.portOpen = self.serialPort.open(QIODevice.ReadWrite)
+            self.serialPort.setPortName(item["port"])
+            portOpen = self.serialPort.open(QIODevice.ReadWrite)
 
-            if self.portOpen:
+            if portOpen:
                 self.serialPort.setBaudRate(QSerialPort.Baud115200)
                 self.serialPort.setDataBits(QSerialPort.Data8)
                 self.serialPort.setParity(QSerialPort.NoParity)
@@ -54,16 +55,10 @@ class SerialPort:
 
                 self.serialPort.readyRead.connect(SerialPort.receive_port)
 
-                # self.serialPort.readyRead.connect(self.serial_receive)
-
-                # self.serialPort.write(b'?')
-                # self.write_port("?")
-
                 return True
 
             else:
                 return False
-                # QMessageBox.critical(self, "Error", "Port cannot be opened")
 
     def close_port(self):
         self.serialPort.close()
