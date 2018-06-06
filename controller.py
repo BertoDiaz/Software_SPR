@@ -18,23 +18,59 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from views import View
 from SerialPort import SerialPort
 from PyQt5.QtWidgets import QApplication
+from time import sleep
 import sys
 
 
 class Controller:
     def __init__(self):
         self.numberOfItem = 0
+        self.ports = []
 
         self.serialPort = SerialPort()
 
         self.view = View(None)
-        self.view.setPorts(self.serialPort.ask_for_port())
+        self.ports = self.serialPort.ask_for_port()
+        self.view.setPorts(self.ports)
 
         self.view.combo.activated.connect(self.onActivated)
         self.view.btnOpen.clicked.connect(self.open_port)
         self.view.btnClose.clicked.connect(self.close_port)
 
         self.view.show()
+
+        self.connect()
+
+        # self.view.splash.show()
+        # self.view.splash.repaint()
+
+    def connect(self):
+        foundCount = 0
+        connected = False
+
+        self.view.progressBar.setValue(foundCount)
+        QApplication.processEvents()
+
+        for foundCount in range(0, 5):
+
+            self.view.progressBar.setValue((foundCount + 1) * 20)
+
+            port_found = self.find_port()
+
+            if port_found[0]:
+                self.view.progressBar.setValue((foundCount + 1) * 20)
+
+                connected = self.serialPort.open_port(port_found[1])
+                self.view.setPortFound(port_found[1])
+
+                self.serialPort.write_port("?")
+                self.numberOfItem = port_found[1]
+
+                break
+
+            sleep(3)
+
+        self.view.mainWindow(connected)
 
     def onActivated(self, numberItem):
         self.numberOfItem = numberItem
@@ -56,6 +92,25 @@ class Controller:
         self.view.combo.setDisabled(False)
 
         self.serialPort.close_port()
+
+    def find_port(self):
+        port_found = []
+        i = 1
+        found = False
+
+        for port in self.ports:
+            if port['port'] == "COM6":
+                port_found.append(True)
+                port_found.append(i)
+                found = True
+
+            i += 1
+
+        if not found:
+            port_found.append(False)
+            port_found.append(0)
+
+        return port_found
 
 
 if __name__ == '__main__':
