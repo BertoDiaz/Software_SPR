@@ -18,16 +18,25 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from views import View
 from SerialPort import SerialPort
 from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QTimer
 from time import sleep
 import sys
 
 
 class Controller:
     def __init__(self):
+        self.portCOM = "COM4"
         self.numberOfItem = 0
         self.ports = []
+        self.bufferReceive = ""
+        self.flagReceive = 0
+        self.connected = False
+        self.progressBarValue = 0
 
         self.serialPort = SerialPort()
+
+        self.timer_disconnect_I_am_alive = QTimer()
+        self.timer_send_I_am_alive = QTimer()
 
         self.view = View(None)
         self.ports = self.serialPort.ask_for_port()
@@ -41,36 +50,42 @@ class Controller:
 
         self.connect()
 
-        # self.view.splash.show()
-        # self.view.splash.repaint()
-
     def connect(self):
-        foundCount = 0
-        connected = False
-
-        self.view.progressBar.setValue(foundCount)
-        QApplication.processEvents()
+        port_found = []
 
         for foundCount in range(0, 5):
 
-            self.view.progressBar.setValue((foundCount + 1) * 20)
-
-            port_found = self.find_port()
+            port_found = self.find_port(foundCount)
 
             if port_found[0]:
-                self.view.progressBar.setValue((foundCount + 1) * 20)
 
-                connected = self.serialPort.open_port(port_found[1])
+                addValue = (80 - self.progressBarValue) / 5
+
+                for i in range(0, 5):
+                    self.progressBarValue = self.progressBarValue + addValue
+                    self.load_progress_bar()
+
+                self.connected = self.serialPort.open_port(port_found[1])
                 self.view.setPortFound(port_found[1])
 
-                self.serialPort.write_port("?")
+                self.serialPort.serialPort.readyRead.connect(self.receive_I_am_alive)
+
                 self.numberOfItem = port_found[1]
+
+                self.serialPort.send_I_am_alive()
+
+                self.timer_disconnect_I_am_alive.timeout.connect(self.disconnect_receive_I_am_alive)
+                self.timer_disconnect_I_am_alive.start(10000)
+
+                self.timer_send_I_am_alive.timeout.connect(self.send_I_am_alive)
+                self.timer_send_I_am_alive.start(1000)
 
                 break
 
-            sleep(3)
+            sleep(2)
 
-        self.view.mainWindow(connected)
+        if not port_found[0]:
+            self.view.mainWindow(self.connected)
 
     def onActivated(self, numberItem):
         self.numberOfItem = numberItem
@@ -91,19 +106,59 @@ class Controller:
         self.view.btnClose.setDisabled(True)
         self.view.combo.setDisabled(False)
 
+        self.connected = False
+
         self.serialPort.close_port()
 
-    def find_port(self):
+    def receive_port(self):
+        self.bufferReceive = self.serialPort.receive_port()
+        print(self.bufferReceive)
+        self.flagReceive = 1
+
+    def receive_I_am_alive(self):
+        while self.bufferReceive != "@":
+            self.bufferReceive = self.serialPort.receive_port()
+            print(self.bufferReceive)
+
+        self.timer_send_I_am_alive.stop()
+        self.timer_disconnect_I_am_alive.stop()
+        self.serialPort.serialPort.readyRead.disconnect(self.receive_I_am_alive)
+        self.serialPort.serialPort.readyRead.connect(self.receive_port)
+
+        addValue = (100 - self.progressBarValue) / 5
+
+        for i in range(0, 5):
+            self.progressBarValue = self.progressBarValue + addValue
+            self.load_progress_bar()
+
+        self.view.mainWindow(self.connected)
+
+    def disconnect_receive_I_am_alive(self):
+        self.timer_disconnect_I_am_alive.stop()
+        self.timer_send_I_am_alive.stop()
+        self.serialPort.serialPort.readyRead.disconnect(self.receive_I_am_alive)
+        self.close_port()
+        sleep(1)
+        self.view.mainWindow(self.connected)
+
+    def send_I_am_alive(self):
+        self.serialPort.send_I_am_alive()
+        self.progressBarValue = self.progressBarValue + 2
+        self.load_progress_bar()
+
+    def find_port(self, foundCount):
         port_found = []
         i = 1
         found = False
 
         for port in self.ports:
-            if port['port'] == "COM6":
+            if port['port'] == self.portCOM:
                 port_found.append(True)
                 port_found.append(i)
                 found = True
 
+            self.progressBarValue = self.progressBarValue + foundCount + i
+            self.load_progress_bar()
             i += 1
 
         if not found:
@@ -111,6 +166,11 @@ class Controller:
             port_found.append(0)
 
         return port_found
+
+    def load_progress_bar(self):
+        self.view.progressBar.setValue(self.progressBarValue)
+        QApplication.processEvents()
+        sleep(0.2)
 
 
 if __name__ == '__main__':

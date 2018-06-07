@@ -29,6 +29,7 @@ class View(QWidget):
         # self.progressBar = QProgressBar(self.splash)
         self.progressBar = QProgressBar(self)
         self.progressBar.setAlignment(Qt.AlignCenter)
+        self.progressBar.setValue(0)
 
         self.btnOpen = QPushButton('Connect')
         self.btnClose = QPushButton('Disconnect')
@@ -36,13 +37,11 @@ class View(QWidget):
         self.combo = QComboBox()
         self.textConnected = QLabel("Port Connected")
         self.textConnected.setAlignment(Qt.AlignCenter)
+        self.textConnected.setFont(QFont("Times", 8, QFont.Bold))
 
         self.layout = QVBoxLayout(self)
 
         self.layout.addWidget(self.progressBar)
-        # layout.addWidget(self.btnOpen)
-        # layout.addWidget(self.btnClose)
-        # layout.addWidget(self.combo)
 
         self.setGeometry(300, 300, 300, 200)
         self.setWindowTitle('QComboBox')
@@ -57,7 +56,6 @@ class View(QWidget):
 
         else:
             self.textConnected.setText("Port do not found, please choose an available port.")
-            self.textConnected.setFont(QFont("Times", 8, QFont.Bold))
             self.textConnected.setStyleSheet('color: red')
             self.layout.addWidget(self.textConnected)
             self.layout.addWidget(self.btnOpen)

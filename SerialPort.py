@@ -53,7 +53,7 @@ class SerialPort:
                 self.serialPort.setStopBits(QSerialPort.OneStop)
                 self.serialPort.setFlowControl(QSerialPort.NoFlowControl)
 
-                self.serialPort.readyRead.connect(SerialPort.receive_port)
+                # self.serialPort.readyRead.connect(SerialPort.receive_port)
 
                 return True
 
@@ -65,7 +65,13 @@ class SerialPort:
 
     def receive_port(self):
         data = self.serialPort.readAll()
-        self.serialData = self.serialData + data.data().decode('utf8')
+        self.serialData = data.data().decode('utf8')
+
+        return self.serialData
 
     def write_port(self, data):
-        self.serialPort.write(data.encode())
+        # self.serialPort.write(data.encode())
+        self.serialPort.writeData(data.encode())
+
+    def send_I_am_alive(self):
+        self.write_port("?")
