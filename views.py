@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
@@ -76,3 +76,14 @@ class View(QWidget):
 
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)
+
+    def setMessageExistsFile(self):
+        loadFile = QMessageBox.question(self, "Question", "Load a configuration file?",
+                                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if loadFile == QMessageBox.Yes:
+            fileName, _ = QFileDialog.getOpenFileName(self, "Open File", "/home", "*.cfg")
+
+            return [True, fileName]
+        else:
+            return False
+

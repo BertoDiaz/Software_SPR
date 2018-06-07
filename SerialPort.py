@@ -53,8 +53,6 @@ class SerialPort:
                 self.serialPort.setStopBits(QSerialPort.OneStop)
                 self.serialPort.setFlowControl(QSerialPort.NoFlowControl)
 
-                # self.serialPort.readyRead.connect(SerialPort.receive_port)
-
                 return True
 
             else:

@@ -29,7 +29,6 @@ class Controller:
         self.numberOfItem = 0
         self.ports = []
         self.bufferReceive = ""
-        self.flagReceive = 0
         self.connected = False
         self.progressBarValue = 0
 
@@ -48,9 +47,9 @@ class Controller:
 
         self.view.show()
 
-        self.connect()
+        self.connect_USB()
 
-    def connect(self):
+    def connect_USB(self):
         port_found = []
 
         for foundCount in range(0, 5):
@@ -112,13 +111,10 @@ class Controller:
 
     def receive_port(self):
         self.bufferReceive = self.serialPort.receive_port()
-        print(self.bufferReceive)
-        self.flagReceive = 1
 
     def receive_I_am_alive(self):
         while self.bufferReceive != "@":
             self.bufferReceive = self.serialPort.receive_port()
-            print(self.bufferReceive)
 
         self.timer_send_I_am_alive.stop()
         self.timer_disconnect_I_am_alive.stop()
@@ -132,6 +128,8 @@ class Controller:
             self.load_progress_bar()
 
         self.view.mainWindow(self.connected)
+
+        self.load_file()
 
     def disconnect_receive_I_am_alive(self):
         self.timer_disconnect_I_am_alive.stop()
@@ -171,6 +169,14 @@ class Controller:
         self.view.progressBar.setValue(self.progressBarValue)
         QApplication.processEvents()
         sleep(0.2)
+
+    def load_file(self):
+        loadFile = self.view.setMessageExistsFile()
+
+        if loadFile:
+            print("Yes")
+        else:
+            print("No")
 
 
 if __name__ == '__main__':
