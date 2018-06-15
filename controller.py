@@ -21,6 +21,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer
 from time import sleep
 import sys
+import codecs
 
 
 class Controller:
@@ -32,6 +33,23 @@ class Controller:
         self.connected = False
         self.progressBarValue = 0
 
+        self.dataInit = {
+            'PortNum': 0,
+            'Gain1': 0,
+            'Offset1': 0,
+            'Gain2': 0,
+            'Offset2': 0,
+            'Impul1': 50,
+            'DC1': 50,
+            'PER1': 400,
+            'Impul2': 50,
+            'DC2': 50,
+            'PER2': 400,
+            'PURG1': 1000,
+            'PURG2': 1000,
+            'N_SERIE_SPR': "None"
+        }
+
         self.serialPort = SerialPort()
 
         self.timer_disconnect_I_am_alive = QTimer()
@@ -40,10 +58,6 @@ class Controller:
         self.view = View(None)
         self.ports = self.serialPort.ask_for_port()
         self.view.setPorts(self.ports)
-
-        self.view.combo.activated.connect(self.onActivated)
-        self.view.btnOpen.clicked.connect(self.open_port)
-        self.view.btnClose.clicked.connect(self.close_port)
 
         self.view.show()
 
@@ -139,6 +153,10 @@ class Controller:
         sleep(1)
         self.view.mainWindow(self.connected)
 
+        self.view.combo.activated.connect(self.onActivated)
+        self.view.btnOpen.clicked.connect(self.open_port)
+        self.view.btnClose.clicked.connect(self.close_port)
+
     def send_I_am_alive(self):
         self.serialPort.send_I_am_alive()
         self.progressBarValue = self.progressBarValue + 2
@@ -171,10 +189,76 @@ class Controller:
         sleep(0.2)
 
     def load_file(self):
+        numPortNum = 1
+        numGain1 = 4
+        numOffset1 = 5
+        numGain2 = 6
+        numOffset2 = 7
+        numImpul1 = 8
+        numDC1 = 9
+        numPer1 = 10
+        numImpul2 = 11
+        numDC2 = 12
+        numPer2 = 13
+        numPurg1 = 14
+        numPurg2 = 15
+        num_n_serie_spr = 16
+
         loadFile = self.view.setMessageExistsFile()
 
-        if loadFile:
+        if loadFile[0]:
             print("Yes")
+            print(loadFile[1])
+            fileConfig = codecs.open(loadFile[1], 'r', encoding='utf-8')
+
+            fileConfig_rows = fileConfig.readlines()
+
+            print(self.dataInit)
+
+            self.dataInit['PortNum'] = int(fileConfig_rows[numPortNum][fileConfig_rows[numPortNum].find('=') + 2:
+                                                                       len(fileConfig_rows[numPortNum]) - 2])
+
+            self.dataInit['Gain1'] = int(fileConfig_rows[numGain1][fileConfig_rows[numGain1].find('=') + 2:
+                                                                   len(fileConfig_rows[numGain1]) - 2])
+
+            self.dataInit['Offset1'] = int(fileConfig_rows[numOffset1][fileConfig_rows[numOffset1].find('=') + 2:
+                                                                       len(fileConfig_rows[numOffset1]) - 2])
+
+            self.dataInit['Gain2'] = int(fileConfig_rows[numGain2][fileConfig_rows[numGain2].find('=') + 2:
+                                                                   len(fileConfig_rows[numGain2]) - 2])
+
+            self.dataInit['Offset2'] = int(fileConfig_rows[numOffset2][fileConfig_rows[numOffset2].find('=') + 2:
+                                                                       len(fileConfig_rows[numOffset2]) - 2])
+
+            self.dataInit['Impul1'] = int(fileConfig_rows[numImpul1][fileConfig_rows[numImpul1].find('=') + 2:
+                                                                     len(fileConfig_rows[numImpul1]) - 2])
+
+            self.dataInit['DC1'] = int(fileConfig_rows[numDC1][fileConfig_rows[numDC1].find('=') + 2:
+                                                               len(fileConfig_rows[numDC1]) - 2])
+
+            self.dataInit['PER1'] = int(fileConfig_rows[numPer1][fileConfig_rows[numPer1].find('=') + 2:
+                                                                 len(fileConfig_rows[numPer1]) - 2])
+
+            self.dataInit['Impul2'] = int(fileConfig_rows[numImpul2][fileConfig_rows[numImpul2].find('=') + 2:
+                                                                     len(fileConfig_rows[numImpul2]) - 2])
+
+            self.dataInit['DC2'] = int(fileConfig_rows[numDC2][fileConfig_rows[numDC2].find('=') + 2:
+                                                               len(fileConfig_rows[numDC2]) - 2])
+
+            self.dataInit['PER2'] = int(fileConfig_rows[numPer2][fileConfig_rows[numPer2].find('=') + 2:
+                                                                 len(fileConfig_rows[numPer2]) - 2])
+
+            self.dataInit['PURG1'] = int(fileConfig_rows[numPurg1][fileConfig_rows[numPurg1].find('=') + 2:
+                                                                   len(fileConfig_rows[numPurg1]) - 2])
+
+            self.dataInit['PURG2'] = int(fileConfig_rows[numPurg2][fileConfig_rows[numPurg2].find('=') + 2:
+                                                                   len(fileConfig_rows[numPurg2]) - 2])
+
+            self.dataInit['N_SERIE_SPR'] = str(fileConfig_rows[num_n_serie_spr][fileConfig_rows[num_n_serie_spr].
+                                               find('=') + 3:len(fileConfig_rows[num_n_serie_spr]) - 1])
+
+            print(self.dataInit)
+
         else:
             print("No")
 

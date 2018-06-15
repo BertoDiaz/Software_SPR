@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
+from PyQt5.QtWidgets import QDesktopWidget
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
@@ -24,9 +25,6 @@ class View(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        # self.splash = QSplashScreen(self, QPixmap(), Qt.WindowStaysOnTopHint)
-
-        # self.progressBar = QProgressBar(self.splash)
         self.progressBar = QProgressBar(self)
         self.progressBar.setAlignment(Qt.AlignCenter)
         self.progressBar.setValue(0)
@@ -43,8 +41,15 @@ class View(QWidget):
 
         self.layout.addWidget(self.progressBar)
 
-        self.setGeometry(300, 300, 300, 200)
-        self.setWindowTitle('QComboBox')
+        self.resize(300, 200)
+        self.centerWindowOnScreen()
+        self.setWindowTitle('SPR v2')
+
+    def centerWindowOnScreen(self):
+        windowGeometry = self.frameGeometry()
+        desktopWidget = QDesktopWidget().availableGeometry().center()
+        windowGeometry.moveCenter(desktopWidget)
+        self.move(windowGeometry.topLeft())
 
     def mainWindow(self, connected):
         self.layout.removeWidget(self.progressBar)
@@ -84,6 +89,7 @@ class View(QWidget):
             fileName, _ = QFileDialog.getOpenFileName(self, "Open File", "/home", "*.cfg")
 
             return [True, fileName]
+
         else:
             return False
 
