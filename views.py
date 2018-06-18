@@ -22,6 +22,7 @@ from PyQt5.QtCore import Qt
 
 
 class View(QWidget):
+
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -51,11 +52,21 @@ class View(QWidget):
         windowGeometry.moveCenter(desktopWidget)
         self.move(windowGeometry.topLeft())
 
-    def mainWindow(self, connected):
-        self.layout.removeWidget(self.progressBar)
-        self.progressBar.deleteLater()
+    def mainWindow(self, connected, byConnectButton):
+        if not byConnectButton:
+            self.layout.removeWidget(self.progressBar)
+            self.progressBar.deleteLater()
+
+        else:
+            self.layout.removeWidget(self.btnOpen)
+            self.btnOpen.deleteLater()
+            self.layout.removeWidget(self.btnClose)
+            self.btnClose.deleteLater()
+            self.layout.removeWidget(self.combo)
+            self.combo.deleteLater()
 
         if connected:
+            self.textConnected.setText("Port Connected")
             self.textConnected.setStyleSheet('color: green')
             self.layout.addWidget(self.textConnected)
 

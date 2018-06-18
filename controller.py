@@ -32,6 +32,8 @@ class Controller:
         self.bufferReceive = ""
         self.connected = False
         self.progressBarValue = 0
+        self.byConnectButton = 0
+        self.doneDisconnectIamAlive = 0
 
         self.dataInit = {
             'PortNum': 0,
@@ -104,12 +106,28 @@ class Controller:
         self.numberOfItem = numberItem
 
     def open_port(self):
-        if self.serialPort.open_port(self.numberOfItem):
+        self.connected = self.serialPort.open_port(self.numberOfItem)
+
+        if self.connected:
             self.view.btnOpen.setDisabled(True)
             self.view.btnClose.setDisabled(False)
             self.view.combo.setDisabled(True)
 
-            self.serialPort.write_port("?")
+            self.doneDisconnectIamAlive = 0
+
+            # self.serialPort.write_port("?")
+
+            self.byConnectButton = 1
+
+            self.serialPort.serialPort.readyRead.connect(self.receive_I_am_alive)
+
+            self.serialPort.send_I_am_alive()
+
+            self.timer_disconnect_I_am_alive.timeout.connect(self.disconnect_receive_I_am_alive)
+            self.timer_disconnect_I_am_alive.start(10000)
+
+            self.timer_send_I_am_alive.timeout.connect(self.send_I_am_alive)
+            self.timer_send_I_am_alive.start(1000)
 
         else:
             self.view.setMessageCritical("Error", "Port cannot be opened")
@@ -118,6 +136,11 @@ class Controller:
         self.view.btnOpen.setDisabled(False)
         self.view.btnClose.setDisabled(True)
         self.view.combo.setDisabled(False)
+
+        if not self.doneDisconnectIamAlive:
+            self.timer_send_I_am_alive.stop()
+            self.timer_disconnect_I_am_alive.stop()
+            self.serialPort.serialPort.readyRead.disconnect(self.receive_I_am_alive)
 
         self.connected = False
 
@@ -133,15 +156,17 @@ class Controller:
         self.timer_send_I_am_alive.stop()
         self.timer_disconnect_I_am_alive.stop()
         self.serialPort.serialPort.readyRead.disconnect(self.receive_I_am_alive)
+        self.doneDisconnectIamAlive = 1
         self.serialPort.serialPort.readyRead.connect(self.receive_port)
 
-        addValue = (100 - self.progressBarValue) / 5
+        if not self.byConnectButton:
+            addValue = (100 - self.progressBarValue) / 5
 
-        for i in range(0, 5):
-            self.progressBarValue = self.progressBarValue + addValue
-            self.load_progress_bar()
+            for i in range(0, 5):
+                self.progressBarValue = self.progressBarValue + addValue
+                self.load_progress_bar()
 
-        self.view.mainWindow(self.connected)
+        self.view.mainWindow(self.connected, self.byConnectButton)
 
         self.load_file()
 
@@ -149,9 +174,10 @@ class Controller:
         self.timer_disconnect_I_am_alive.stop()
         self.timer_send_I_am_alive.stop()
         self.serialPort.serialPort.readyRead.disconnect(self.receive_I_am_alive)
+        self.doneDisconnectIamAlive = 1
         self.close_port()
         sleep(1)
-        self.view.mainWindow(self.connected)
+        self.view.mainWindow(self.connected, self.byConnectButton)
 
         self.view.combo.activated.connect(self.onActivated)
         self.view.btnOpen.clicked.connect(self.open_port)
@@ -159,8 +185,10 @@ class Controller:
 
     def send_I_am_alive(self):
         self.serialPort.send_I_am_alive()
-        self.progressBarValue = self.progressBarValue + 2
-        self.load_progress_bar()
+
+        if not self.byConnectButton:
+            self.progressBarValue = self.progressBarValue + 2
+            self.load_progress_bar()
 
     def find_port(self, foundCount):
         port_found = []
