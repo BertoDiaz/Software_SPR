@@ -33,7 +33,10 @@ class View(QWidget):
         self.btnOpen = QPushButton('Connect')
         self.btnClose = QPushButton('Disconnect')
         self.btnClose.setDisabled(True)
+        self.btnExit = QPushButton('Exit')
+
         self.combo = QComboBox()
+
         self.textConnected = QLabel("Port Connected")
         self.textConnected.setAlignment(Qt.AlignCenter)
         self.textConnected.setFont(QFont("Times", 8, QFont.Bold))
@@ -69,6 +72,7 @@ class View(QWidget):
             self.textConnected.setText("Port Connected")
             self.textConnected.setStyleSheet('color: green')
             self.layout.addWidget(self.textConnected)
+            self.layout.addWidget(self.btnExit)
 
         else:
             self.textConnected.setText("Port do not found, please choose an available port.")
@@ -102,5 +106,16 @@ class View(QWidget):
             return [True, fileName]
 
         else:
+            return [False, None]
+
+    def setMessageExit(self):
+        exitApp = QMessageBox.question(self, "Question", "Are you sure you want to quit?",
+                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+        if exitApp == QMessageBox.Yes:
+            return True
+
+        else:
             return False
+
 

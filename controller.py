@@ -16,9 +16,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from views import View
+from worker import Worker
 from SerialPort import SerialPort
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, QThread
 from time import sleep
 import sys
 import codecs
@@ -34,6 +35,9 @@ class Controller:
         self.progressBarValue = 0
         self.byConnectButton = 0
         self.doneDisconnectIamAlive = 0
+
+        # self.workerExit = Worker()
+        # self.workerThreadExit = None
 
         self.dataInit = {
             'PortNum': 0,
@@ -170,6 +174,12 @@ class Controller:
 
         self.load_file()
 
+        # self.workerThreadExit = QThread()
+        # self.workerExit.moveToThread(self.workerThreadExit)
+        # self.workerExit.done.connect(self.exit_App)
+
+        self.view.btnExit.clicked.connect(self.exit_App)
+
     def disconnect_receive_I_am_alive(self):
         self.timer_disconnect_I_am_alive.stop()
         self.timer_send_I_am_alive.stop()
@@ -235,13 +245,9 @@ class Controller:
         loadFile = self.view.setMessageExistsFile()
 
         if loadFile[0]:
-            print("Yes")
-            print(loadFile[1])
             fileConfig = codecs.open(loadFile[1], 'r', encoding='utf-8')
 
             fileConfig_rows = fileConfig.readlines()
-
-            print(self.dataInit)
 
             self.dataInit['PortNum'] = int(fileConfig_rows[numPortNum][fileConfig_rows[numPortNum].find('=') + 2:
                                                                        len(fileConfig_rows[numPortNum]) - 2])
@@ -285,10 +291,15 @@ class Controller:
             self.dataInit['N_SERIE_SPR'] = str(fileConfig_rows[num_n_serie_spr][fileConfig_rows[num_n_serie_spr].
                                                find('=') + 3:len(fileConfig_rows[num_n_serie_spr]) - 1])
 
-            print(self.dataInit)
+        # else:
+        #     print("No")
+        #     pass
 
-        else:
-            print("No")
+    def exit_App(self):
+        exitApp = self.view.setMessageExit()
+
+        if exitApp:
+            QApplication.quit()
 
 
 if __name__ == '__main__':
