@@ -68,7 +68,6 @@ class SerialPort:
         return self.serialData
 
     def write_port(self, data):
-        # self.serialPort.write(data.encode())
         self.serialPort.writeData(data.encode())
 
     def send_I_am_alive(self):

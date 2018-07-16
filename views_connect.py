@@ -80,6 +80,7 @@ class View(QWidget):
             self.layout.addWidget(self.textConnected)
             self.layout.addWidget(self.btnOpen)
             self.layout.addWidget(self.btnClose)
+            self.layout.addWidget(self.btnExit)
             self.layout.addWidget(self.combo)
 
     def setPorts(self, ports):
