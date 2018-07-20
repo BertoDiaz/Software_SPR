@@ -100,7 +100,18 @@ class Controller:
             sleep(2)
 
         if not port_found[0]:
-            self.view.mainWindow(self.connected)
+            addValue = (100 - self.progressBarValue) / 5
+
+            for i in range(0, 5):
+                self.progressBarValue = self.progressBarValue + addValue
+                self.load_progress_bar()
+
+            self.view.mainWindow(self.connected, self.byConnectButton)
+
+            self.view.combo.activated.connect(self.onActivated)
+            self.view.btnOpen.clicked.connect(self.open_port)
+            self.view.btnClose.clicked.connect(self.close_port)
+            self.view.btnExit.clicked.connect(self.exit_App)
 
     def onActivated(self, numberItem):
         self.numberOfItem = numberItem
