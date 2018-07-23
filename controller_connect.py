@@ -56,6 +56,7 @@ class ControllerConnect:
 
         self.timer_disconnect_I_am_alive = QTimer()
         self.timer_send_I_am_alive = QTimer()
+        self.timer_exit_app = QTimer()
 
         self.view = View(None)
         self.ports = self.serialPort.ask_for_port()
@@ -181,7 +182,10 @@ class ControllerConnect:
 
         self.load_file()
 
-        self.view.btnExit.clicked.connect(self.exit_App)
+        self.timer_exit_app.timeout.connect(self.exit_App)
+        self.timer_exit_app.start(1000)
+
+        # self.view.btnExit.clicked.connect(self.exit_App)
 
     def disconnect_receive_I_am_alive(self):
         self.timer_disconnect_I_am_alive.stop()
@@ -314,9 +318,9 @@ class ControllerConnect:
         self.serialPort.write_port_list(toSend)
 
     def exit_App(self):
-        exitApp = self.view.setMessageExit()
+        # exitApp = self.view.setMessageExit()
 
-        if exitApp:
+        # if exitApp:
             QApplication.quit()
 
 

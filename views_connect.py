@@ -34,7 +34,6 @@ class View(QDialog):
         self.btnClose = QPushButton('Disconnect')
         self.btnClose.setDisabled(True)
         self.btnExit = QPushButton('Exit')
-
         self.combo = QComboBox()
 
         self.textConnected = QLabel("Port Connected")
@@ -72,7 +71,7 @@ class View(QDialog):
             self.textConnected.setText("Port Connected")
             self.textConnected.setStyleSheet('color: green')
             self.layout.addWidget(self.textConnected)
-            self.layout.addWidget(self.btnExit)
+            # self.layout.addWidget(self.btnExit)
 
         else:
             self.textConnected.setText("Port do not found, please choose an available port.")
