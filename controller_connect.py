@@ -24,9 +24,9 @@ import sys
 import codecs
 
 
-class Controller:
+class ControllerConnect:
     def __init__(self):
-        self.portCOM = "COM4"
+        self.portCOM = "COM1"
         self.numberOfItem = 0
         self.ports = []
         self.bufferReceive = ""
@@ -64,6 +64,8 @@ class Controller:
         self.view.show()
 
         self.connect_USB()
+
+        self.view.exec_()
 
     def connect_USB(self):
         port_found = []
@@ -293,6 +295,24 @@ class Controller:
             self.dataInit['N_SERIE_SPR'] = str(fileConfig_rows[num_n_serie_spr][fileConfig_rows[num_n_serie_spr].
                                                find('=') + 3:len(fileConfig_rows[num_n_serie_spr]) - 1])
 
+            self.sendValuesLoaded()
+
+        else:
+            if loadFile[1] is None:
+                pass
+
+    def sendValuesLoaded(self):
+
+        toSend = [
+            self.serialPort.commands["GainOffset"],
+            '{:02x}'.format(self.dataInit['Gain1']),
+            '{:02x}'.format(self.dataInit['Offset1']),
+            '{:02x}'.format(self.dataInit['Gain2']),
+            '{:02x}'.format(self.dataInit['Offset2'])
+        ]
+
+        self.serialPort.write_port_list(toSend)
+
     def exit_App(self):
         exitApp = self.view.setMessageExit()
 
@@ -303,5 +323,5 @@ class Controller:
 if __name__ == '__main__':
     app = QApplication([])
 
-    window = Controller()
+    window = ControllerConnect()
     sys.exit(app.exec_())

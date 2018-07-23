@@ -24,6 +24,26 @@ class SerialPort:
     def __init__(self):
         self.ports = []
         self.serialData = ""
+        self.commands = {
+            "CurveTemporal": '|'.encode().hex(),
+            "GainOffset": ':'.encode().hex(),
+            "Laser": '#'.encode().hex(),
+            "TimeAverage": '&'.encode().hex(),
+            "StopTemporal": '['.encode().hex(),
+            "StopTechnical": '.'.encode().hex(),
+            "ControlPeris": '*'.encode().hex(),
+            "ControlImpulA": '!'.encode().hex(),
+            "ControlImpulB": '+'.encode().hex(),
+            "BackPeris": '<'.encode().hex(),
+            "StopPeris": '='.encode().hex(),
+            "ForwardPeris": '>'.encode().hex(),
+            "TimePulsesPumps": '_'.encode().hex(),
+            "VolumePurge": 'º'.encode().hex(),
+            "PurgeImpulA": '{'.encode().hex(),
+            "PurgeImpulB": '}'.encode().hex(),
+            "IAmAlive": '?'.encode().hex(),
+            "PowerDown": '/'.encode().hex()
+        }
 
         self.serialPort = QSerialPort()
 
@@ -69,6 +89,10 @@ class SerialPort:
 
     def write_port(self, data):
         self.serialPort.writeData(data.encode())
+
+    def write_port_list(self, data):
+        for value in data:
+            self.serialPort.writeData(value.encode())
 
     def send_I_am_alive(self):
         self.write_port("?")

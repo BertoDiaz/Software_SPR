@@ -16,12 +16,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
-from PyQt5.QtWidgets import QDesktopWidget
+from PyQt5.QtWidgets import QDesktopWidget, QDialog
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
 
-class View(QWidget):
+class View(QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -104,10 +104,14 @@ class View(QWidget):
         if loadFile == QMessageBox.Yes:
             fileName, _ = QFileDialog.getOpenFileName(self, "Open File", "/home", "*.cfg")
 
-            return [True, fileName]
+            if fileName:
+                return [True, fileName]
+
+            else:
+                return [False, None]
 
         else:
-            return [False, None]
+            return [False, 'No']
 
     def setMessageExit(self):
         exitApp = QMessageBox.question(self, "Question", "Are you sure you want to quit?",
