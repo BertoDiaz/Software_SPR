@@ -34,6 +34,8 @@ class ControllerConnect:
         self.progressBarValue = 0
         self.byConnectButton = 0
         self.doneDisconnectIamAlive = 0
+        self.btnConnectDeclared = 0
+        self.progressBarDeleted = 0
 
         self.dataInit = {
             'PortNum': 0,
@@ -129,7 +131,7 @@ class ControllerConnect:
 
             self.doneDisconnectIamAlive = 0
 
-            self.byConnectButton = 1
+            self.byConnectButton = 2
 
             self.serialPort.serialPort.readyRead.connect(self.receive_I_am_alive)
 
@@ -178,6 +180,9 @@ class ControllerConnect:
                 self.progressBarValue = self.progressBarValue + addValue
                 self.load_progress_bar()
 
+        if self.progressBarDeleted:
+            self.byConnectButton = 1
+
         self.view.mainWindow(self.connected, self.byConnectButton)
 
         self.load_file()
@@ -185,21 +190,26 @@ class ControllerConnect:
         self.timer_exit_app.timeout.connect(self.exit_App)
         self.timer_exit_app.start(1000)
 
-        # self.view.btnExit.clicked.connect(self.exit_App)
-
     def disconnect_receive_I_am_alive(self):
-        self.timer_disconnect_I_am_alive.stop()
+        self.timer_send_I_am_alive.timeout.disconnect()
         self.timer_send_I_am_alive.stop()
-        self.serialPort.serialPort.readyRead.disconnect(self.receive_I_am_alive)
+        self.timer_disconnect_I_am_alive.timeout.disconnect()
+        self.timer_disconnect_I_am_alive.stop()
+        self.serialPort.serialPort.readyRead.disconnect()
         self.doneDisconnectIamAlive = 1
         self.close_port()
         sleep(1)
         self.view.mainWindow(self.connected, self.byConnectButton)
 
-        self.view.combo.activated.connect(self.onActivated)
-        self.view.btnOpen.clicked.connect(self.open_port)
-        self.view.btnClose.clicked.connect(self.close_port)
-        self.view.btnExit.clicked.connect(self.exit_App)
+        if not self.btnConnectDeclared:
+            self.view.combo.activated.connect(self.onActivated)
+            self.view.btnOpen.clicked.connect(self.open_port)
+            self.view.btnClose.clicked.connect(self.close_port)
+            self.view.btnExit.clicked.connect(self.exit_App)
+
+            self.btnConnectDeclared = 1
+            self.byConnectButton = 1
+            self.progressBarDeleted = 1
 
     def send_I_am_alive(self):
         self.serialPort.send_I_am_alive()

@@ -55,15 +55,17 @@ class View(QDialog):
         self.move(windowGeometry.topLeft())
 
     def mainWindow(self, connected, byConnectButton):
-        if not byConnectButton:
+        if byConnectButton == 0:
             self.layout.removeWidget(self.progressBar)
             self.progressBar.deleteLater()
 
-        else:
+        elif byConnectButton == 1:
             self.layout.removeWidget(self.btnOpen)
             self.btnOpen.deleteLater()
             self.layout.removeWidget(self.btnClose)
             self.btnClose.deleteLater()
+            self.layout.removeWidget(self.btnExit)
+            self.btnExit.deleteLater()
             self.layout.removeWidget(self.combo)
             self.combo.deleteLater()
 
@@ -71,7 +73,6 @@ class View(QDialog):
             self.textConnected.setText("Port Connected")
             self.textConnected.setStyleSheet('color: green')
             self.layout.addWidget(self.textConnected)
-            # self.layout.addWidget(self.btnExit)
 
         else:
             self.textConnected.setText("Port do not found, please choose an available port.")
