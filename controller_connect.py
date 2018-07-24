@@ -327,15 +327,12 @@ class ControllerConnect:
 
         self.serialPort.write_port_list(toSend)
 
-    def exit_App(self):
-        # exitApp = self.view.setMessageExit()
+    @staticmethod
+    def exit_App():
+        QApplication.quit()
 
-        # if exitApp:
-            QApplication.quit()
-
-
-if __name__ == '__main__':
-    app = QApplication([])
-
-    window = ControllerConnect()
-    sys.exit(app.exec_())
+# if __name__ == '__main__':
+#     app = QApplication([])
+#
+#     window = ControllerConnect()
+#     sys.exit(app.exec_())
