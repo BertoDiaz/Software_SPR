@@ -123,4 +123,3 @@ class View(QDialog):
         else:
             return False
 
-

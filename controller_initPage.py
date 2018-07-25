@@ -27,6 +27,7 @@ import codecs
 
 class ControllerInit:
     def __init__(self):
+        self.dataInit = []
 
         self.viewInit = View(None)
 
@@ -36,7 +37,13 @@ class ControllerInit:
 
         self.viewInit.show()
 
-        ControllerConnect()
+        self.run()
+
+    def run(self):
+
+        controllerConnect = ControllerConnect()
+
+        self.dataInit = controllerConnect.dataInit
 
     def exit_App(self):
         exitApp = self.viewInit.setMessageExit()

@@ -36,6 +36,7 @@ class ControllerConnect:
         self.doneDisconnectIamAlive = 0
         self.btnConnectDeclared = 0
         self.progressBarDeleted = 0
+        self.finish = 0
 
         self.dataInit = {
             'PortNum': 0,
@@ -327,12 +328,8 @@ class ControllerConnect:
 
         self.serialPort.write_port_list(toSend)
 
-    @staticmethod
-    def exit_App():
-        QApplication.quit()
+    def exit_App(self):
+        self.finish = 1
 
-# if __name__ == '__main__':
-#     app = QApplication([])
-#
-#     window = ControllerConnect()
-#     sys.exit(app.exec_())
+        self.view.close()
+
