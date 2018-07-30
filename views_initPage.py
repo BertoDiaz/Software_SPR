@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox
-from PyQt5.QtCore import QRect
+from PyQt5.QtCore import Qt, QRect
 
 
 class View(QWidget):
@@ -26,7 +26,7 @@ class View(QWidget):
         super().__init__(parent)
 
         self.btnLaser = QPushButton('Laser OFF')
-        self.btnLaser.setStyleSheet('QPushButton {background-color: green; color: white;}')
+        # self.btnLaser.setStyleSheet('QPushButton {background-color: green; color: white;}')
         self.btnExit = QPushButton('Exit')
         self.btnData = QPushButton('Data')
 
@@ -37,7 +37,7 @@ class View(QWidget):
         self.exitBoxLayout = QGroupBox("Exit Layout")
 
         self.laserLayout = QVBoxLayout(self)
-        self.laserLayout.setGeometry(QRect(0, 0, 10, 20))
+        # self.laserLayout.setGeometry(QRect(0, 0, 1, 2))
 
         self.dataLayout = QGridLayout(self)
 
@@ -55,11 +55,20 @@ class View(QWidget):
 
     def mainWindow(self):
         self.layoutGrid.addWidget(self.setLaserGroup(), 0, 0)
-        self.layoutGrid.addWidget(self.setDataGroup(), 0, 1, 1, 2)
-        self.layoutGrid.addWidget(self.setExitGroup(), 1, 0, 1, 3)
+        self.layoutGrid.addWidget(self.setDataGroup(), 0, 1, 1, 5)
+        self.layoutGrid.addWidget(self.setExitGroup(), 1, 0, 1, 6)
 
     def setLaserGroup(self):
-        self.laserLayout.addWidget(self.btnLaser)
+        self.btnLaser.setStyleSheet(
+            'QPushButton {'
+            'font: bold;'
+            'background-color: green;'
+            'color: white;'
+            'font-size: 20px;'
+            'height:100px;'
+            'width: 20px;'
+            '}')
+        self.laserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
         self.laserBoxLayout.setLayout(self.laserLayout)
 
         return self.laserBoxLayout

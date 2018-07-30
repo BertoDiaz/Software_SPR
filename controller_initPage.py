@@ -96,7 +96,15 @@ class ControllerInit:
     def laser_change(self):
         if not self.checked:
             self.viewInit.btnLaser.setText('Laser ON')
-            self.viewInit.btnLaser.setStyleSheet('QPushButton {background-color: red; color: white;}')
+            self.viewInit.btnLaser.setStyleSheet(
+                'QPushButton {'
+                'font: bold;'
+                'background-color: red;'
+                'color: white;'
+                'font-size: 20px;'
+                'height:100px;'
+                'width: 20px;'
+                '}')
 
             self.checked = True
 
@@ -104,7 +112,15 @@ class ControllerInit:
 
         else:
             self.viewInit.btnLaser.setText('Laser OFF')
-            self.viewInit.btnLaser.setStyleSheet('QPushButton {background-color: green; color: white;}')
+            self.viewInit.btnLaser.setStyleSheet(
+                'QPushButton {'
+                'font: bold;'
+                'background-color: green;'
+                'color: white;'
+                'font-size: 20x;'
+                'height:100px;'
+                'width: 20px;'
+                '}')
 
             self.checked = False
 
