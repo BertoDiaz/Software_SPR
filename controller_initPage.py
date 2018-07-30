@@ -17,23 +17,19 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from controller_connect import ControllerConnect
 from views_initPage import View
-from SerialPort import SerialPort
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QTimer
-from time import sleep
 import sys
-import codecs
 
 
 class ControllerInit:
     def __init__(self):
+        self.serialPort = None
         self.dataInit = []
+        self.checked = False
 
         self.viewInit = View(None)
 
         self.viewInit.mainWindow()
-
-        self.viewInit.btnExit.clicked.connect(self.exit_App)
 
         self.viewInit.show()
 
@@ -43,7 +39,76 @@ class ControllerInit:
 
         controllerConnect = ControllerConnect()
 
+        self.serialPort = controllerConnect.serialPort
         self.dataInit = controllerConnect.dataInit
+
+        """For now it's not necessary to send the data to SPR."""
+        # if controllerConnect.loadedFile:
+        #     self.sendValuesLoaded()
+
+        self.viewInit.btnExit.clicked.connect(self.exit_App)
+        self.viewInit.btnLaser.clicked.connect(self.laser_change)
+
+    def sendValuesLoaded(self):
+
+        toSend = [
+            self.dataInit["Gain1"],
+            self.dataInit["Offset1"],
+            self.dataInit["Gain2"],
+            self.dataInit["Offset2"]
+        ]
+
+        self.serialPort.send_Gain_Offset(toSend)
+
+        """New line to be easier to read the data."""
+        self.serialPort.write_port('\n')
+
+        toSend = [
+            self.dataInit["Impul1"]
+        ]
+
+        self.serialPort.send_Control_Impul_A(toSend)
+
+        """New line to be easier to read the data."""
+        self.serialPort.write_port('\n')
+
+        """Here yuo have to send DC1"""
+
+        toSend = [
+            self.dataInit["Impul2"]
+        ]
+
+        self.serialPort.send_Control_Impul_B(toSend)
+
+        """New line to be easier to read the data."""
+        self.serialPort.write_port('\n')
+
+        toSend = [
+            self.dataInit["PURG1"],
+            self.dataInit["PURG2"]
+        ]
+
+        self.serialPort.send_Volume_Purges(toSend)
+
+        """New line to be easier to read the data."""
+        self.serialPort.write_port('\n')
+
+    def laser_change(self):
+        if not self.checked:
+            self.viewInit.btnLaser.setText('Laser ON')
+            self.viewInit.btnLaser.setStyleSheet('QPushButton {background-color: red; color: white;}')
+
+            self.checked = True
+
+            self.serialPort.send_Laser(1)
+
+        else:
+            self.viewInit.btnLaser.setText('Laser OFF')
+            self.viewInit.btnLaser.setStyleSheet('QPushButton {background-color: green; color: white;}')
+
+            self.checked = False
+
+            self.serialPort.send_Laser(0)
 
     def exit_App(self):
         exitApp = self.viewInit.setMessageExit()

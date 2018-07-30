@@ -26,6 +26,9 @@ class View(QDialog):
     def __init__(self, parent):
         super().__init__(parent)
 
+        """Put the dialog window on top and block all windows."""
+        self.setWindowModality(Qt.ApplicationModal)
+
         self.progressBar = QProgressBar(self)
         self.progressBar.setAlignment(Qt.AlignCenter)
         self.progressBar.setValue(0)

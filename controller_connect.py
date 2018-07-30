@@ -37,6 +37,7 @@ class ControllerConnect:
         self.btnConnectDeclared = 0
         self.progressBarDeleted = 0
         self.finish = 0
+        self.loadedFile = False
 
         self.dataInit = {
             'PortNum': 0,
@@ -186,7 +187,7 @@ class ControllerConnect:
 
         self.view.mainWindow(self.connected, self.byConnectButton)
 
-        self.load_file()
+        self.loadedFile = self.load_file()
 
         self.timer_exit_app.timeout.connect(self.exit_App)
         self.timer_exit_app.start(1000)
@@ -310,23 +311,27 @@ class ControllerConnect:
             self.dataInit['N_SERIE_SPR'] = str(fileConfig_rows[num_n_serie_spr][fileConfig_rows[num_n_serie_spr].
                                                find('=') + 3:len(fileConfig_rows[num_n_serie_spr]) - 1])
 
-            self.sendValuesLoaded()
+            return True
+
+            # self.sendValuesLoaded()
 
         else:
             if loadFile[1] is None:
                 pass
 
-    def sendValuesLoaded(self):
+            return False
 
-        toSend = [
-            self.serialPort.commands["GainOffset"],
-            '{:02x}'.format(self.dataInit['Gain1']),
-            '{:02x}'.format(self.dataInit['Offset1']),
-            '{:02x}'.format(self.dataInit['Gain2']),
-            '{:02x}'.format(self.dataInit['Offset2'])
-        ]
-
-        self.serialPort.write_port_list(toSend)
+    # def sendValuesLoaded(self):
+    #
+    #     toSend = [
+    #         self.serialPort.commands["GainOffset"],
+    #         '{:02x}'.format(self.dataInit['Gain1']),
+    #         '{:02x}'.format(self.dataInit['Offset1']),
+    #         '{:02x}'.format(self.dataInit['Gain2']),
+    #         '{:02x}'.format(self.dataInit['Offset2'])
+    #     ]
+    #
+    #     self.serialPort.write_port_list(toSend)
 
     def exit_App(self):
         self.finish = 1

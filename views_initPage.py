@@ -16,9 +16,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
-from PyQt5.QtWidgets import QDesktopWidget
-from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox
+from PyQt5.QtCore import QRect
 
 
 class View(QWidget):
@@ -26,12 +25,23 @@ class View(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.btnLaser = QPushButton('Connect')
-        self.btnLaser.setCheckable(True)
-        self.btnLaser.toggle()
+        self.btnLaser = QPushButton('Laser OFF')
+        self.btnLaser.setStyleSheet('QPushButton {background-color: green; color: white;}')
         self.btnExit = QPushButton('Exit')
+        self.btnData = QPushButton('Data')
 
-        self.layout = QVBoxLayout(self)
+        self.layoutGrid = QGridLayout(self)
+
+        self.laserBoxLayout = QGroupBox("Laser Layout")
+        self.dataBoxLayout = QGroupBox("Data Layout")
+        self.exitBoxLayout = QGroupBox("Exit Layout")
+
+        self.laserLayout = QVBoxLayout(self)
+        self.laserLayout.setGeometry(QRect(0, 0, 10, 20))
+
+        self.dataLayout = QGridLayout(self)
+
+        self.exitLayout = QHBoxLayout(self)
 
         self.resize(1200, 800)
         self.centerWindowOnScreen()
@@ -44,8 +54,27 @@ class View(QWidget):
         self.move(windowGeometry.topLeft())
 
     def mainWindow(self):
-        self.layout.addWidget(self.btnLaser)
-        self.layout.addWidget(self.btnExit)
+        self.layoutGrid.addWidget(self.setLaserGroup(), 0, 0)
+        self.layoutGrid.addWidget(self.setDataGroup(), 0, 1, 1, 2)
+        self.layoutGrid.addWidget(self.setExitGroup(), 1, 0, 1, 3)
+
+    def setLaserGroup(self):
+        self.laserLayout.addWidget(self.btnLaser)
+        self.laserBoxLayout.setLayout(self.laserLayout)
+
+        return self.laserBoxLayout
+
+    def setDataGroup(self):
+        self.dataLayout.addWidget(self.btnData)
+        self.dataBoxLayout.setLayout(self.dataLayout)
+
+        return self.dataBoxLayout
+
+    def setExitGroup(self):
+        self.exitLayout.addWidget(self.btnExit)
+        self.exitBoxLayout.setLayout(self.exitLayout)
+
+        return self.exitBoxLayout
 
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)

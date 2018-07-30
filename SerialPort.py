@@ -38,7 +38,7 @@ class SerialPort:
             "StopPeris": '='.encode().hex(),
             "ForwardPeris": '>'.encode().hex(),
             "TimePulsesPumps": '_'.encode().hex(),
-            "VolumePurge": 'º'.encode().hex(),
+            "VolumePurge": 'a7',
             "PurgeImpulA": '{'.encode().hex(),
             "PurgeImpulB": '}'.encode().hex(),
             "IAmAlive": '?'.encode().hex(),
@@ -96,3 +96,32 @@ class SerialPort:
 
     def send_I_am_alive(self):
         self.write_port("?")
+
+    def send_Gain_Offset(self, toSend):
+        self.write_port(self.commands["GainOffset"])
+
+        for value in toSend:
+            self.write_port(f'{value:02x}')
+
+    def send_Control_Impul_A(self, toSend):
+        self.write_port(self.commands["ControlImpulA"])
+
+        for value in toSend:
+            self.write_port(f'{value:04x}')
+
+    def send_Control_Impul_B(self, toSend):
+        self.write_port(self.commands["ControlImpulB"])
+
+        for value in toSend:
+            self.write_port(f'{value:04x}')
+
+    def send_Volume_Purges(self, toSend):
+        self.write_port(self.commands["VolumePurge"])
+
+        for value in toSend:
+            self.write_port(f'{value:04x}')
+
+    def send_Laser(self, toSend):
+        self.write_port(self.commands["Laser"])
+
+        self.write_port(f'{toSend:02x}')
