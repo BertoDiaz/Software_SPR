@@ -142,7 +142,7 @@ class ControllerTabs:
             self.serialPort.send_Laser(0)
 
     def exit_App(self):
-        exitApp = self.viewSystemControl.setMessageExit()
+        exitApp = self.viewTabs.setMessageExit()
 
         if exitApp:
             QApplication.quit()

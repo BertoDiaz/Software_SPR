@@ -200,15 +200,3 @@ class ViewSystemControl(QWidget):
 
         else:
             return [False, None]
-
-    def setMessageExit(self):
-        exitApp = QMessageBox.question(self, "Question", "Are you sure you want to quit?",
-                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-
-        if exitApp == QMessageBox.Yes:
-            return True
-
-        else:
-            return False
-
-

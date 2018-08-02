@@ -51,3 +51,13 @@ class ViewTabs(QWidget):
     def mainWindow(self):
         self.layout.addWidget(self.tabs)
         self.layout.addWidget(self.btnExit)
+
+    def setMessageExit(self):
+        exitApp = QMessageBox.question(self, "Question", "Are you sure you want to quit?",
+                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+        if exitApp == QMessageBox.Yes:
+            return True
+
+        else:
+            return False

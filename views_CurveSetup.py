@@ -39,10 +39,14 @@ class ViewCurveSetup(QWidget):
         self.calibrationBoxLayout = QGroupBox("Calibration Parameters")
         self.gainBoxLayout = QGroupBox()
         self.offsetBoxLayout = QGroupBox()
+        self.filledBoxLayout_1 = QGroupBox()
+        self.filledLayout_2 = QGroupBox()
 
-        self.calibrationLayout = QVBoxLayout(self)
+        self.calibrationLayout = QGridLayout(self)
+
         self.gainLayout = QVBoxLayout(self)
         self.offsetLayout = QVBoxLayout(self)
+
         self.gainALayout = QHBoxLayout(self)
         self.gainBLayout = QHBoxLayout(self)
         self.offsetALayout = QHBoxLayout(self)
@@ -59,46 +63,22 @@ class ViewCurveSetup(QWidget):
         self.move(windowGeometry.topLeft())
 
     def mainWindow(self):
-        self.layoutGrid.addWidget(self.setCalibrationGroup(), 0, 0)
+        self.layoutGrid.addWidget(self.setCalibrationGroup(), 0, 0, 1, 2)
+        self.layoutGrid.addWidget(self.setFilledGroup_1(), 1, 0, 5, 10)
 
-    def setLaserGroup(self):
-        self.btnLaser.setStyleSheet(
-            'QPushButton {'
-            'font: bold;'
-            'background-color: green;'
-            'color: white;'
-            'font-size: 20px;'
-            'height:100px;'
-            'width: 20px;'
-            '}')
-        self.laserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
+    def setFilledGroup_1(self):
+        self.filledBoxLayout_1.setStyleSheet("QGroupBox {"
+                                             "border: 2px solid red;"
+                                             "}")
 
-        """
-            Different border style:
-                - dotted
-                - dashed
-                - solid
-                - double
-                - groove
-                - ridge
-                - inset
-                - outset
-                - none
-                - hidden
-        """
+        return self.filledBoxLayout_1
 
-        self.laserBoxLayout.setStyleSheet("QGroupBox {"
-                                          "border: 2px outset #948682;"
-                                          "border-radius: 5px;"
-                                          "margin-top: 7px;"
-                                          "}"
-                                          "QGroupBox:title {"
-                                          "top: -7 ex;"
-                                          "left: 10px;"
+    def setFilledGroup_2(self):
+        self.filledLayout_2.setStyleSheet("QGroupBox {"
+                                          "border: 2px solid red;"
                                           "}")
-        self.laserBoxLayout.setLayout(self.laserLayout)
 
-        return self.laserBoxLayout
+        return self.filledLayout_2
 
     def setCalibrationGroup(self):
         self.labelGainA.setFixedWidth(50)
@@ -117,8 +97,6 @@ class ViewCurveSetup(QWidget):
 
         self.gainLayout.addLayout(self.gainALayout)
         self.gainLayout.addLayout(self.gainBLayout)
-        self.gainLayout.setAlignment(Qt.AlignLeft)
-        self.gainLayout.setAlignment(Qt.AlignTop)
 
         self.offsetALayout.addWidget(self.labelOffsetA)
         self.offsetALayout.addWidget(self.editOffsetA)
@@ -127,8 +105,6 @@ class ViewCurveSetup(QWidget):
 
         self.offsetLayout.addLayout(self.offsetALayout)
         self.offsetLayout.addLayout(self.offsetBLayout)
-        self.offsetLayout.setAlignment(Qt.AlignLeft)
-        self.offsetLayout.setAlignment(Qt.AlignTop)
 
         self.gainBoxLayout.setStyleSheet("QGroupBox {"
                                          "border: 2px outset #948682;"
@@ -152,8 +128,8 @@ class ViewCurveSetup(QWidget):
                                            "}")
         self.offsetBoxLayout.setLayout(self.offsetLayout)
 
-        self.calibrationLayout.addWidget(self.gainBoxLayout)
-        self.calibrationLayout.addWidget(self.offsetBoxLayout)
+        self.calibrationLayout.addWidget(self.gainBoxLayout, 0, 0)
+        self.calibrationLayout.addWidget(self.offsetBoxLayout, 1, 0)
 
         self.calibrationBoxLayout.setStyleSheet("QGroupBox {"
                                                 "border: 2px outset #948682;"
@@ -167,35 +143,3 @@ class ViewCurveSetup(QWidget):
         self.calibrationBoxLayout.setLayout(self.calibrationLayout)
 
         return self.calibrationBoxLayout
-
-    def setExitGroup(self):
-        self.exitLayout.addWidget(self.btnExit)
-        self.exitBoxLayout.setLayout(self.exitLayout)
-
-        return self.exitBoxLayout
-
-    def setMessageCritical(self, typeMessage, message):
-        QMessageBox.critical(self, typeMessage, message)
-
-    def setMessageExistsFile(self):
-        loadFile = QMessageBox.question(self, "Question", "Load a configuration file?",
-                                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if loadFile == QMessageBox.Yes:
-            fileName, _ = QFileDialog.getOpenFileName(self, "Open File", "/home", "*.cfg")
-
-            return [True, fileName]
-
-        else:
-            return [False, None]
-
-    def setMessageExit(self):
-        exitApp = QMessageBox.question(self, "Question", "Are you sure you want to quit?",
-                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-
-        if exitApp == QMessageBox.Yes:
-            return True
-
-        else:
-            return False
-
-
