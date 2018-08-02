@@ -16,22 +16,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from controller_connect import ControllerConnect
-from views_initPage import View
+from views_Tabs import ViewTabs
 from PyQt5.QtWidgets import QApplication
 import sys
 
 
-class ControllerInit:
+class ControllerTabs:
     def __init__(self):
         self.serialPort = None
         self.dataInit = []
         self.checked = False
 
-        self.viewInit = View(None)
+        self.viewTabs = ViewTabs(None)
+        self.viewSystemControl = self.viewTabs.tab_SystemControl
+        self.viewCurveSetup = self.viewTabs.tab_CurveSetup
 
-        self.viewInit.mainWindow()
+        self.viewTabs.mainWindow()
+        self.viewSystemControl.mainWindow()
+        self.viewCurveSetup.mainWindow()
 
-        self.viewInit.show()
+        self.viewTabs.show()
 
         self.run()
 
@@ -46,8 +50,19 @@ class ControllerInit:
         # if controllerConnect.loadedFile:
         #     self.sendValuesLoaded()
 
-        self.viewInit.btnExit.clicked.connect(self.exit_App)
-        self.viewInit.btnLaser.clicked.connect(self.laser_change)
+        self.viewSystemControl.editPeristaltic.setText(str(self.dataInit["PER1"]))
+        self.viewSystemControl.editImpulsional_A.setText(str(self.dataInit["Impul1"]))
+        self.viewSystemControl.editImpulsional_B.setText(str(self.dataInit["Impul2"]))
+
+        self.viewCurveSetup.editGainA.setText(str(self.dataInit["Gain1"]))
+        self.viewCurveSetup.editGainB.setText(str(self.dataInit["Gain2"]))
+        self.viewCurveSetup.editOffsetA.setText(str(self.dataInit["Offset1"]))
+        self.viewCurveSetup.editOffsetB.setText(str(self.dataInit["Offset2"]))
+
+        # self.viewSystemControl.btnExit.clicked.connect(self.exit_App)
+        self.viewSystemControl.btnLaser.clicked.connect(self.laser_change)
+
+        self.viewTabs.btnExit.clicked.connect(self.exit_App)
 
     def sendValuesLoaded(self):
 
@@ -95,8 +110,8 @@ class ControllerInit:
 
     def laser_change(self):
         if not self.checked:
-            self.viewInit.btnLaser.setText('Laser ON')
-            self.viewInit.btnLaser.setStyleSheet(
+            self.viewSystemControl.btnLaser.setText('Laser ON')
+            self.viewSystemControl.btnLaser.setStyleSheet(
                 'QPushButton {'
                 'font: bold;'
                 'background-color: red;'
@@ -111,13 +126,13 @@ class ControllerInit:
             self.serialPort.send_Laser(1)
 
         else:
-            self.viewInit.btnLaser.setText('Laser OFF')
-            self.viewInit.btnLaser.setStyleSheet(
+            self.viewSystemControl.btnLaser.setText('Laser OFF')
+            self.viewSystemControl.btnLaser.setStyleSheet(
                 'QPushButton {'
                 'font: bold;'
                 'background-color: green;'
                 'color: white;'
-                'font-size: 20x;'
+                'font-size: 20px;'
                 'height:100px;'
                 'width: 20px;'
                 '}')
@@ -127,7 +142,7 @@ class ControllerInit:
             self.serialPort.send_Laser(0)
 
     def exit_App(self):
-        exitApp = self.viewInit.setMessageExit()
+        exitApp = self.viewSystemControl.setMessageExit()
 
         if exitApp:
             QApplication.quit()
@@ -136,5 +151,5 @@ class ControllerInit:
 if __name__ == '__main__':
     app = QApplication([])
 
-    window = ControllerInit()
+    window = ControllerTabs()
     sys.exit(app.exec_())
