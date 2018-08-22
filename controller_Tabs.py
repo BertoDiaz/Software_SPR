@@ -26,6 +26,8 @@ class ControllerTabs:
         self.serialPort = None
         self.dataInit = []
         self.btnLaserChecked = False
+        self.color = None
+        self.statusLaser = None
 
         self.viewTabs = ViewTabs(None)
         self.viewSystemControl = self.viewTabs.tab_SystemControl
@@ -116,32 +118,38 @@ class ControllerTabs:
 
     def laser_change(self):
         if not self.btnLaserChecked:
-            color = 'red'
-            self.viewSystemControl.btnLaser.setText('Laser ON')
-            self.viewCurveSetup.btnLaser.setText('Laser ON')
+            self.color = 'red'
+            self.statusLaser = 'Laser ON'
 
             self.btnLaserChecked = True
 
             send = 1
 
         else:
-            color = 'green'
-            self.viewSystemControl.btnLaser.setText('Laser OFF')
-            self.viewCurveSetup.btnLaser.setText('Laser OFF')
+            self.color = 'green'
+            self.statusLaser = 'Laser OFF'
 
             self.btnLaserChecked = False
 
             send = 0
 
-        style = 'QPushButton {font: bold; background-color: ' + color +\
-                '; color: white; font-size: 20px; height:100px; width: 20px;}'
-        self.viewSystemControl.btnLaser.setStyleSheet(style)
-
-        style = 'QPushButton {font: bold; background-color: ' + color + \
-                '; color: white; font-size: 12px; height: 80px; width: 20px;}'
-        self.viewCurveSetup.btnLaser.setStyleSheet(style)
-
         self.serialPort.send_Laser(send)
+
+        self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_laser)
+        self.serialPort.packet_received.connect(self.laserReceive)
+
+    def laserReceive(self, data):
+        if data == '@':
+            self.viewSystemControl.btnLaser.setText(self.statusLaser)
+            self.viewCurveSetup.btnLaser.setText(self.statusLaser)
+
+            style = 'QPushButton {font: bold; background-color: ' + self.color + \
+                    '; color: white; font-size: 20px; height:100px; width: 20px;}'
+            self.viewSystemControl.btnLaser.setStyleSheet(style)
+
+            style = 'QPushButton {font: bold; background-color: ' + self.color + \
+                    '; color: white; font-size: 12px; height: 80px; width: 20px;}'
+            self.viewCurveSetup.btnLaser.setStyleSheet(style)
 
     def exit_App(self):
         exitApp = self.viewTabs.setMessageExit()

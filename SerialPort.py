@@ -15,13 +15,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtCore import QIODevice
+from PyQt5.QtCore import QObject, QIODevice, pyqtSignal
 from PyQt5.QtSerialPort import QSerialPort
 from serial.tools.list_ports import comports
 
 
-class SerialPort:
+class SerialPort(QObject):
+    packet_received = pyqtSignal(str)
+
     def __init__(self):
+        super(SerialPort, self).__init__()
         self.ports = []
         self.serialData = ""
         self.commands = {
@@ -87,6 +90,10 @@ class SerialPort:
         self.serialData = data.data().decode('utf8')
 
         return self.serialData
+
+    def receive_laser(self):
+        data = self.serialPort.readAll()
+        self.packet_received.emit(data.data().decode('utf8'))
 
     def write_port(self, data):
         self.serialPort.writeData(data.encode())
