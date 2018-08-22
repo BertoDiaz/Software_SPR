@@ -207,7 +207,7 @@ class ControllerConnect:
             self.view.combo.activated.connect(self.onActivated)
             self.view.btnOpen.clicked.connect(self.open_port)
             self.view.btnClose.clicked.connect(self.close_port)
-            self.view.btnExit.clicked.connect(self.exit_App)
+            self.view.btnExit.clicked.connect(self.exit_btn)
 
             self.btnConnectDeclared = 1
             self.byConnectButton = 1
@@ -333,8 +333,13 @@ class ControllerConnect:
     #
     #     self.serialPort.write_port_list(toSend)
 
+    def exit_btn(self):
+        if self.view.setMessageExit():
+            self.finish = 1
+            self.exit_App()
+
+        else:
+            self.finish = 0
+
     def exit_App(self):
-        self.finish = 1
-
         self.view.close()
-

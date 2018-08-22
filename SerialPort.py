@@ -27,7 +27,8 @@ class SerialPort:
         self.commands = {
             "CurveTemporal": '|'.encode().hex(),
             "GainOffset": ':'.encode().hex(),
-            "Laser": '#'.encode().hex(),
+            # "Laser": '#'.encode().hex(),
+            "Laser": '#',
             "TimeAverage": '&'.encode().hex(),
             "StopTemporal": '['.encode().hex(),
             "StopTechnical": '.'.encode().hex(),

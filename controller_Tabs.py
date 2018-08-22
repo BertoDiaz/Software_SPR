@@ -25,7 +25,7 @@ class ControllerTabs:
     def __init__(self):
         self.serialPort = None
         self.dataInit = []
-        self.checked = False
+        self.btnLaserChecked = False
 
         self.viewTabs = ViewTabs(None)
         self.viewSystemControl = self.viewTabs.tab_SystemControl
@@ -43,26 +43,32 @@ class ControllerTabs:
 
         controllerConnect = ControllerConnect()
 
-        self.serialPort = controllerConnect.serialPort
-        self.dataInit = controllerConnect.dataInit
+        if controllerConnect.finish:
+            self.exit_All()
 
-        """For now it's not necessary to send the data to SPR."""
-        # if controllerConnect.loadedFile:
-        #     self.sendValuesLoaded()
+        else:
 
-        self.viewSystemControl.editPeristaltic.setText(str(self.dataInit["PER1"]))
-        self.viewSystemControl.editImpulsional_A.setText(str(self.dataInit["Impul1"]))
-        self.viewSystemControl.editImpulsional_B.setText(str(self.dataInit["Impul2"]))
+            self.serialPort = controllerConnect.serialPort
+            self.dataInit = controllerConnect.dataInit
 
-        self.viewCurveSetup.editGainA.setText(str(self.dataInit["Gain1"]))
-        self.viewCurveSetup.editGainB.setText(str(self.dataInit["Gain2"]))
-        self.viewCurveSetup.editOffsetA.setText(str(self.dataInit["Offset1"]))
-        self.viewCurveSetup.editOffsetB.setText(str(self.dataInit["Offset2"]))
+            """For now it's not necessary to send the data to SPR."""
+            # if controllerConnect.loadedFile:
+            #     self.sendValuesLoaded()
 
-        # self.viewSystemControl.btnExit.clicked.connect(self.exit_App)
-        self.viewSystemControl.btnLaser.clicked.connect(self.laser_change)
+            self.viewSystemControl.edtPeristaltic.setText(str(self.dataInit["PER1"]))
+            self.viewSystemControl.edtImpulsional_A.setText(str(self.dataInit["Impul1"]))
+            self.viewSystemControl.edtImpulsional_B.setText(str(self.dataInit["Impul2"]))
 
-        self.viewTabs.btnExit.clicked.connect(self.exit_App)
+            self.viewCurveSetup.edtGainA.setText(str(self.dataInit["Gain1"]))
+            self.viewCurveSetup.edtGainB.setText(str(self.dataInit["Gain2"]))
+            self.viewCurveSetup.edtOffsetA.setText(str(self.dataInit["Offset1"]))
+            self.viewCurveSetup.edtOffsetB.setText(str(self.dataInit["Offset2"]))
+
+            # self.viewSystemControl.btnExit.clicked.connect(self.exit_App)
+            self.viewSystemControl.btnLaser.clicked.connect(self.laser_change)
+            self.viewCurveSetup.btnLaser.clicked.connect(self.laser_change)
+
+            self.viewTabs.btnExit.clicked.connect(self.exit_App)
 
     def sendValuesLoaded(self):
 
@@ -109,43 +115,43 @@ class ControllerTabs:
         self.serialPort.write_port('\n')
 
     def laser_change(self):
-        if not self.checked:
+        if not self.btnLaserChecked:
+            color = 'red'
             self.viewSystemControl.btnLaser.setText('Laser ON')
-            self.viewSystemControl.btnLaser.setStyleSheet(
-                'QPushButton {'
-                'font: bold;'
-                'background-color: red;'
-                'color: white;'
-                'font-size: 20px;'
-                'height:100px;'
-                'width: 20px;'
-                '}')
+            self.viewCurveSetup.btnLaser.setText('Laser ON')
 
-            self.checked = True
+            self.btnLaserChecked = True
 
-            self.serialPort.send_Laser(1)
+            send = 1
 
         else:
+            color = 'green'
             self.viewSystemControl.btnLaser.setText('Laser OFF')
-            self.viewSystemControl.btnLaser.setStyleSheet(
-                'QPushButton {'
-                'font: bold;'
-                'background-color: green;'
-                'color: white;'
-                'font-size: 20px;'
-                'height:100px;'
-                'width: 20px;'
-                '}')
+            self.viewCurveSetup.btnLaser.setText('Laser OFF')
 
-            self.checked = False
+            self.btnLaserChecked = False
 
-            self.serialPort.send_Laser(0)
+            send = 0
+
+        style = 'QPushButton {font: bold; background-color: ' + color +\
+                '; color: white; font-size: 20px; height:100px; width: 20px;}'
+        self.viewSystemControl.btnLaser.setStyleSheet(style)
+
+        style = 'QPushButton {font: bold; background-color: ' + color + \
+                '; color: white; font-size: 12px; height: 80px; width: 20px;}'
+        self.viewCurveSetup.btnLaser.setStyleSheet(style)
+
+        self.serialPort.send_Laser(send)
 
     def exit_App(self):
         exitApp = self.viewTabs.setMessageExit()
 
         if exitApp:
             QApplication.quit()
+
+    @staticmethod
+    def exit_All():
+        sys.exit()
 
 
 if __name__ == '__main__':

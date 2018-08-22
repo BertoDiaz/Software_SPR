@@ -28,12 +28,12 @@ class ViewSystemControl(QWidget):
         self.btnLaser = QPushButton('Laser OFF')
         # self.btnExit = QPushButton('Exit')
 
-        self.labelPeristaltic = QLabel("Flow Peristaltic")
-        self.editPeristaltic = QLineEdit()
-        self.labelImpulsional_A = QLabel("Injection Impulsional A:")
-        self.editImpulsional_A = QLineEdit()
-        self.labelImpulsional_B = QLabel("Injection Impulsional B:")
-        self.editImpulsional_B = QLineEdit()
+        self.lblPeristaltic = QLabel("Flow Peristaltic")
+        self.edtPeristaltic = QLineEdit()
+        self.lblImpulsional_A = QLabel("Injection Impulsional A:")
+        self.edtImpulsional_A = QLineEdit()
+        self.lblImpulsional_B = QLabel("Injection Impulsional B:")
+        self.edtImpulsional_B = QLineEdit()
 
         self.layoutGrid = QGridLayout(self)
 
@@ -108,28 +108,28 @@ class ViewSystemControl(QWidget):
     def setDataGroup(self):
         # self.dataLayout.setAlignment(Qt.AlignLeft)
 
-        self.labelPeristaltic.setFixedWidth(100)
-        self.labelImpulsional_A.setFixedWidth(100)
-        self.labelImpulsional_B.setFixedWidth(100)
-        self.editPeristaltic.setFixedWidth(100)
-        self.editImpulsional_A.setFixedWidth(100)
-        self.editImpulsional_B.setFixedWidth(100)
+        self.lblPeristaltic.setFixedWidth(100)
+        self.lblImpulsional_A.setFixedWidth(100)
+        self.lblImpulsional_B.setFixedWidth(100)
+        self.edtPeristaltic.setFixedWidth(100)
+        self.edtImpulsional_A.setFixedWidth(100)
+        self.edtImpulsional_B.setFixedWidth(100)
 
-        # self.dataLayout.addWidget(self.labelPeristaltic, 0, 0,)
-        # self.dataLayout.addWidget(self.editPeristaltic, 0, 1)
-        # self.dataLayout.addWidget(self.labelImpulsional_A, 1, 0)
-        # self.dataLayout.addWidget(self.editImpulsional_A, 1, 1)
-        # self.dataLayout.addWidget(self.labelImpulsional_B, 2, 0)
-        # self.dataLayout.addWidget(self.editImpulsional_B, 2, 1)
+        # self.dataLayout.addWidget(self.lblPeristaltic, 0, 0,)
+        # self.dataLayout.addWidget(self.edtPeristaltic, 0, 1)
+        # self.dataLayout.addWidget(self.lblImpulsional_A, 1, 0)
+        # self.dataLayout.addWidget(self.edtImpulsional_A, 1, 1)
+        # self.dataLayout.addWidget(self.lblImpulsional_B, 2, 0)
+        # self.dataLayout.addWidget(self.edtImpulsional_B, 2, 1)
 
-        self.peristalticLayout.addWidget(self.labelPeristaltic)
-        self.peristalticLayout.addWidget(self.editPeristaltic)
+        self.peristalticLayout.addWidget(self.lblPeristaltic)
+        self.peristalticLayout.addWidget(self.edtPeristaltic)
 
-        self.impulsionalALayout.addWidget(self.labelImpulsional_A)
-        self.impulsionalALayout.addWidget(self.editImpulsional_A)
+        self.impulsionalALayout.addWidget(self.lblImpulsional_A)
+        self.impulsionalALayout.addWidget(self.edtImpulsional_A)
 
-        self.impulsionalBLayout.addWidget(self.labelImpulsional_B)
-        self.impulsionalBLayout.addWidget(self.editImpulsional_B)
+        self.impulsionalBLayout.addWidget(self.lblImpulsional_B)
+        self.impulsionalBLayout.addWidget(self.edtImpulsional_B)
 
         self.peristalticBoxLayout.setStyleSheet("QGroupBox {"
                                                 "border: 2px outset #948682;"

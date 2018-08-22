@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
-from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit
+from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSizePolicy
 from PyQt5.QtCore import Qt, QRect
 
 
@@ -25,27 +25,50 @@ class ViewCurveSetup(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.labelGainA = QLabel("Gain A:")
-        self.editGainA = QLineEdit()
-        self.labelGainB = QLabel("Gain B:")
-        self.editGainB = QLineEdit()
-        self.labelOffsetA = QLabel("Offset A:")
-        self.editOffsetA = QLineEdit()
-        self.labelOffsetB = QLabel("Offset B:")
-        self.editOffsetB = QLineEdit()
+        self.lblGainA = QLabel("Gain A:")
+        self.edtGainA = QLineEdit()
+        self.lblGainB = QLabel("Gain B:")
+        self.edtGainB = QLineEdit()
+        self.lblOffsetA = QLabel("Offset A:")
+        self.edtOffsetA = QLineEdit()
+        self.lblOffsetB = QLabel("Offset B:")
+        self.edtOffsetB = QLineEdit()
+
+        self.btnCalibrate = QPushButton("Calibrate")
+        self.btnLaser = QPushButton("Laser OFF")
+
+        self.lblInitialAngle = QLabel("Initial Angle:")
+        self.edtInitialAngle = QLineEdit()
+        self.lblAngleLongitude = QLabel("Angle Longitude:")
+        self.edtAngleLongitude = QLineEdit()
+        self.lblAngleResolution = QLabel("Angle Resolution:")
+        self.edtAngleResolution = QLineEdit()
+        self.lblFinalAngle = QLabel("Final Angle:")
+        self.edtFinalAngle = QLineEdit()
+        self.lblPointsCurve = QLabel("Points of Curve:")
+        self.edtPointsCurve = QLineEdit()
 
         self.layoutGrid = QGridLayout(self)
 
         self.calibrationBoxLayout = QGroupBox("Calibration Parameters")
         self.gainBoxLayout = QGroupBox()
         self.offsetBoxLayout = QGroupBox()
+        self.btnCalibrateBoxLayout = QGroupBox()
+        self.btnLaserBoxLayout = QGroupBox()
+
+        self.curveBoxLayout = QGroupBox("Curve Performance")
+
         self.filledBoxLayout_1 = QGroupBox()
         self.filledLayout_2 = QGroupBox()
 
         self.calibrationLayout = QGridLayout(self)
 
+        self.curveLayout = QGridLayout(self)
+
         self.gainLayout = QVBoxLayout(self)
         self.offsetLayout = QVBoxLayout(self)
+        self.btnCalibrateLayout = QVBoxLayout(self)
+        self.btnLaserLayout = QVBoxLayout(self)
 
         self.gainALayout = QHBoxLayout(self)
         self.gainBLayout = QHBoxLayout(self)
@@ -64,7 +87,9 @@ class ViewCurveSetup(QWidget):
 
     def mainWindow(self):
         self.layoutGrid.addWidget(self.setCalibrationGroup(), 0, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setFilledGroup_1(), 1, 0, 5, 10)
+        self.layoutGrid.addWidget(self.setLaserGroup(), 0, 2, 1, 1)
+        self.layoutGrid.addWidget(self.setCurveGroup(), 1, 0, 1, 3)
+        self.layoutGrid.addWidget(self.setFilledGroup_1(), 2, 0, 5, 10)
 
     def setFilledGroup_1(self):
         self.filledBoxLayout_1.setStyleSheet("QGroupBox {"
@@ -81,27 +106,36 @@ class ViewCurveSetup(QWidget):
         return self.filledLayout_2
 
     def setCalibrationGroup(self):
-        self.labelGainA.setFixedWidth(50)
-        self.labelGainB.setFixedWidth(50)
-        self.labelOffsetA.setFixedWidth(50)
-        self.labelOffsetB.setFixedWidth(50)
-        self.editGainA.setFixedWidth(100)
-        self.editGainB.setFixedWidth(100)
-        self.editOffsetA.setFixedWidth(100)
-        self.editOffsetB.setFixedWidth(100)
+        self.lblGainA.setFixedWidth(50)
+        self.lblGainB.setFixedWidth(50)
+        self.lblOffsetA.setFixedWidth(50)
+        self.lblOffsetB.setFixedWidth(50)
+        self.edtGainA.setFixedWidth(100)
+        self.edtGainB.setFixedWidth(100)
+        self.edtOffsetA.setFixedWidth(100)
+        self.edtOffsetB.setFixedWidth(100)
 
-        self.gainALayout.addWidget(self.labelGainA)
-        self.gainALayout.addWidget(self.editGainA)
-        self.gainBLayout.addWidget(self.labelGainB)
-        self.gainBLayout.addWidget(self.editGainB)
+        self.btnCalibrate.setStyleSheet("QPushButton {"
+                                        "font: bold;"
+                                        "background-color: grey;"
+                                        "color: black;"
+                                        "font-size: 12px;"
+                                        "height:80px;"
+                                        "width: 30px;"
+                                        "}")
+
+        self.gainALayout.addWidget(self.lblGainA)
+        self.gainALayout.addWidget(self.edtGainA)
+        self.gainBLayout.addWidget(self.lblGainB)
+        self.gainBLayout.addWidget(self.edtGainB)
 
         self.gainLayout.addLayout(self.gainALayout)
         self.gainLayout.addLayout(self.gainBLayout)
 
-        self.offsetALayout.addWidget(self.labelOffsetA)
-        self.offsetALayout.addWidget(self.editOffsetA)
-        self.offsetBLayout.addWidget(self.labelOffsetB)
-        self.offsetBLayout.addWidget(self.editOffsetB)
+        self.offsetALayout.addWidget(self.lblOffsetA)
+        self.offsetALayout.addWidget(self.edtOffsetA)
+        self.offsetBLayout.addWidget(self.lblOffsetB)
+        self.offsetBLayout.addWidget(self.edtOffsetB)
 
         self.offsetLayout.addLayout(self.offsetALayout)
         self.offsetLayout.addLayout(self.offsetBLayout)
@@ -130,6 +164,7 @@ class ViewCurveSetup(QWidget):
 
         self.calibrationLayout.addWidget(self.gainBoxLayout, 0, 0)
         self.calibrationLayout.addWidget(self.offsetBoxLayout, 1, 0)
+        self.calibrationLayout.addWidget(self.btnCalibrate, 1, 1, 1, 1)
 
         self.calibrationBoxLayout.setStyleSheet("QGroupBox {"
                                                 "border: 2px outset #948682;"
@@ -143,3 +178,65 @@ class ViewCurveSetup(QWidget):
         self.calibrationBoxLayout.setLayout(self.calibrationLayout)
 
         return self.calibrationBoxLayout
+
+    def setLaserGroup(self):
+        self.btnLaser.setStyleSheet("QPushButton {"
+                                    "font: bold;"
+                                    "background-color: green;"
+                                    "color: white;"
+                                    "font-size: 12px;"
+                                    "height:80px;"
+                                    "width: 20px;"
+                                    "}")
+
+        self.btnLaserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
+
+        self.btnLaserBoxLayout.setStyleSheet("QGroupBox {"
+                                             "border: 2px outset #948682;"
+                                             "border-radius: 5px;"
+                                             "margin-top: 7px;"
+                                             "}"
+                                             "QGroupBox:title {"
+                                             "top: -7 ex;"
+                                             "left: 10px;"
+                                             "}")
+        self.btnLaserBoxLayout.setLayout(self.btnLaserLayout)
+
+        return self.btnLaserBoxLayout
+
+    def setCurveGroup(self):
+        self.lblInitialAngle.setFixedWidth(100)
+        self.edtInitialAngle.setFixedWidth(100)
+        self.lblAngleLongitude.setFixedWidth(100)
+        self.edtAngleLongitude.setFixedWidth(100)
+        self.lblAngleResolution.setFixedWidth(100)
+        self.edtAngleResolution.setFixedWidth(100)
+        self.lblFinalAngle.setFixedWidth(100)
+        self.edtFinalAngle.setFixedWidth(100)
+        self.lblPointsCurve.setFixedWidth(100)
+        self.edtPointsCurve.setFixedWidth(100)
+
+        self.curveLayout.addWidget(self.lblInitialAngle, 0, 0)
+        self.curveLayout.addWidget(self.edtInitialAngle, 0, 1)
+        self.curveLayout.addWidget(self.lblAngleLongitude, 1, 0)
+        self.curveLayout.addWidget(self.edtAngleLongitude, 1, 1)
+        self.curveLayout.addWidget(self.lblAngleResolution, 2, 0)
+        self.curveLayout.addWidget(self.edtAngleResolution, 2, 1)
+        self.curveLayout.addWidget(self.lblFinalAngle, 3, 0)
+        self.curveLayout.addWidget(self.edtFinalAngle, 3, 1)
+        self.curveLayout.addWidget(self.lblPointsCurve, 4, 0)
+        self.curveLayout.addWidget(self.edtPointsCurve, 4, 1)
+
+        self.curveBoxLayout.setStyleSheet("QGroupBox {"
+                                          "border: 2px outset #948682;"
+                                          "border-radius: 5px;"
+                                          "margin-top: 7px;"
+                                          "}"
+                                          "QGroupBox:title {"
+                                          "top: -7 ex;"
+                                          "left: 10px;"
+                                          "}")
+        self.curveBoxLayout.setLayout(self.curveLayout)
+
+        return self.curveBoxLayout
+
