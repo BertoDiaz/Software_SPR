@@ -27,26 +27,46 @@ class SerialPort(QObject):
         super(SerialPort, self).__init__()
         self.ports = []
         self.serialData = ""
+        # self.commands = {
+        #     "CurveTemporal": '|'.encode().hex(),
+        #     "GainOffset": ':'.encode().hex(),
+        #     # "Laser": '#'.encode().hex(),
+        #     "TimeAverage": '&'.encode().hex(),
+        #     "StopTemporal": '['.encode().hex(),
+        #     "StopTechnical": '.'.encode().hex(),
+        #     "ControlPeris": '*'.encode().hex(),
+        #     "ControlImpulA": '!'.encode().hex(),
+        #     "ControlImpulB": '+'.encode().hex(),
+        #     "BackPeris": '<'.encode().hex(),
+        #     "StopPeris": '='.encode().hex(),
+        #     "ForwardPeris": '>'.encode().hex(),
+        #     "TimePulsesPumps": '_'.encode().hex(),
+        #     "VolumePurge": 'a7',
+        #     "PurgeImpulA": '{'.encode().hex(),
+        #     "PurgeImpulB": '}'.encode().hex(),
+        #     "IAmAlive": '?'.encode().hex(),
+        #     "PowerDown": '/'.encode().hex()
+        # }
+
         self.commands = {
-            "CurveTemporal": '|'.encode().hex(),
-            "GainOffset": ':'.encode().hex(),
-            # "Laser": '#'.encode().hex(),
+            "CurveTemporal": '|',
+            "GainOffset": ':',
             "Laser": '#',
-            "TimeAverage": '&'.encode().hex(),
-            "StopTemporal": '['.encode().hex(),
-            "StopTechnical": '.'.encode().hex(),
-            "ControlPeris": '*'.encode().hex(),
-            "ControlImpulA": '!'.encode().hex(),
-            "ControlImpulB": '+'.encode().hex(),
-            "BackPeris": '<'.encode().hex(),
-            "StopPeris": '='.encode().hex(),
-            "ForwardPeris": '>'.encode().hex(),
-            "TimePulsesPumps": '_'.encode().hex(),
+            "TimeAverage": '&',
+            "StopTemporal": '[',
+            "StopTechnical": '.',
+            "ControlPeris": '*',
+            "ControlImpulA": '!',
+            "ControlImpulB": '+',
+            "BackPeris": '<',
+            "StopPeris": '=',
+            "ForwardPeris": '>',
+            "TimePulsesPumps": '_',
             "VolumePurge": 'a7',
-            "PurgeImpulA": '{'.encode().hex(),
-            "PurgeImpulB": '}'.encode().hex(),
-            "IAmAlive": '?'.encode().hex(),
-            "PowerDown": '/'.encode().hex()
+            "PurgeImpulA": '{',
+            "PurgeImpulB": '}',
+            "IAmAlive": '?',
+            "PowerDown": '/'
         }
 
         self.serialPort = QSerialPort()
@@ -91,9 +111,12 @@ class SerialPort(QObject):
 
         return self.serialData
 
-    def receive_laser(self):
+    def receive_data(self):
         data = self.serialPort.readAll()
-        self.packet_received.emit(data.data().decode('utf8'))
+        # print(data.size())
+        dataRead = data.data().decode('utf8')
+        # if sizeData != -1:
+        self.packet_received.emit(dataRead)
 
     def write_port(self, data):
         self.serialPort.writeData(data.encode())

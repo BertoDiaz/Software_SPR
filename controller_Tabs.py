@@ -28,6 +28,18 @@ class ControllerTabs:
         self.btnLaserChecked = False
         self.color = None
         self.statusLaser = None
+        self.valuePeristaltic = 0
+        self.valueImpulsionalA = 0
+        self.valueImpulsionalB = 0
+        self.valueGainA = 0
+        self.valueGainB = 0
+        self.valueOffsetA = 0
+        self.valueOffsetB = 0
+        self.valueInitAngle = 0
+        self.valueAngleLongitude = 3
+        self.valueAngleResolution = 0.2
+        self.valueFinalAngle = 0
+        self.valuePointsCurve = 0
 
         self.viewTabs = ViewTabs(None)
         self.viewSystemControl = self.viewTabs.tab_SystemControl
@@ -57,18 +69,35 @@ class ControllerTabs:
             # if controllerConnect.loadedFile:
             #     self.sendValuesLoaded()
 
-            self.viewSystemControl.edtPeristaltic.setText(str(self.dataInit["PER1"]))
-            self.viewSystemControl.edtImpulsional_A.setText(str(self.dataInit["Impul1"]))
-            self.viewSystemControl.edtImpulsional_B.setText(str(self.dataInit["Impul2"]))
+            self.valuePeristaltic = self.dataInit["PER1"]
+            self.valueImpulsionalA = self.dataInit["Impul1"]
+            self.valueImpulsionalB = self.dataInit["Impul2"]
 
-            self.viewCurveSetup.edtGainA.setText(str(self.dataInit["Gain1"]))
-            self.viewCurveSetup.edtGainB.setText(str(self.dataInit["Gain2"]))
-            self.viewCurveSetup.edtOffsetA.setText(str(self.dataInit["Offset1"]))
-            self.viewCurveSetup.edtOffsetB.setText(str(self.dataInit["Offset2"]))
+            self.viewSystemControl.edtPeristaltic.setText(str(self.valuePeristaltic))
+            self.viewSystemControl.edtImpulsional_A.setText(str(self.valueImpulsionalA))
+            self.viewSystemControl.edtImpulsional_B.setText(str(self.valueImpulsionalB))
+
+            self.valueGainA = self.dataInit["Gain1"]
+            self.valueGainB = self.dataInit["Gain2"]
+            self.valueOffsetA = self.dataInit["Offset1"]
+            self.valueOffsetB = self.dataInit["Offset2"]
+
+            self.viewCurveSetup.edtGainA.setText(str(self.valueGainA))
+            self.viewCurveSetup.edtGainB.setText(str(self.valueGainB))
+            self.viewCurveSetup.edtOffsetA.setText(str(self.valueOffsetA))
+            self.viewCurveSetup.edtOffsetB.setText(str(self.valueOffsetB))
+
+            self.viewCurveSetup.edtInitialAngle.setText(str(self.valueInitAngle))
+            self.viewCurveSetup.edtAngleLongitude.setText(str(self.valueAngleLongitude))
+            self.viewCurveSetup.edtAngleResolution.setText(str(self.valueAngleResolution))
+            self.viewCurveSetup.edtFinalAngle.setText(str(self.valueFinalAngle))
+            self.viewCurveSetup.edtPointsCurve.setText(str(self.valuePointsCurve))
 
             # self.viewSystemControl.btnExit.clicked.connect(self.exit_App)
             self.viewSystemControl.btnLaser.clicked.connect(self.laser_change)
+            self.viewCurveSetup.btnCalibrate.clicked.connect(self.sendCalibrateParameters)
             self.viewCurveSetup.btnLaser.clicked.connect(self.laser_change)
+            self.viewCurveSetup.btnResetValues.clicked.connect(self.resetCurvePerformance)
 
             self.viewTabs.btnExit.clicked.connect(self.exit_App)
 
@@ -116,6 +145,26 @@ class ControllerTabs:
         """New line to be easier to read the data."""
         self.serialPort.write_port('\n')
 
+    def sendCalibrateParameters(self):
+        toSend = [
+            self.valueGainA,
+            self.valueOffsetA,
+            self.valueGainB,
+            self.valueOffsetB
+        ]
+
+        self.serialPort.send_Gain_Offset(toSend)
+
+        self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_data)
+        self.serialPort.packet_received.connect(self.calibrateReceive)
+
+    def calibrateReceive(self, data):
+        if data != '@':
+            self.viewCurveSetup.setMessageCritical("Error", "The device has not been calibrated, try again.")
+
+        self.serialPort.serialPort.readyRead.disconnect()
+        self.serialPort.packet_received.disconnect()
+
     def laser_change(self):
         if not self.btnLaserChecked:
             self.color = 'red'
@@ -135,7 +184,7 @@ class ControllerTabs:
 
         self.serialPort.send_Laser(send)
 
-        self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_laser)
+        self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_data)
         self.serialPort.packet_received.connect(self.laserReceive)
 
     def laserReceive(self, data):
@@ -150,6 +199,25 @@ class ControllerTabs:
             style = 'QPushButton {font: bold; background-color: ' + self.color + \
                     '; color: white; font-size: 12px; height: 80px; width: 20px;}'
             self.viewCurveSetup.btnLaser.setStyleSheet(style)
+
+        else:
+            self.viewCurveSetup.setMessageCritical("Error", "The laser was not switch ON/OFF, try again.")
+
+        self.serialPort.serialPort.readyRead.disconnect()
+        self.serialPort.packet_received.disconnect()
+
+    def resetCurvePerformance(self):
+        self.valueInitAngle = 0
+        self.valueAngleLongitude = 3
+        self.valueAngleResolution = 0.2
+        self.valueFinalAngle = 0
+        self.valuePointsCurve = 0
+
+        self.viewCurveSetup.edtInitialAngle.setText(str(self.valueInitAngle))
+        self.viewCurveSetup.edtAngleLongitude.setText(str(self.valueAngleLongitude))
+        self.viewCurveSetup.edtAngleResolution.setText(str(self.valueAngleResolution))
+        self.viewCurveSetup.edtFinalAngle.setText(str(self.valueFinalAngle))
+        self.viewCurveSetup.edtPointsCurve.setText(str(self.valuePointsCurve))
 
     def exit_App(self):
         exitApp = self.viewTabs.setMessageExit()

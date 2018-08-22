@@ -48,6 +48,8 @@ class ViewCurveSetup(QWidget):
         self.lblPointsCurve = QLabel("Points of Curve:")
         self.edtPointsCurve = QLineEdit()
 
+        self.btnResetValues = QPushButton("Reset")
+
         self.layoutGrid = QGridLayout(self)
 
         self.calibrationBoxLayout = QGroupBox("Calibration Parameters")
@@ -88,7 +90,7 @@ class ViewCurveSetup(QWidget):
     def mainWindow(self):
         self.layoutGrid.addWidget(self.setCalibrationGroup(), 0, 0, 1, 2)
         self.layoutGrid.addWidget(self.setLaserGroup(), 0, 2, 1, 1)
-        self.layoutGrid.addWidget(self.setCurveGroup(), 1, 0, 1, 3)
+        self.layoutGrid.addWidget(self.setCurveGroup(), 1, 0, 1, 2)
         self.layoutGrid.addWidget(self.setFilledGroup_1(), 2, 0, 5, 10)
 
     def setFilledGroup_1(self):
@@ -216,6 +218,15 @@ class ViewCurveSetup(QWidget):
         self.lblPointsCurve.setFixedWidth(100)
         self.edtPointsCurve.setFixedWidth(100)
 
+        self.btnResetValues.setStyleSheet("QPushButton {"
+                                          "font: bold;"
+                                          "background-color: grey;"
+                                          "color: black;"
+                                          "font-size: 12px;"
+                                          "height:40px;"
+                                          "width: 10px;"
+                                          "}")
+
         self.curveLayout.addWidget(self.lblInitialAngle, 0, 0)
         self.curveLayout.addWidget(self.edtInitialAngle, 0, 1)
         self.curveLayout.addWidget(self.lblAngleLongitude, 1, 0)
@@ -226,6 +237,7 @@ class ViewCurveSetup(QWidget):
         self.curveLayout.addWidget(self.edtFinalAngle, 3, 1)
         self.curveLayout.addWidget(self.lblPointsCurve, 4, 0)
         self.curveLayout.addWidget(self.edtPointsCurve, 4, 1)
+        self.curveLayout.addWidget(self.btnResetValues, 3, 2, 2, 1)
 
         self.curveBoxLayout.setStyleSheet("QGroupBox {"
                                           "border: 2px outset #948682;"
@@ -239,4 +251,7 @@ class ViewCurveSetup(QWidget):
         self.curveBoxLayout.setLayout(self.curveLayout)
 
         return self.curveBoxLayout
+
+    def setMessageCritical(self, typeMessage, message):
+        QMessageBox.critical(self, typeMessage, message)
 
