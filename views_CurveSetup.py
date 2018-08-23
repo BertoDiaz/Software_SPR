@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
-from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSizePolicy
+from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox
 from PyQt5.QtCore import Qt, QRect
 
 
@@ -26,27 +26,34 @@ class ViewCurveSetup(QWidget):
         super().__init__(parent)
 
         self.lblGainA = QLabel("Gain A:")
-        self.edtGainA = QLineEdit()
+        self.edtGainA = QSpinBox()
+        self.edtGainA.setRange(0, 100)
         self.lblGainB = QLabel("Gain B:")
-        self.edtGainB = QLineEdit()
+        self.edtGainB = QSpinBox()
+        self.edtGainB.setRange(0, 100)
         self.lblOffsetA = QLabel("Offset A:")
-        self.edtOffsetA = QLineEdit()
+        self.edtOffsetA = QSpinBox()
+        self.edtOffsetA.setRange(0, 100)
         self.lblOffsetB = QLabel("Offset B:")
-        self.edtOffsetB = QLineEdit()
+        self.edtOffsetB = QSpinBox()
+        self.edtOffsetB.setRange(0, 100)
 
         self.btnCalibrate = QPushButton("Calibrate")
         self.btnLaser = QPushButton("Laser OFF")
 
         self.lblInitialAngle = QLabel("Initial Angle:")
-        self.edtInitialAngle = QLineEdit()
+        self.edtInitialAngle = QSpinBox()
         self.lblAngleLongitude = QLabel("Angle Longitude:")
-        self.edtAngleLongitude = QLineEdit()
+        self.edtAngleLongitude = QSpinBox()
         self.lblAngleResolution = QLabel("Angle Resolution:")
-        self.edtAngleResolution = QLineEdit()
+        self.edtAngleResolution = QDoubleSpinBox()
+        self.edtAngleResolution.setSingleStep(0.1)
         self.lblFinalAngle = QLabel("Final Angle:")
         self.edtFinalAngle = QLineEdit()
+        self.edtFinalAngle.setReadOnly(True)
         self.lblPointsCurve = QLabel("Points of Curve:")
         self.edtPointsCurve = QLineEdit()
+        self.edtPointsCurve.setReadOnly(True)
 
         self.btnResetValues = QPushButton("Reset")
 
@@ -122,8 +129,8 @@ class ViewCurveSetup(QWidget):
                                         "background-color: grey;"
                                         "color: black;"
                                         "font-size: 12px;"
-                                        "height:80px;"
-                                        "width: 30px;"
+                                        "margin-top: 8px;"
+                                        "height: 60px;"
                                         "}")
 
         self.gainALayout.addWidget(self.lblGainA)
@@ -187,8 +194,7 @@ class ViewCurveSetup(QWidget):
                                     "background-color: green;"
                                     "color: white;"
                                     "font-size: 12px;"
-                                    "height:80px;"
-                                    "width: 20px;"
+                                    "height:55px;"
                                     "}")
 
         self.btnLaserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)

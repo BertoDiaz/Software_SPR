@@ -25,9 +25,34 @@ class ControllerTabs:
     def __init__(self):
         self.serialPort = None
         self.dataInit = []
-        self.btnLaserChecked = False
-        self.color = None
-        self.statusLaser = None
+        self.btnChecked = {
+            'Laser': False,
+            'Peristaltic': False,
+            'Impulsional A': False,
+            'Impulsional B': False
+        }
+        self.btnColor = {
+            'Laser': '',
+            'Peristaltic': '',
+            'Impulsional A': '',
+            'Impulsional B': ''
+        }
+        self.btnStatus = {
+            'Laser': '',
+            'Peristaltic': '',
+            'Impulsional A': '',
+            'Impulsional B': ''
+        }
+        # self.btnLaserChecked = False
+        # self.btnPeristalticChecked = False
+        # self.btnImpulsionalAChecked = False
+        # self.btnImpulsionalBChecked = False
+        # self.btnLaserColor = None
+        # self.btnPeristalticColor = None
+        # self.btnImpulsionalAColor = None
+        # self.btnImpulsionalBColor = None
+        # self.statusLaser = None
+        # self.statusPeristaltic = None
         self.valuePeristaltic = 0
         self.valueImpulsionalA = 0
         self.valueImpulsionalB = 0
@@ -73,31 +98,47 @@ class ControllerTabs:
             self.valueImpulsionalA = self.dataInit["Impul1"]
             self.valueImpulsionalB = self.dataInit["Impul2"]
 
-            self.viewSystemControl.edtPeristaltic.setText(str(self.valuePeristaltic))
-            self.viewSystemControl.edtImpulsional_A.setText(str(self.valueImpulsionalA))
-            self.viewSystemControl.edtImpulsional_B.setText(str(self.valueImpulsionalB))
+            self.viewSystemControl.edtPeristaltic.setValue(self.valuePeristaltic)
+            self.viewSystemControl.edtImpulsional_A.setValue(self.valueImpulsionalA)
+            self.viewSystemControl.edtImpulsional_B.setValue(self.valueImpulsionalB)
 
             self.valueGainA = self.dataInit["Gain1"]
             self.valueGainB = self.dataInit["Gain2"]
             self.valueOffsetA = self.dataInit["Offset1"]
             self.valueOffsetB = self.dataInit["Offset2"]
 
-            self.viewCurveSetup.edtGainA.setText(str(self.valueGainA))
-            self.viewCurveSetup.edtGainB.setText(str(self.valueGainB))
-            self.viewCurveSetup.edtOffsetA.setText(str(self.valueOffsetA))
-            self.viewCurveSetup.edtOffsetB.setText(str(self.valueOffsetB))
+            self.viewCurveSetup.edtGainA.setValue(self.valueGainA)
+            self.viewCurveSetup.edtGainB.setValue(self.valueGainB)
+            self.viewCurveSetup.edtOffsetA.setValue(self.valueOffsetA)
+            self.viewCurveSetup.edtOffsetB.setValue(self.valueOffsetB)
 
-            self.viewCurveSetup.edtInitialAngle.setText(str(self.valueInitAngle))
-            self.viewCurveSetup.edtAngleLongitude.setText(str(self.valueAngleLongitude))
-            self.viewCurveSetup.edtAngleResolution.setText(str(self.valueAngleResolution))
+            self.viewCurveSetup.edtInitialAngle.setValue(self.valueInitAngle)
+            self.viewCurveSetup.edtAngleLongitude.setValue(self.valueAngleLongitude)
+            self.viewCurveSetup.edtAngleResolution.setValue(self.valueAngleResolution)
             self.viewCurveSetup.edtFinalAngle.setText(str(self.valueFinalAngle))
             self.viewCurveSetup.edtPointsCurve.setText(str(self.valuePointsCurve))
 
-            # self.viewSystemControl.btnExit.clicked.connect(self.exit_App)
-            self.viewSystemControl.btnLaser.clicked.connect(self.laser_change)
+            self.viewSystemControl.btnLaser.clicked.connect(self.laserChange)
+            self.viewSystemControl.btnPeristaltic.clicked.connect(self.btnPeristalticChange)
+            self.viewSystemControl.btnImpulsional_A.clicked.connect(self.btnImpulsionalAChange)
+            self.viewSystemControl.btnImpulsional_B.clicked.connect(self.btnImpulsionalBChange)
+
+            self.viewSystemControl.edtPeristaltic.valueChanged.connect(self.pumpsControlChange)
+
             self.viewCurveSetup.btnCalibrate.clicked.connect(self.sendCalibrateParameters)
-            self.viewCurveSetup.btnLaser.clicked.connect(self.laser_change)
+            self.viewCurveSetup.btnLaser.clicked.connect(self.laserChange)
             self.viewCurveSetup.btnResetValues.clicked.connect(self.resetCurvePerformance)
+
+            self.viewCurveSetup.edtGainA.valueChanged.connect(self.calibrateChange)
+            self.viewCurveSetup.edtGainB.valueChanged.connect(self.calibrateChange)
+            self.viewCurveSetup.edtOffsetA.valueChanged.connect(self.calibrateChange)
+            self.viewCurveSetup.edtOffsetB.valueChanged.connect(self.calibrateChange)
+
+            self.viewCurveSetup.edtInitialAngle.valueChanged.connect(self.curvePerformanceChange)
+            self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.curvePerformanceChange)
+            self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.curvePerformanceChange)
+            self.viewCurveSetup.edtFinalAngle.textChanged.connect(self.curvePerformanceChange)
+            self.viewCurveSetup.edtPointsCurve.textChanged.connect(self.curvePerformanceChange)
 
             self.viewTabs.btnExit.clicked.connect(self.exit_App)
 
@@ -145,6 +186,68 @@ class ControllerTabs:
         """New line to be easier to read the data."""
         self.serialPort.write_port('\n')
 
+    def pumpsControlChange(self):
+        self.valuePeristaltic = self.viewSystemControl.edtPeristaltic.value()
+        self.valueImpulsionalA = self.viewSystemControl.edtImpulsional_A.value()
+        self.valueImpulsionalB = self.viewSystemControl.edtImpulsional_B.value()
+
+    def btnPeristalticChange(self):
+        if not self.btnChecked['Peristaltic']:
+            self.btnColor['Peristaltic'] = 'grey'
+            self.btnStatus['Peristaltic'] = 'STOP'
+
+            self.btnChecked['Peristaltic'] = True
+
+        else:
+            self.btnColor['Peristaltic'] = 'blue'
+            self.btnStatus['Peristaltic'] = 'START'
+
+            self.btnChecked['Peristaltic'] = False
+
+        self.viewSystemControl.btnPeristaltic.setText(self.btnStatus['Peristaltic'])
+
+        style = 'QPushButton {font: bold; background-color: ' + self.btnColor['Peristaltic'] + \
+                '; color: white; font-size: 12px; height: 70px;}'
+        self.viewSystemControl.btnPeristaltic.setStyleSheet(style)
+
+    def btnImpulsionalAChange(self):
+        if not self.btnChecked['Impulsional A']:
+            self.btnColor['Impulsional A'] = 'grey'
+            self.btnStatus['Impulsional A'] = 'INJECT'
+
+            self.btnChecked['Impulsional A'] = True
+
+        else:
+            self.btnColor['Impulsional A'] = 'blue'
+            self.btnStatus['Impulsional A'] = 'INJECT'
+
+            self.btnChecked['Impulsional A'] = False
+
+        self.viewSystemControl.btnImpulsional_A.setText(self.btnStatus['Impulsional A'])
+
+        style = 'QPushButton {font: bold; background-color: ' + self.btnColor['Impulsional A'] + \
+                '; color: white; font-size: 12px; height: 70px;}'
+        self.viewSystemControl.btnImpulsional_A.setStyleSheet(style)
+
+    def btnImpulsionalBChange(self):
+        if not self.btnChecked['Impulsional B']:
+            self.btnColor['Impulsional B'] = 'grey'
+            self.btnStatus['Impulsional B'] = 'INJECT'
+
+            self.btnChecked['Impulsional B'] = True
+
+        else:
+            self.btnColor['Impulsional B'] = 'blue'
+            self.btnStatus['Impulsional B'] = 'INJECT'
+
+            self.btnChecked['Impulsional B'] = False
+
+        self.viewSystemControl.btnImpulsional_B.setText(self.btnStatus['Impulsional B'])
+
+        style = 'QPushButton {font: bold; background-color: ' + self.btnColor['Impulsional B'] + \
+                '; color: white; font-size: 12px; height: 70px;}'
+        self.viewSystemControl.btnImpulsional_B.setStyleSheet(style)
+
     def sendCalibrateParameters(self):
         toSend = [
             self.valueGainA,
@@ -158,6 +261,12 @@ class ControllerTabs:
         self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_data)
         self.serialPort.packet_received.connect(self.calibrateReceive)
 
+    def calibrateChange(self):
+        self.valueGainA = self.viewCurveSetup.edtGainA.value()
+        self.valueOffsetA = self.viewCurveSetup.edtOffsetA.value()
+        self.valueGainB = self.viewCurveSetup.edtGainB.value()
+        self.valueOffsetB = self.viewCurveSetup.edtOffsetB.value()
+
     def calibrateReceive(self, data):
         if data != '@':
             self.viewCurveSetup.setMessageCritical("Error", "The device has not been calibrated, try again.")
@@ -165,20 +274,20 @@ class ControllerTabs:
         self.serialPort.serialPort.readyRead.disconnect()
         self.serialPort.packet_received.disconnect()
 
-    def laser_change(self):
-        if not self.btnLaserChecked:
-            self.color = 'red'
-            self.statusLaser = 'Laser ON'
+    def laserChange(self):
+        if not self.btnChecked['Laser']:
+            self.btnColor['Laser'] = 'red'
+            self.btnStatus['Laser'] = 'Laser ON'
 
-            self.btnLaserChecked = True
+            self.btnChecked['Laser'] = True
 
             send = 1
 
         else:
-            self.color = 'green'
-            self.statusLaser = 'Laser OFF'
+            self.btnColor['Laser'] = 'green'
+            self.btnStatus['Laser'] = 'Laser OFF'
 
-            self.btnLaserChecked = False
+            self.btnChecked['Laser'] = False
 
             send = 0
 
@@ -189,14 +298,14 @@ class ControllerTabs:
 
     def laserReceive(self, data):
         if data == '@':
-            self.viewSystemControl.btnLaser.setText(self.statusLaser)
-            self.viewCurveSetup.btnLaser.setText(self.statusLaser)
+            self.viewSystemControl.btnLaser.setText(self.btnStatus['Laser'])
+            self.viewCurveSetup.btnLaser.setText(self.btnStatus['Laser'])
 
-            style = 'QPushButton {font: bold; background-color: ' + self.color + \
+            style = 'QPushButton {font: bold; background-color: ' + self.btnColor['Laser'] + \
                     '; color: white; font-size: 20px; height:100px; width: 20px;}'
             self.viewSystemControl.btnLaser.setStyleSheet(style)
 
-            style = 'QPushButton {font: bold; background-color: ' + self.color + \
+            style = 'QPushButton {font: bold; background-color: ' + self.btnColor['Laser'] + \
                     '; color: white; font-size: 12px; height: 80px; width: 20px;}'
             self.viewCurveSetup.btnLaser.setStyleSheet(style)
 
@@ -213,11 +322,25 @@ class ControllerTabs:
         self.valueFinalAngle = 0
         self.valuePointsCurve = 0
 
-        self.viewCurveSetup.edtInitialAngle.setText(str(self.valueInitAngle))
-        self.viewCurveSetup.edtAngleLongitude.setText(str(self.valueAngleLongitude))
-        self.viewCurveSetup.edtAngleResolution.setText(str(self.valueAngleResolution))
+        self.viewCurveSetup.edtInitialAngle.setValue(self.valueInitAngle)
+        self.viewCurveSetup.edtAngleLongitude.setValue(self.valueAngleLongitude)
+        self.viewCurveSetup.edtAngleResolution.setValue(self.valueAngleResolution)
         self.viewCurveSetup.edtFinalAngle.setText(str(self.valueFinalAngle))
         self.viewCurveSetup.edtPointsCurve.setText(str(self.valuePointsCurve))
+
+    def curvePerformanceChange(self):
+        self.valueInitAngle = self.viewCurveSetup.edtInitialAngle.value()
+        self.valueAngleLongitude = self.viewCurveSetup.edtAngleLongitude.value()
+        self.valueAngleResolution = self.viewCurveSetup.edtAngleResolution.value()
+
+        try:
+            self.valueFinalAngle = int(self.viewCurveSetup.edtFinalAngle.text())
+            self.valuePointsCurve = int(self.viewCurveSetup.edtPointsCurve.text())
+
+        except Exception:
+            self.viewCurveSetup.setMessageCritical("Error", "The value can only be a number.")
+            self.viewCurveSetup.edtFinalAngle.setText(str(self.valueFinalAngle))
+            self.viewCurveSetup.edtPointsCurve.setText(str(self.valuePointsCurve))
 
     def exit_App(self):
         exitApp = self.viewTabs.setMessageExit()

@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
-from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit
+from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox
 from PyQt5.QtCore import Qt, QRect
 
 
@@ -26,19 +26,25 @@ class ViewSystemControl(QWidget):
         super().__init__(parent)
 
         self.btnLaser = QPushButton('Laser OFF')
-        # self.btnExit = QPushButton('Exit')
 
         self.lblPeristaltic = QLabel("Flow Peristaltic")
-        self.edtPeristaltic = QLineEdit()
+        self.edtPeristaltic = QSpinBox()
+        self.edtPeristaltic.setRange(0, 100)
         self.lblImpulsional_A = QLabel("Injection Impulsional A:")
-        self.edtImpulsional_A = QLineEdit()
+        self.edtImpulsional_A = QSpinBox()
+        self.edtImpulsional_A.setRange(0, 100)
         self.lblImpulsional_B = QLabel("Injection Impulsional B:")
-        self.edtImpulsional_B = QLineEdit()
+        self.edtImpulsional_B = QSpinBox()
+        self.edtImpulsional_B.setRange(0, 100)
+
+        self.btnPeristaltic = QPushButton("START")
+        self.btnImpulsional_A = QPushButton("INJECT")
+        self.btnImpulsional_B = QPushButton("INJECT")
 
         self.layoutGrid = QGridLayout(self)
 
         self.laserBoxLayout = QGroupBox("Laser Control")
-        self.dataBoxLayout = QGroupBox("Data Layout")
+        self.dataBoxLayout = QGroupBox("Pumps control")
         self.otherBoxLayout = QGroupBox("Other Layout")
         self.peristalticBoxLayout = QGroupBox("Peristaltic Pump Control")
         self.impulsionalABoxLayout = QGroupBox("Impulsional Pump A Control")
@@ -46,9 +52,9 @@ class ViewSystemControl(QWidget):
 
         self.laserLayout = QVBoxLayout(self)
         self.dataLayout = QGridLayout(self)
-        self.peristalticLayout = QVBoxLayout(self)
-        self.impulsionalALayout = QVBoxLayout(self)
-        self.impulsionalBLayout = QVBoxLayout(self)
+        self.peristalticLayout = QGridLayout(self)
+        self.impulsionalALayout = QGridLayout(self)
+        self.impulsionalBLayout = QGridLayout(self)
         self.otherLayout = QHBoxLayout(self)
 
         self.resize(1200, 800)
@@ -109,11 +115,38 @@ class ViewSystemControl(QWidget):
         # self.dataLayout.setAlignment(Qt.AlignLeft)
 
         self.lblPeristaltic.setFixedWidth(100)
+        self.lblPeristaltic.setAlignment(Qt.AlignBottom)
         self.lblImpulsional_A.setFixedWidth(100)
+        self.lblImpulsional_A.setAlignment(Qt.AlignBottom)
         self.lblImpulsional_B.setFixedWidth(100)
+        self.lblImpulsional_B.setAlignment(Qt.AlignBottom)
         self.edtPeristaltic.setFixedWidth(100)
         self.edtImpulsional_A.setFixedWidth(100)
         self.edtImpulsional_B.setFixedWidth(100)
+
+        self.btnPeristaltic.setStyleSheet("QPushButton {"
+                                          "font: bold;"
+                                          "background-color: blue;"
+                                          "color: white;"
+                                          "font-size: 12px;"
+                                          "height: 70px;"
+                                          "}")
+
+        self.btnImpulsional_A.setStyleSheet("QPushButton {"
+                                            "font: bold;"
+                                            "background-color: blue;"
+                                            "color: white;"
+                                            "font-size: 12px;"
+                                            "height: 70px;"
+                                            "}")
+
+        self.btnImpulsional_B.setStyleSheet("QPushButton {"
+                                            "font: bold;"
+                                            "background-color: blue;"
+                                            "color: white;"
+                                            "font-size: 12px;"
+                                            "height: 70px;"
+                                            "}")
 
         # self.dataLayout.addWidget(self.lblPeristaltic, 0, 0,)
         # self.dataLayout.addWidget(self.edtPeristaltic, 0, 1)
@@ -122,14 +155,17 @@ class ViewSystemControl(QWidget):
         # self.dataLayout.addWidget(self.lblImpulsional_B, 2, 0)
         # self.dataLayout.addWidget(self.edtImpulsional_B, 2, 1)
 
-        self.peristalticLayout.addWidget(self.lblPeristaltic)
-        self.peristalticLayout.addWidget(self.edtPeristaltic)
+        self.peristalticLayout.addWidget(self.lblPeristaltic, 0, 0)
+        self.peristalticLayout.addWidget(self.edtPeristaltic, 1, 0)
+        self.peristalticLayout.addWidget(self.btnPeristaltic, 0, 1, 2, 1)
 
-        self.impulsionalALayout.addWidget(self.lblImpulsional_A)
-        self.impulsionalALayout.addWidget(self.edtImpulsional_A)
+        self.impulsionalALayout.addWidget(self.lblImpulsional_A, 0, 0)
+        self.impulsionalALayout.addWidget(self.edtImpulsional_A, 1, 0)
+        self.impulsionalALayout.addWidget(self.btnImpulsional_A, 0, 1, 2, 1)
 
-        self.impulsionalBLayout.addWidget(self.lblImpulsional_B)
-        self.impulsionalBLayout.addWidget(self.edtImpulsional_B)
+        self.impulsionalBLayout.addWidget(self.lblImpulsional_B, 0, 0)
+        self.impulsionalBLayout.addWidget(self.edtImpulsional_B, 1, 0)
+        self.impulsionalBLayout.addWidget(self.btnImpulsional_B, 0, 1, 2, 1)
 
         self.peristalticBoxLayout.setStyleSheet("QGroupBox {"
                                                 "border: 2px outset #948682;"
