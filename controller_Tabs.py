@@ -30,7 +30,8 @@ class ControllerTabs:
             'Laser': False,
             'Peristaltic': False,
             'Impulsional A': False,
-            'Impulsional B': False
+            'Impulsional B': False,
+            'Reset': False
         }
         self.btnStatus = {
             'Laser': '',
@@ -59,6 +60,7 @@ class ControllerTabs:
 
         self.tmrBtnImpulsional_A = QTimer()
         self.tmrBtnImpulsional_B = QTimer()
+        self.tmrBtnReset = QTimer()
 
         self.viewTabs = ViewTabs(None)
         self.viewSystemControl = self.viewTabs.tab_SystemControl
@@ -298,17 +300,30 @@ class ControllerTabs:
         self.serialPort.packet_received.disconnect()
 
     def resetCurvePerformance(self):
-        self.valueInitAngle = 0
-        self.valueAngleLongitude = 3
-        self.valueAngleResolution = 0.2
-        self.valueFinalAngle = 0
-        self.valuePointsCurve = 0
+        if not self.btnChecked['Reset']:
+            self.tmrBtnReset.timeout.connect(self.resetCurvePerformance)
+            self.tmrBtnReset.start(1000)
 
-        self.viewCurveSetup.edtInitialAngle.setValue(self.valueInitAngle)
-        self.viewCurveSetup.edtAngleLongitude.setValue(self.valueAngleLongitude)
-        self.viewCurveSetup.edtAngleResolution.setValue(self.valueAngleResolution)
-        self.viewCurveSetup.edtFinalAngle.setText(str(self.valueFinalAngle))
-        self.viewCurveSetup.edtPointsCurve.setText(str(self.valuePointsCurve))
+            self.valueInitAngle = 0
+            self.valueAngleLongitude = 3
+            self.valueAngleResolution = 0.2
+            self.valueFinalAngle = 0
+            self.valuePointsCurve = 0
+
+            self.viewCurveSetup.edtInitialAngle.setValue(self.valueInitAngle)
+            self.viewCurveSetup.edtAngleLongitude.setValue(self.valueAngleLongitude)
+            self.viewCurveSetup.edtAngleResolution.setValue(self.valueAngleResolution)
+            self.viewCurveSetup.edtFinalAngle.setText(str(self.valueFinalAngle))
+            self.viewCurveSetup.edtPointsCurve.setText(str(self.valuePointsCurve))
+
+            self.btnChecked['Reset'] = True
+
+        else:
+            self.tmrBtnReset.timeout.disconnect()
+            self.tmrBtnReset.stop()
+
+            self.viewCurveSetup.btnResetValues.setChecked(False)
+            self.btnChecked['Reset'] = False
 
     def curvePerformanceChange(self):
         self.valueInitAngle = self.viewCurveSetup.edtInitialAngle.value()

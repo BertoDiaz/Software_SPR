@@ -80,36 +80,12 @@ class ViewSystemControl(QWidget):
     def setLaserGroup(self):
         self.laserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
 
-        """
-            Different border style:
-                - dotted
-                - dashed
-                - solid
-                - double
-                - groove
-                - ridge
-                - inset
-                - outset
-                - none
-                - hidden
-        """
-
-        self.laserBoxLayout.setStyleSheet("QGroupBox {"
-                                          "border: 2px outset #948682;"
-                                          "border-radius: 5px;"
-                                          "margin-top: 7px;"
-                                          "}"
-                                          "QGroupBox:title {"
-                                          "top: -7 ex;"
-                                          "left: 10px;"
-                                          "}")
+        self.laserBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.laserBoxLayout.setLayout(self.laserLayout)
 
         return self.laserBoxLayout
 
     def setDataGroup(self):
-        # self.dataLayout.setAlignment(Qt.AlignLeft)
-
         self.lblPeristaltic.setFixedWidth(100)
         self.lblPeristaltic.setAlignment(Qt.AlignBottom)
         self.lblImpulsional_A.setFixedWidth(100)
@@ -129,58 +105,25 @@ class ViewSystemControl(QWidget):
         self.impulsionalBLayout.addWidget(self.edtImpulsional_B, 1, 0)
         self.impulsionalBLayout.addWidget(self.btnImpulsional_B, 0, 1, 2, 1)
 
-        self.peristalticBoxLayout.setStyleSheet("QGroupBox {"
-                                                "border: 2px outset #948682;"
-                                                "border-radius: 5px;"
-                                                "margin-top: 7px;"
-                                                "}"
-                                                "QGroupBox:title {"
-                                                "top: -7 ex;"
-                                                "left: 10px;"
-                                                "}")
+        self.peristalticBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.peristalticBoxLayout.setLayout(self.peristalticLayout)
 
-        self.impulsionalABoxLayout.setStyleSheet("QGroupBox {"
-                                                 "border: 2px outset #948682;"
-                                                 "border-radius: 5px;"
-                                                 "margin-top: 7px;"
-                                                 "}"
-                                                 "QGroupBox:title {"
-                                                 "top: -7 ex;"
-                                                 "left: 10px;"
-                                                 "}")
+        self.impulsionalABoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.impulsionalABoxLayout.setLayout(self.impulsionalALayout)
 
-        self.impulsionalBBoxLayout.setStyleSheet("QGroupBox {"
-                                                 "border: 2px outset #948682;"
-                                                 "border-radius: 5px;"
-                                                 "margin-top: 7px;"
-                                                 "}"
-                                                 "QGroupBox:title {"
-                                                 "top: -7 ex;"
-                                                 "left: 10px;"
-                                                 "}")
+        self.impulsionalBBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.impulsionalBBoxLayout.setLayout(self.impulsionalBLayout)
 
         self.dataLayout.addWidget(self.peristalticBoxLayout, 0, 0)
         self.dataLayout.addWidget(self.impulsionalABoxLayout, 0, 1)
         self.dataLayout.addWidget(self.impulsionalBBoxLayout, 0, 2)
 
-        self.dataBoxLayout.setStyleSheet("QGroupBox {"
-                                         "border: 2px outset #948682;"
-                                         "border-radius: 5px;"
-                                         "margin-top: 7px;"
-                                         "}"
-                                         "QGroupBox:title {"
-                                         "top: -7 ex;"
-                                         "left: 10px;"
-                                         "}")
+        self.dataBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.dataBoxLayout.setLayout(self.dataLayout)
 
         return self.dataBoxLayout
 
     def setOtherGroup(self):
-        # self.otherLayout.addWidget(self.btnExit)
         self.otherBoxLayout.setLayout(self.otherLayout)
 
         return self.otherBoxLayout
@@ -199,14 +142,9 @@ class ViewSystemControl(QWidget):
         self.btnImpulsional_B.setCheckable(True)
 
     def setStyleSpinBox(self):
-        styleSpins = 'QSpinBox {' \
-                     'height: 25px;' \
-                     'font-size: 14px;' \
-                     '}'
-
-        self.edtPeristaltic.setStyleSheet(styleSpins)
-        self.edtImpulsional_A.setStyleSheet(styleSpins)
-        self.edtImpulsional_B.setStyleSheet(styleSpins)
+        self.edtPeristaltic.setStyleSheet(style.spinBoxGeneral)
+        self.edtImpulsional_A.setStyleSheet(style.spinBoxGeneral)
+        self.edtImpulsional_B.setStyleSheet(style.spinBoxGeneral)
 
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)

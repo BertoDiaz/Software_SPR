@@ -106,16 +106,12 @@ class ViewCurveSetup(QWidget):
         self.layoutGrid.addWidget(self.setFilledGroup_1(), 2, 0, 5, 10)
 
     def setFilledGroup_1(self):
-        self.filledBoxLayout_1.setStyleSheet("QGroupBox {"
-                                             "border: 2px solid red;"
-                                             "}")
+        self.filledBoxLayout_1.setStyleSheet(style.groupBoxFilled)
 
         return self.filledBoxLayout_1
 
     def setFilledGroup_2(self):
-        self.filledLayout_2.setStyleSheet("QGroupBox {"
-                                          "border: 2px solid red;"
-                                          "}")
+        self.filledLayout_2.setStyleSheet(style.groupBoxFilled)
 
         return self.filledLayout_2
 
@@ -145,41 +141,17 @@ class ViewCurveSetup(QWidget):
         self.offsetLayout.addLayout(self.offsetALayout)
         self.offsetLayout.addLayout(self.offsetBLayout)
 
-        self.gainBoxLayout.setStyleSheet("QGroupBox {"
-                                         "border: 2px outset #948682;"
-                                         "border-radius: 5px;"
-                                         "margin-top: 7px;"
-                                         "}"
-                                         "QGroupBox:title {"
-                                         "top: -7 ex;"
-                                         "left: 10px;"
-                                         "}")
+        self.gainBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.gainBoxLayout.setLayout(self.gainLayout)
 
-        self.offsetBoxLayout.setStyleSheet("QGroupBox {"
-                                           "border: 2px outset #948682;"
-                                           "border-radius: 5px;"
-                                           "margin-top: 7px;"
-                                           "}"
-                                           "QGroupBox:title {"
-                                           "top: -7 ex;"
-                                           "left: 10px;"
-                                           "}")
+        self.offsetBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.offsetBoxLayout.setLayout(self.offsetLayout)
 
         self.calibrationLayout.addWidget(self.gainBoxLayout, 0, 0)
         self.calibrationLayout.addWidget(self.offsetBoxLayout, 1, 0)
         self.calibrationLayout.addWidget(self.btnCalibrate, 1, 1, 1, 1)
 
-        self.calibrationBoxLayout.setStyleSheet("QGroupBox {"
-                                                "border: 2px outset #948682;"
-                                                "border-radius: 5px;"
-                                                "margin-top: 7px;"
-                                                "}"
-                                                "QGroupBox:title {"
-                                                "top: -7 ex;"
-                                                "left: 10px;"
-                                                "}")
+        self.calibrationBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.calibrationBoxLayout.setLayout(self.calibrationLayout)
 
         return self.calibrationBoxLayout
@@ -187,15 +159,7 @@ class ViewCurveSetup(QWidget):
     def setLaserGroup(self):
         self.btnLaserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
 
-        self.btnLaserBoxLayout.setStyleSheet("QGroupBox {"
-                                             "border: 2px outset #948682;"
-                                             "border-radius: 5px;"
-                                             "margin-top: 7px;"
-                                             "}"
-                                             "QGroupBox:title {"
-                                             "top: -7 ex;"
-                                             "left: 10px;"
-                                             "}")
+        self.btnLaserBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.btnLaserBoxLayout.setLayout(self.btnLaserLayout)
 
         return self.btnLaserBoxLayout
@@ -209,15 +173,6 @@ class ViewCurveSetup(QWidget):
         self.edtFinalAngle.setFixedWidth(100)
         self.edtPointsCurve.setFixedWidth(100)
 
-        self.btnResetValues.setStyleSheet("QPushButton {"
-                                          "font: bold;"
-                                          "background-color: grey;"
-                                          "color: black;"
-                                          "font-size: 12px;"
-                                          "height:40px;"
-                                          "width: 10px;"
-                                          "}")
-
         self.curveLayout.addWidget(self.lblInitialAngle, 0, 0)
         self.curveLayout.addWidget(self.edtInitialAngle, 0, 1)
         self.curveLayout.addWidget(self.lblAngleLongitude, 1, 0)
@@ -230,15 +185,7 @@ class ViewCurveSetup(QWidget):
         self.curveLayout.addWidget(self.edtPointsCurve, 4, 1)
         self.curveLayout.addWidget(self.btnResetValues, 3, 2, 2, 1)
 
-        self.curveBoxLayout.setStyleSheet("QGroupBox {"
-                                          "border: 2px outset #948682;"
-                                          "border-radius: 5px;"
-                                          "margin-top: 7px;"
-                                          "}"
-                                          "QGroupBox:title {"
-                                          "top: -7 ex;"
-                                          "left: 10px;"
-                                          "}")
+        self.curveBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.curveBoxLayout.setLayout(self.curveLayout)
 
         return self.curveBoxLayout
@@ -254,34 +201,22 @@ class ViewCurveSetup(QWidget):
         self.btnCalibrate.setStyleSheet(style.buttonCalibrate)
         self.btnCalibrate.setCheckable(True)
 
+        self.btnResetValues.setStyleSheet(style.buttonReset)
+        self.btnResetValues.setCheckable(True)
+
     def setStyleSpinBox(self):
-        styleSpins = 'QSpinBox {' \
-                     'height: 20px;' \
-                     'font-size: 14px;' \
-                     '}'
+        self.edtGainA.setStyleSheet(style.spinBoxGeneral)
+        self.edtGainB.setStyleSheet(style.spinBoxGeneral)
+        self.edtOffsetA.setStyleSheet(style.spinBoxGeneral)
+        self.edtOffsetB.setStyleSheet(style.spinBoxGeneral)
+        self.edtInitialAngle.setStyleSheet(style.spinBoxGeneral)
+        self.edtAngleLongitude.setStyleSheet(style.spinBoxGeneral)
 
-        self.edtGainA.setStyleSheet(styleSpins)
-        self.edtGainB.setStyleSheet(styleSpins)
-        self.edtOffsetA.setStyleSheet(styleSpins)
-        self.edtOffsetB.setStyleSheet(styleSpins)
-        self.edtInitialAngle.setStyleSheet(styleSpins)
-        self.edtAngleLongitude.setStyleSheet(styleSpins)
-
-        styleDoubleSpins = 'QDoubleSpinBox {' \
-                           'height: 20px;' \
-                           'font-size: 14px;' \
-                           '}'
-
-        self.edtAngleResolution.setStyleSheet(styleDoubleSpins)
+        self.edtAngleResolution.setStyleSheet(style.doubleSpinBoxGeneral)
 
     def setStyleLineEdit(self):
-        styleLineEdit = 'QLineEdit {' \
-                        'height: 20px;' \
-                        'font-size: 14px;' \
-                        '}'
-
-        self.edtFinalAngle.setStyleSheet(styleLineEdit)
-        self.edtPointsCurve.setStyleSheet(styleLineEdit)
+        self.edtFinalAngle.setStyleSheet(style.lineEditGeneral)
+        self.edtPointsCurve.setStyleSheet(style.lineEditGeneral)
 
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)
