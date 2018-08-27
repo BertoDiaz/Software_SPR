@@ -58,6 +58,16 @@ class ViewCurveSetup(QWidget):
 
         self.btnResetValues = QPushButton("Reset")
 
+        self.edtAcquisition = QLineEdit()
+        self.lblDataSampling = QLabel("Data Sampling (seconds):")
+        self.edtDataSampling = QSpinBox()
+        self.lblACQChannel_1 = QLabel("Channel 1:")
+        self.edtACQChannel_1 = QLineEdit()
+        self.lblACQChannel_2 = QLabel("Channel 2:")
+        self.edtACQChannel_2 = QLineEdit()
+
+        self.btnAutoAcquisition = QPushButton("Automatic")
+
         self.layoutGrid = QGridLayout(self)
 
         self.calibrationBoxLayout = QGroupBox("Calibration Parameters")
@@ -71,9 +81,13 @@ class ViewCurveSetup(QWidget):
         self.filledBoxLayout_1 = QGroupBox()
         self.filledLayout_2 = QGroupBox()
 
-        self.calibrationLayout = QGridLayout(self)
+        self.acquisitionBoxLayout = QGroupBox("Acquisition Mode")
+        self.autoACQBoxLayout = QGroupBox()
 
+        self.calibrationLayout = QGridLayout(self)
         self.curveLayout = QGridLayout(self)
+        self.acquisitionLayout = QGridLayout(self)
+        self.autoACQLayout = QGridLayout(self)
 
         self.gainLayout = QVBoxLayout(self)
         self.offsetLayout = QVBoxLayout(self)
@@ -103,7 +117,8 @@ class ViewCurveSetup(QWidget):
         self.layoutGrid.addWidget(self.setCalibrationGroup(), 0, 0, 1, 2)
         self.layoutGrid.addWidget(self.setLaserGroup(), 0, 2, 1, 1)
         self.layoutGrid.addWidget(self.setCurveGroup(), 1, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setFilledGroup_1(), 2, 0, 5, 10)
+        self.layoutGrid.addWidget(self.setAcquisitionGroup(), 2, 0, 1, 2)
+        self.layoutGrid.addWidget(self.setFilledGroup_1(), 3, 0, 5, 10)
 
     def setFilledGroup_1(self):
         self.filledBoxLayout_1.setStyleSheet(style.groupBoxFilled)
@@ -190,6 +205,35 @@ class ViewCurveSetup(QWidget):
 
         return self.curveBoxLayout
 
+    def setAcquisitionGroup(self):
+        self.lblDataSampling.setFixedWidth(75)
+        self.lblDataSampling.setWordWrap(True)
+        self.lblACQChannel_1.setFixedWidth(50)
+        self.lblACQChannel_2.setFixedWidth(50)
+        self.edtAcquisition.setFixedWidth(50)
+        # self.edtAcquisition.setAlignment(Qt.AlignHCenter)
+        self.edtACQChannel_1.setFixedWidth(100)
+        self.edtACQChannel_2.setFixedWidth(100)
+
+        self.autoACQLayout.addWidget(self.edtAcquisition, 0, 1)
+        self.autoACQLayout.addWidget(self.btnAutoAcquisition, 1, 0, 1, 3)
+
+        self.autoACQBoxLayout.setStyleSheet(style.groupBoxAutoAcquisition)
+        self.autoACQBoxLayout.setLayout(self.autoACQLayout)
+
+        self.acquisitionLayout.addWidget(self.autoACQBoxLayout, 0, 0, 4, 1)
+        self.acquisitionLayout.addWidget(self.lblDataSampling, 1, 1)
+        self.acquisitionLayout.addWidget(self.edtDataSampling, 1, 2)
+        self.acquisitionLayout.addWidget(self.lblACQChannel_1, 2, 1)
+        self.acquisitionLayout.addWidget(self.edtACQChannel_1, 2, 2)
+        self.acquisitionLayout.addWidget(self.lblACQChannel_2, 3, 1)
+        self.acquisitionLayout.addWidget(self.edtACQChannel_2, 3, 2)
+
+        self.acquisitionBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.acquisitionBoxLayout.setLayout(self.acquisitionLayout)
+
+        return self.acquisitionBoxLayout
+
     def setCalibrateDone(self):
         self.btnCalibrate.setStyleSheet(style.buttonCalibrateDone)
         self.btnCalibrate.setChecked(False)
@@ -204,6 +248,9 @@ class ViewCurveSetup(QWidget):
         self.btnResetValues.setStyleSheet(style.buttonReset)
         self.btnResetValues.setCheckable(True)
 
+        self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisition)
+        self.btnAutoAcquisition.setCheckable(True)
+
     def setStyleSpinBox(self):
         self.edtGainA.setStyleSheet(style.spinBoxGeneral)
         self.edtGainB.setStyleSheet(style.spinBoxGeneral)
@@ -214,9 +261,15 @@ class ViewCurveSetup(QWidget):
 
         self.edtAngleResolution.setStyleSheet(style.doubleSpinBoxGeneral)
 
+        self.edtDataSampling.setStyleSheet(style.spinBoxGeneral)
+
     def setStyleLineEdit(self):
         self.edtFinalAngle.setStyleSheet(style.lineEditGeneral)
         self.edtPointsCurve.setStyleSheet(style.lineEditGeneral)
+
+        self.edtAcquisition.setStyleSheet(style.lineEditGeneral)
+        self.edtACQChannel_1.setStyleSheet(style.lineEditGeneral)
+        self.edtACQChannel_2.setStyleSheet(style.lineEditGeneral)
 
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)
