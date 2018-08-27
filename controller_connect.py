@@ -20,7 +20,6 @@ from SerialPort import SerialPort
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer
 from time import sleep
-import sys
 import codecs
 
 

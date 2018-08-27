@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from controller_connect import ControllerConnect
 from views_Tabs import ViewTabs
 from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QTimer
 import sys
 
 
@@ -31,28 +32,18 @@ class ControllerTabs:
             'Impulsional A': False,
             'Impulsional B': False
         }
-        self.btnColor = {
-            'Laser': '',
-            'Peristaltic': '',
-            'Impulsional A': '',
-            'Impulsional B': ''
-        }
         self.btnStatus = {
             'Laser': '',
             'Peristaltic': '',
             'Impulsional A': '',
             'Impulsional B': ''
         }
-        # self.btnLaserChecked = False
-        # self.btnPeristalticChecked = False
-        # self.btnImpulsionalAChecked = False
-        # self.btnImpulsionalBChecked = False
-        # self.btnLaserColor = None
-        # self.btnPeristalticColor = None
-        # self.btnImpulsionalAColor = None
-        # self.btnImpulsionalBColor = None
-        # self.statusLaser = None
-        # self.statusPeristaltic = None
+        self.btnDisable = {
+            'Laser': False,
+            'Peristaltic': False,
+            'Impulsional A': False,
+            'Impulsional B': False
+        }
         self.valuePeristaltic = 0
         self.valueImpulsionalA = 0
         self.valueImpulsionalB = 0
@@ -65,6 +56,9 @@ class ControllerTabs:
         self.valueAngleResolution = 0.2
         self.valueFinalAngle = 0
         self.valuePointsCurve = 0
+
+        self.tmrBtnImpulsional_A = QTimer()
+        self.tmrBtnImpulsional_B = QTimer()
 
         self.viewTabs = ViewTabs(None)
         self.viewSystemControl = self.viewTabs.tab_SystemControl
@@ -193,60 +187,52 @@ class ControllerTabs:
 
     def btnPeristalticChange(self):
         if not self.btnChecked['Peristaltic']:
-            self.btnColor['Peristaltic'] = 'grey'
             self.btnStatus['Peristaltic'] = 'STOP'
-
             self.btnChecked['Peristaltic'] = True
 
         else:
-            self.btnColor['Peristaltic'] = 'blue'
             self.btnStatus['Peristaltic'] = 'START'
-
             self.btnChecked['Peristaltic'] = False
 
         self.viewSystemControl.btnPeristaltic.setText(self.btnStatus['Peristaltic'])
 
-        style = 'QPushButton {font: bold; background-color: ' + self.btnColor['Peristaltic'] + \
-                '; color: white; font-size: 12px; height: 70px;}'
-        self.viewSystemControl.btnPeristaltic.setStyleSheet(style)
-
     def btnImpulsionalAChange(self):
         if not self.btnChecked['Impulsional A']:
-            self.btnColor['Impulsional A'] = 'grey'
-            self.btnStatus['Impulsional A'] = 'INJECT'
-
             self.btnChecked['Impulsional A'] = True
+            self.btnDisable['Impulsional A'] = True
+
+            self.tmrBtnImpulsional_A.timeout.connect(self.btnImpulsionalAChange)
+            self.tmrBtnImpulsional_A.start(3000)
 
         else:
-            self.btnColor['Impulsional A'] = 'blue'
-            self.btnStatus['Impulsional A'] = 'INJECT'
+            self.tmrBtnImpulsional_A.stop()
+            self.tmrBtnImpulsional_A.timeout.disconnect()
 
             self.btnChecked['Impulsional A'] = False
+            self.btnDisable['Impulsional A'] = False
 
-        self.viewSystemControl.btnImpulsional_A.setText(self.btnStatus['Impulsional A'])
+            self.viewSystemControl.btnImpulsional_A.setChecked(False)
 
-        style = 'QPushButton {font: bold; background-color: ' + self.btnColor['Impulsional A'] + \
-                '; color: white; font-size: 12px; height: 70px;}'
-        self.viewSystemControl.btnImpulsional_A.setStyleSheet(style)
+        self.viewSystemControl.btnImpulsional_A.setDisabled(self.btnDisable['Impulsional A'])
 
     def btnImpulsionalBChange(self):
         if not self.btnChecked['Impulsional B']:
-            self.btnColor['Impulsional B'] = 'grey'
-            self.btnStatus['Impulsional B'] = 'INJECT'
-
             self.btnChecked['Impulsional B'] = True
+            self.btnDisable['Impulsional B'] = True
+
+            self.tmrBtnImpulsional_B.timeout.connect(self.btnImpulsionalBChange)
+            self.tmrBtnImpulsional_B.start(3000)
 
         else:
-            self.btnColor['Impulsional B'] = 'blue'
-            self.btnStatus['Impulsional B'] = 'INJECT'
+            self.tmrBtnImpulsional_B.stop()
+            self.tmrBtnImpulsional_B.timeout.disconnect()
 
             self.btnChecked['Impulsional B'] = False
+            self.btnDisable['Impulsional B'] = False
 
-        self.viewSystemControl.btnImpulsional_B.setText(self.btnStatus['Impulsional B'])
+            self.viewSystemControl.btnImpulsional_B.setChecked(False)
 
-        style = 'QPushButton {font: bold; background-color: ' + self.btnColor['Impulsional B'] + \
-                '; color: white; font-size: 12px; height: 70px;}'
-        self.viewSystemControl.btnImpulsional_B.setStyleSheet(style)
+        self.viewSystemControl.btnImpulsional_B.setDisabled(self.btnDisable['Impulsional B'])
 
     def sendCalibrateParameters(self):
         toSend = [
@@ -271,12 +257,14 @@ class ControllerTabs:
         if data != '@':
             self.viewCurveSetup.setMessageCritical("Error", "The device has not been calibrated, try again.")
 
+        else:
+            self.viewCurveSetup.setCalibrateDone()
+
         self.serialPort.serialPort.readyRead.disconnect()
         self.serialPort.packet_received.disconnect()
 
     def laserChange(self):
         if not self.btnChecked['Laser']:
-            self.btnColor['Laser'] = 'red'
             self.btnStatus['Laser'] = 'Laser ON'
 
             self.btnChecked['Laser'] = True
@@ -284,7 +272,6 @@ class ControllerTabs:
             send = 1
 
         else:
-            self.btnColor['Laser'] = 'green'
             self.btnStatus['Laser'] = 'Laser OFF'
 
             self.btnChecked['Laser'] = False
@@ -301,13 +288,8 @@ class ControllerTabs:
             self.viewSystemControl.btnLaser.setText(self.btnStatus['Laser'])
             self.viewCurveSetup.btnLaser.setText(self.btnStatus['Laser'])
 
-            style = 'QPushButton {font: bold; background-color: ' + self.btnColor['Laser'] + \
-                    '; color: white; font-size: 20px; height:100px; width: 20px;}'
-            self.viewSystemControl.btnLaser.setStyleSheet(style)
-
-            style = 'QPushButton {font: bold; background-color: ' + self.btnColor['Laser'] + \
-                    '; color: white; font-size: 12px; height: 80px; width: 20px;}'
-            self.viewCurveSetup.btnLaser.setStyleSheet(style)
+            self.viewSystemControl.btnLaser.setChecked(self.btnChecked['Laser'])
+            self.viewCurveSetup.btnLaser.setChecked(self.btnChecked['Laser'])
 
         else:
             self.viewCurveSetup.setMessageCritical("Error", "The laser was not switch ON/OFF, try again.")

@@ -15,9 +15,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
-from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox
-from PyQt5.QtCore import Qt, QRect
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QFileDialog
+from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QSpinBox
+from PyQt5.QtCore import Qt
+import styles as style
 
 
 class ViewSystemControl(QWidget):
@@ -37,9 +38,13 @@ class ViewSystemControl(QWidget):
         self.edtImpulsional_B = QSpinBox()
         self.edtImpulsional_B.setRange(0, 100)
 
+        self.setStyleSpinBox()
+
         self.btnPeristaltic = QPushButton("START")
         self.btnImpulsional_A = QPushButton("INJECT")
         self.btnImpulsional_B = QPushButton("INJECT")
+
+        self.setStyleButtons()
 
         self.layoutGrid = QGridLayout(self)
 
@@ -73,15 +78,6 @@ class ViewSystemControl(QWidget):
         self.layoutGrid.addWidget(self.setOtherGroup(), 1, 0, 5, 6)
 
     def setLaserGroup(self):
-        self.btnLaser.setStyleSheet(
-            'QPushButton {'
-            'font: bold;'
-            'background-color: green;'
-            'color: white;'
-            'font-size: 20px;'
-            'height:100px;'
-            'width: 20px;'
-            '}')
         self.laserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
 
         """
@@ -120,40 +116,6 @@ class ViewSystemControl(QWidget):
         self.lblImpulsional_A.setAlignment(Qt.AlignBottom)
         self.lblImpulsional_B.setFixedWidth(100)
         self.lblImpulsional_B.setAlignment(Qt.AlignBottom)
-        self.edtPeristaltic.setFixedWidth(100)
-        self.edtImpulsional_A.setFixedWidth(100)
-        self.edtImpulsional_B.setFixedWidth(100)
-
-        self.btnPeristaltic.setStyleSheet("QPushButton {"
-                                          "font: bold;"
-                                          "background-color: blue;"
-                                          "color: white;"
-                                          "font-size: 12px;"
-                                          "height: 70px;"
-                                          "}")
-
-        self.btnImpulsional_A.setStyleSheet("QPushButton {"
-                                            "font: bold;"
-                                            "background-color: blue;"
-                                            "color: white;"
-                                            "font-size: 12px;"
-                                            "height: 70px;"
-                                            "}")
-
-        self.btnImpulsional_B.setStyleSheet("QPushButton {"
-                                            "font: bold;"
-                                            "background-color: blue;"
-                                            "color: white;"
-                                            "font-size: 12px;"
-                                            "height: 70px;"
-                                            "}")
-
-        # self.dataLayout.addWidget(self.lblPeristaltic, 0, 0,)
-        # self.dataLayout.addWidget(self.edtPeristaltic, 0, 1)
-        # self.dataLayout.addWidget(self.lblImpulsional_A, 1, 0)
-        # self.dataLayout.addWidget(self.edtImpulsional_A, 1, 1)
-        # self.dataLayout.addWidget(self.lblImpulsional_B, 2, 0)
-        # self.dataLayout.addWidget(self.edtImpulsional_B, 2, 1)
 
         self.peristalticLayout.addWidget(self.lblPeristaltic, 0, 0)
         self.peristalticLayout.addWidget(self.edtPeristaltic, 1, 0)
@@ -222,6 +184,29 @@ class ViewSystemControl(QWidget):
         self.otherBoxLayout.setLayout(self.otherLayout)
 
         return self.otherBoxLayout
+
+    def setStyleButtons(self):
+        self.btnLaser.setStyleSheet(style.buttonLaserBig)
+        self.btnLaser.setCheckable(True)
+
+        self.btnPeristaltic.setStyleSheet(style.buttonPeristaltic)
+        self.btnPeristaltic.setCheckable(True)
+
+        self.btnImpulsional_A.setStyleSheet(style.buttonImpulsional)
+        self.btnImpulsional_A.setCheckable(True)
+
+        self.btnImpulsional_B.setStyleSheet(style.buttonImpulsional)
+        self.btnImpulsional_B.setCheckable(True)
+
+    def setStyleSpinBox(self):
+        styleSpins = 'QSpinBox {' \
+                     'height: 25px;' \
+                     'font-size: 14px;' \
+                     '}'
+
+        self.edtPeristaltic.setStyleSheet(styleSpins)
+        self.edtImpulsional_A.setStyleSheet(styleSpins)
+        self.edtImpulsional_B.setStyleSheet(styleSpins)
 
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)

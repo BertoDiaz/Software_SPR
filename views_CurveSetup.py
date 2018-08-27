@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox
 from PyQt5.QtCore import Qt, QRect
+import styles as style
 
 
 class ViewCurveSetup(QWidget):
@@ -84,6 +85,10 @@ class ViewCurveSetup(QWidget):
         self.offsetALayout = QHBoxLayout(self)
         self.offsetBLayout = QHBoxLayout(self)
 
+        self.setStyleButtons()
+        self.setStyleSpinBox()
+        self.setStyleLineEdit()
+
         self.resize(1200, 800)
         self.centerWindowOnScreen()
         self.setWindowTitle('SPR v2')
@@ -123,15 +128,6 @@ class ViewCurveSetup(QWidget):
         self.edtGainB.setFixedWidth(100)
         self.edtOffsetA.setFixedWidth(100)
         self.edtOffsetB.setFixedWidth(100)
-
-        self.btnCalibrate.setStyleSheet("QPushButton {"
-                                        "font: bold;"
-                                        "background-color: grey;"
-                                        "color: black;"
-                                        "font-size: 12px;"
-                                        "margin-top: 8px;"
-                                        "height: 60px;"
-                                        "}")
 
         self.gainALayout.addWidget(self.lblGainA)
         self.gainALayout.addWidget(self.edtGainA)
@@ -189,14 +185,6 @@ class ViewCurveSetup(QWidget):
         return self.calibrationBoxLayout
 
     def setLaserGroup(self):
-        self.btnLaser.setStyleSheet("QPushButton {"
-                                    "font: bold;"
-                                    "background-color: green;"
-                                    "color: white;"
-                                    "font-size: 12px;"
-                                    "height:55px;"
-                                    "}")
-
         self.btnLaserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
 
         self.btnLaserBoxLayout.setStyleSheet("QGroupBox {"
@@ -214,14 +202,11 @@ class ViewCurveSetup(QWidget):
 
     def setCurveGroup(self):
         self.lblInitialAngle.setFixedWidth(100)
-        self.edtInitialAngle.setFixedWidth(100)
         self.lblAngleLongitude.setFixedWidth(100)
-        self.edtAngleLongitude.setFixedWidth(100)
         self.lblAngleResolution.setFixedWidth(100)
-        self.edtAngleResolution.setFixedWidth(100)
         self.lblFinalAngle.setFixedWidth(100)
-        self.edtFinalAngle.setFixedWidth(100)
         self.lblPointsCurve.setFixedWidth(100)
+        self.edtFinalAngle.setFixedWidth(100)
         self.edtPointsCurve.setFixedWidth(100)
 
         self.btnResetValues.setStyleSheet("QPushButton {"
@@ -257,6 +242,46 @@ class ViewCurveSetup(QWidget):
         self.curveBoxLayout.setLayout(self.curveLayout)
 
         return self.curveBoxLayout
+
+    def setCalibrateDone(self):
+        self.btnCalibrate.setStyleSheet(style.buttonCalibrateDone)
+        self.btnCalibrate.setChecked(False)
+
+    def setStyleButtons(self):
+        self.btnLaser.setStyleSheet(style.buttonLaserSmall)
+        self.btnLaser.setCheckable(True)
+
+        self.btnCalibrate.setStyleSheet(style.buttonCalibrate)
+        self.btnCalibrate.setCheckable(True)
+
+    def setStyleSpinBox(self):
+        styleSpins = 'QSpinBox {' \
+                     'height: 20px;' \
+                     'font-size: 14px;' \
+                     '}'
+
+        self.edtGainA.setStyleSheet(styleSpins)
+        self.edtGainB.setStyleSheet(styleSpins)
+        self.edtOffsetA.setStyleSheet(styleSpins)
+        self.edtOffsetB.setStyleSheet(styleSpins)
+        self.edtInitialAngle.setStyleSheet(styleSpins)
+        self.edtAngleLongitude.setStyleSheet(styleSpins)
+
+        styleDoubleSpins = 'QDoubleSpinBox {' \
+                           'height: 20px;' \
+                           'font-size: 14px;' \
+                           '}'
+
+        self.edtAngleResolution.setStyleSheet(styleDoubleSpins)
+
+    def setStyleLineEdit(self):
+        styleLineEdit = 'QLineEdit {' \
+                        'height: 20px;' \
+                        'font-size: 14px;' \
+                        '}'
+
+        self.edtFinalAngle.setStyleSheet(styleLineEdit)
+        self.edtPointsCurve.setStyleSheet(styleLineEdit)
 
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)
