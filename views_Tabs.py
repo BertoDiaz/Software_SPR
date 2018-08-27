@@ -15,11 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
-from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QTabWidget
-from PyQt5.QtCore import Qt, QRect
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox
+from PyQt5.QtWidgets import QDesktopWidget, QTabWidget
 from views_SystemControl import ViewSystemControl
 from views_CurveSetup import ViewCurveSetup
+from views_DataAcquisition import ViewDataAcquisition
 
 
 class ViewTabs(QWidget):
@@ -34,9 +34,11 @@ class ViewTabs(QWidget):
         self.tabs = QTabWidget(self)
         self.tab_SystemControl = ViewSystemControl(None)
         self.tab_CurveSetup = ViewCurveSetup(None)
+        self.tab_DataAcquisition = ViewDataAcquisition(None)
 
         self.tabs.addTab(self.tab_SystemControl, "System Control")
         self.tabs.addTab(self.tab_CurveSetup, "SPR Curve Setup")
+        self.tabs.addTab(self.tab_DataAcquisition, "Data Acquisition")
 
         self.resize(1200, 800)
         self.centerWindowOnScreen()

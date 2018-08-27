@@ -21,7 +21,7 @@ from PyQt5.QtCore import Qt, QRect
 import styles as style
 
 
-class ViewCurveSetup(QWidget):
+class ViewDataAcquisition(QWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
