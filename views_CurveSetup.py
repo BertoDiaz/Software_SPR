@@ -59,12 +59,15 @@ class ViewCurveSetup(QWidget):
         self.btnResetValues = QPushButton("Reset")
 
         self.edtAcquisition = QLineEdit()
+        self.edtAcquisition.setReadOnly(True)
         self.lblDataSampling = QLabel("Data Sampling (seconds):")
         self.edtDataSampling = QSpinBox()
         self.lblACQChannel_1 = QLabel("Channel 1:")
         self.edtACQChannel_1 = QLineEdit()
+        self.edtACQChannel_1.setReadOnly(True)
         self.lblACQChannel_2 = QLabel("Channel 2:")
         self.edtACQChannel_2 = QLineEdit()
+        self.edtACQChannel_2.setReadOnly(True)
 
         self.btnAutoAcquisition = QPushButton("Automatic")
 

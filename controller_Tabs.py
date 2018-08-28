@@ -57,7 +57,11 @@ class ControllerTabs:
             'Angle Longitude': 3,
             'Angle Resolution': 0.2,
             'Final Angle': 0,
-            'Points Curve': 0
+            'Points Curve': 0,
+            'Automatic': 0,
+            'Data Sampling': 2,
+            'Acquisition Channel 1': 0,
+            'Acquisition Channel 2': 0
         }
 
         self.tmrBtnImpulsional_A = QTimer()
@@ -118,6 +122,11 @@ class ControllerTabs:
             self.viewCurveSetup.edtFinalAngle.setText(str(self.values['Final Angle']))
             self.viewCurveSetup.edtPointsCurve.setText(str(self.values['Points Curve']))
 
+            self.viewCurveSetup.edtAcquisition.setText(str(self.values['Automatic']))
+            self.viewCurveSetup.edtDataSampling.setValue(self.values['Data Sampling'])
+            self.viewCurveSetup.edtACQChannel_1.setText(str(self.values['Acquisition Channel 1']))
+            self.viewCurveSetup.edtACQChannel_2.setText(str(self.values['Acquisition Channel 2']))
+
             self.viewSystemControl.btnLaser.clicked.connect(self.laserChange)
             self.viewSystemControl.btnPeristaltic.clicked.connect(self.btnPeristalticChange)
             self.viewSystemControl.btnImpulsional_A.clicked.connect(self.btnImpulsionalAChange)
@@ -137,6 +146,8 @@ class ControllerTabs:
             self.viewCurveSetup.edtInitialAngle.valueChanged.connect(self.curvePerformanceChange)
             self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.curvePerformanceChange)
             self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.curvePerformanceChange)
+
+            self.viewCurveSetup.edtDataSampling.valueChanged.connect(self.acquisitionChange)
 
             self.viewTabs.btnExit.clicked.connect(self.exit_App)
 
@@ -331,6 +342,9 @@ class ControllerTabs:
         self.values['Init Angle'] = self.viewCurveSetup.edtInitialAngle.value()
         self.values['Angle Longitude'] = self.viewCurveSetup.edtAngleLongitude.value()
         self.values['Angle Resolution'] = self.viewCurveSetup.edtAngleResolution.value()
+
+    def acquisitionChange(self):
+        self.values['Data Sampling'] = self.viewCurveSetup.edtDataSampling.value()
 
     def exit_App(self):
         exitApp = self.viewTabs.setMessageExit()
