@@ -240,6 +240,13 @@ class ViewCurveSetup(QWidget):
         self.btnCalibrate.setStyleSheet(style.buttonCalibrateDone)
         self.btnCalibrate.setChecked(False)
 
+    def setAutoAcquisitionInProcess(self):
+        self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisitionInProcess)
+
+    def setAutoAcquisitionFinish(self):
+        self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisition)
+        self.btnAutoAcquisition.setChecked(False)
+
     def setStyleButtons(self):
         self.btnLaser.setStyleSheet(style.buttonLaserSmall)
         self.btnLaser.setCheckable(True)

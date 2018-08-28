@@ -31,7 +31,8 @@ class ControllerTabs:
             'Peristaltic': False,
             'Impulsional A': False,
             'Impulsional B': False,
-            'Reset': False
+            'Reset': False,
+            'Auto Acquisition': False
         }
         self.btnStatus = {
             'Laser': '',
@@ -62,6 +63,10 @@ class ControllerTabs:
             'Data Sampling': 2,
             'Acquisition Channel 1': 0,
             'Acquisition Channel 2': 0
+        }
+        self.valuesPhotodiodes = {
+            'Photodiode A': [],
+            'Photodiode B': []
         }
 
         self.tmrBtnImpulsional_A = QTimer()
@@ -137,6 +142,8 @@ class ControllerTabs:
             self.viewCurveSetup.btnCalibrate.clicked.connect(self.sendCalibrateParameters)
             self.viewCurveSetup.btnLaser.clicked.connect(self.laserChange)
             self.viewCurveSetup.btnResetValues.clicked.connect(self.resetCurvePerformance)
+
+            self.viewCurveSetup.btnAutoAcquisition.clicked.connect(self.initAutoAcquisition)
 
             self.viewCurveSetup.edtGainA.valueChanged.connect(self.calibrateChange)
             self.viewCurveSetup.edtGainB.valueChanged.connect(self.calibrateChange)
@@ -343,8 +350,55 @@ class ControllerTabs:
         self.values['Angle Longitude'] = self.viewCurveSetup.edtAngleLongitude.value()
         self.values['Angle Resolution'] = self.viewCurveSetup.edtAngleResolution.value()
 
+    def initAutoAcquisition(self):
+        if not self.btnChecked['Auto Acquisition']:
+            self.serialPort.send_Auto_Acquisition(self.values['Data Sampling'])
+
+            self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_data)
+            self.serialPort.packet_received.connect(self.acquisitionReceive)
+
+            self.valuesPhotodiodes['Photodiode A'] = []
+            self.valuesPhotodiodes['Photodiode B'] = []
+
+            self.btnChecked['Auto Acquisition'] = True
+
+        else:
+            self.serialPort.send_Finish_Experiment()
+
+            self.btnChecked['Auto Acquisition'] = False
+
     def acquisitionChange(self):
         self.values['Data Sampling'] = self.viewCurveSetup.edtDataSampling.value()
+
+    def acquisitionReceive(self, data):
+        if data == '@':
+            if self.btnChecked['Auto Acquisition']:
+                self.viewCurveSetup.setAutoAcquisitionInProcess()
+
+            else:
+                self.serialPort.serialPort.readyRead.disconnect()
+                self.serialPort.packet_received.disconnect()
+
+                self.viewCurveSetup.setAutoAcquisitionFinish()
+
+        elif data[0] == '&':
+            self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
+            self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
+
+            self.dataReceived()
+
+    def dataReceived(self):
+        self.values['Acquisition Channel 1'] = self.valuesPhotodiodes['Photodiode A'][self.values['Automatic']]
+        self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
+        self.values['Automatic'] += 1
+
+        self.viewCurveSetup.edtACQChannel_1.setText(str(self.values['Acquisition Channel 1']))
+        self.viewCurveSetup.edtACQChannel_2.setText(str(self.values['Acquisition Channel 2']))
+        self.viewCurveSetup.edtAcquisition.setText(str(self.values['Automatic']))
+
+        if self.values['Automatic'] >= 48:
+            self.viewCurveSetup.btnAutoAcquisition.setChecked(False)
+            self.initAutoAcquisition()
 
     def exit_App(self):
         exitApp = self.viewTabs.setMessageExit()

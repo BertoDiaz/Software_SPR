@@ -26,47 +26,47 @@ class SerialPort(QObject):
     def __init__(self):
         super(SerialPort, self).__init__()
         self.ports = []
-        self.serialData = ""
+        self.serialData = ''
         # self.commands = {
-        #     "CurveTemporal": '|'.encode().hex(),
-        #     "GainOffset": ':'.encode().hex(),
-        #     # "Laser": '#'.encode().hex(),
-        #     "TimeAverage": '&'.encode().hex(),
-        #     "StopTemporal": '['.encode().hex(),
-        #     "StopTechnical": '.'.encode().hex(),
-        #     "ControlPeris": '*'.encode().hex(),
-        #     "ControlImpulA": '!'.encode().hex(),
-        #     "ControlImpulB": '+'.encode().hex(),
-        #     "BackPeris": '<'.encode().hex(),
-        #     "StopPeris": '='.encode().hex(),
-        #     "ForwardPeris": '>'.encode().hex(),
-        #     "TimePulsesPumps": '_'.encode().hex(),
-        #     "VolumePurge": 'a7',
-        #     "PurgeImpulA": '{'.encode().hex(),
-        #     "PurgeImpulB": '}'.encode().hex(),
-        #     "IAmAlive": '?'.encode().hex(),
-        #     "PowerDown": '/'.encode().hex()
+        #     'CurveTemporal': '|'.encode().hex(),
+        #     'GainOffset': ':'.encode().hex(),
+        #     # 'Laser': '#'.encode().hex(),
+        #     'TimeAverage': '&'.encode().hex(),
+        #     'StopTemporal': '['.encode().hex(),
+        #     'StopTechnical': '.'.encode().hex(),
+        #     'ControlPeris': '*'.encode().hex(),
+        #     'ControlImpulA': '!'.encode().hex(),
+        #     'ControlImpulB': '+'.encode().hex(),
+        #     'BackPeris': '<'.encode().hex(),
+        #     'StopPeris': '='.encode().hex(),
+        #     'ForwardPeris': '>'.encode().hex(),
+        #     'TimePulsesPumps': '_'.encode().hex(),
+        #     'VolumePurge': 'a7',
+        #     'PurgeImpulA': '{'.encode().hex(),
+        #     'PurgeImpulB': '}'.encode().hex(),
+        #     'IAmAlive': '?'.encode().hex(),
+        #     'PowerDown': '/'.encode().hex()
         # }
 
         self.commands = {
-            "CurveTemporal": '|',
-            "GainOffset": ':',
-            "Laser": '#',
-            "TimeAverage": '&',
-            "StopTemporal": '[',
-            "StopTechnical": '.',
-            "ControlPeris": '*',
-            "ControlImpulA": '!',
-            "ControlImpulB": '+',
-            "BackPeris": '<',
-            "StopPeris": '=',
-            "ForwardPeris": '>',
-            "TimePulsesPumps": '_',
-            "VolumePurge": 'a7',
-            "PurgeImpulA": '{',
-            "PurgeImpulB": '}',
-            "IAmAlive": '?',
-            "PowerDown": '/'
+            'CurveTemporal': '|',
+            'GainOffset': ':',
+            'Laser': '#',
+            'TimeAverage': '&',
+            'StopTemporal': '[',
+            'StopTechnical': '.',
+            'ControlPeris': '*',
+            'ControlImpulA': '!',
+            'ControlImpulB': '+',
+            'BackPeris': '<',
+            'StopPeris': '=',
+            'ForwardPeris': '>',
+            'TimePulsesPumps': '_',
+            'VolumePurge': 'a7',
+            'PurgeImpulA': '{',
+            'PurgeImpulB': '}',
+            'IAmAlive': '?',
+            'PowerDown': '/'
         }
 
         self.serialPort = QSerialPort()
@@ -78,7 +78,7 @@ class SerialPort(QObject):
         index.
         """
         for n, (port, desc, hwid) in enumerate(sorted(comports()), 1):
-            info = {"port": port, "desc": desc, "hwid": hwid}
+            info = {'port': port, 'desc': desc, 'hwid': hwid}
             self.ports.append(info)
 
         return self.ports
@@ -87,7 +87,7 @@ class SerialPort(QObject):
         if numberOfItem != 0:
             item = self.ports[numberOfItem - 1]
 
-            self.serialPort.setPortName(item["port"])
+            self.serialPort.setPortName(item['port'])
             portOpen = self.serialPort.open(QIODevice.ReadWrite)
 
             if portOpen:
@@ -126,33 +126,42 @@ class SerialPort(QObject):
             self.serialPort.writeData(value.encode())
 
     def send_I_am_alive(self):
-        self.write_port("?")
+        self.write_port('?')
 
     def send_Gain_Offset(self, toSend):
-        self.write_port(self.commands["GainOffset"])
+        self.write_port(self.commands['GainOffset'])
 
         for value in toSend:
             self.write_port(f'{value:02x}')
 
     def send_Control_Impul_A(self, toSend):
-        self.write_port(self.commands["ControlImpulA"])
+        self.write_port(self.commands['ControlImpulA'])
 
         for value in toSend:
             self.write_port(f'{value:04x}')
 
     def send_Control_Impul_B(self, toSend):
-        self.write_port(self.commands["ControlImpulB"])
+        self.write_port(self.commands['ControlImpulB'])
 
         for value in toSend:
             self.write_port(f'{value:04x}')
 
     def send_Volume_Purges(self, toSend):
-        self.write_port(self.commands["VolumePurge"])
+        self.write_port(self.commands['VolumePurge'])
 
         for value in toSend:
             self.write_port(f'{value:04x}')
 
     def send_Laser(self, toSend):
-        self.write_port(self.commands["Laser"])
+        self.write_port(self.commands['Laser'])
 
         self.write_port(f'{toSend:02x}')
+
+    def send_Auto_Acquisition(self, toSend):
+        self.write_port(self.commands['TimeAverage'])
+        self.write_port('@')
+
+        self.write_port(f'{toSend:04x}')
+
+    def send_Finish_Experiment(self):
+        self.write_port('[')
