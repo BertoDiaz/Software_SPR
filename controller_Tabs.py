@@ -59,18 +59,6 @@ class ControllerTabs:
             'Final Angle': 0,
             'Points Curve': 0
         }
-        # self.valuePeristaltic = 0
-        # self.valueImpulsionalA = 0
-        # self.valueImpulsionalB = 0
-        # self.valueGainA = 0
-        # self.valueGainB = 0
-        # self.valueOffsetA = 0
-        # self.valueOffsetB = 0
-        # self.valueInitAngle = 0
-        # self.valueAngleLongitude = 3
-        # self.valueAngleResolution = 0.2
-        # self.valueFinalAngle = 0
-        # self.valuePointsCurve = 0
 
         self.tmrBtnImpulsional_A = QTimer()
         self.tmrBtnImpulsional_B = QTimer()
@@ -217,13 +205,9 @@ class ControllerTabs:
             self.btnChecked['Impulsional A'] = True
             self.btnDisable['Impulsional A'] = True
 
-            self.tmrBtnImpulsional_A.timeout.connect(self.btnImpulsionalAChange)
-            self.tmrBtnImpulsional_A.start(3000)
+            self.tmrBtnImpulsional_A.singleShot(3000, self.btnImpulsionalAChange)
 
         else:
-            self.tmrBtnImpulsional_A.stop()
-            self.tmrBtnImpulsional_A.timeout.disconnect()
-
             self.btnChecked['Impulsional A'] = False
             self.btnDisable['Impulsional A'] = False
 
@@ -236,13 +220,9 @@ class ControllerTabs:
             self.btnChecked['Impulsional B'] = True
             self.btnDisable['Impulsional B'] = True
 
-            self.tmrBtnImpulsional_B.timeout.connect(self.btnImpulsionalBChange)
-            self.tmrBtnImpulsional_B.start(3000)
+            self.tmrBtnImpulsional_B.singleShot(3000, self.btnImpulsionalBChange)
 
         else:
-            self.tmrBtnImpulsional_B.stop()
-            self.tmrBtnImpulsional_B.timeout.disconnect()
-
             self.btnChecked['Impulsional B'] = False
             self.btnDisable['Impulsional B'] = False
 
@@ -315,8 +295,7 @@ class ControllerTabs:
 
     def resetCurvePerformance(self):
         if not self.btnChecked['Reset']:
-            self.tmrBtnReset.timeout.connect(self.resetCurvePerformance)
-            self.tmrBtnReset.start(1000)
+            self.tmrBtnReset.singleShot(1000, self.resetCurvePerformance)
 
             self.viewCurveSetup.btnResetValues.setDisabled(True)
 
@@ -339,8 +318,6 @@ class ControllerTabs:
             self.btnChecked['Reset'] = True
 
         else:
-            self.tmrBtnReset.timeout.disconnect()
-            self.tmrBtnReset.stop()
 
             self.viewCurveSetup.btnResetValues.setChecked(False)
             self.viewCurveSetup.btnResetValues.setDisabled(False)
