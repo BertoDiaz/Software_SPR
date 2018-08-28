@@ -395,6 +395,101 @@ buttonAutoAcquisition = 'QPushButton {' \
                         'stop: 0 #ff8000, stop: 1 #df7401);' \
                         '}'
 
+buttonInit = 'QPushButton {' \
+             'border-width: 1px;' \
+             'border-style: inset;' \
+             'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+             'stop: 0 #00ff00, stop: 1 #04b404);' \
+             'border-radius: 4px;' \
+             'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+             'stop: 0 #00ff00, stop: 1 #04b404);' \
+             'font: bold;' \
+             'font-size: 12px;' \
+             'color: white;' \
+             'height: 215px;' \
+             'width: 90px;' \
+             'margin-top: 8px;' \
+             '}' \
+             'QPushButton:hover {' \
+             'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+             'stop: 0 #04b404, stop: 1 #088a08);' \
+             '}' \
+             'QPushButton:pressed {' \
+             'border-width: 1px;' \
+             'border-style: outset;' \
+             'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+             'stop: 0 #00ff00, stop: 1 #04b404);' \
+             'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+             'stop: 0 #04b404, stop: 1 #088a08);' \
+             '}' \
+             'QPushButton:checked {' \
+             'border-width: 1px;' \
+             'border-style: inset;' \
+             'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+             'stop: 0 #fa5858, stop: 1 #ff0000);' \
+             'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+             'stop: 0 #fa5858, stop: 1 #ff0000);' \
+             '}' \
+             'QPushButton:hover:checked {' \
+             'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+             'stop: 0 #ff0000, stop: 1 #df0101);' \
+             '}' \
+             'QPushButton:pressed:checked {' \
+             'border-width: 1px;' \
+             'border-style: outset;' \
+             'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+             'stop: 0 #fa5858, stop: 1 #ff0000);' \
+             'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+             'stop: 0 #ff0000, stop: 1 #df0101);' \
+             '}'
+
+buttonFreeRunning = 'QPushButton {' \
+                    'border-width: 1px;' \
+                    'border-style: inset;' \
+                    'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                    'stop: 0 #58acfa, stop: 1 #0080ff);' \
+                    'border-radius: 4px;' \
+                    'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                    'stop: 0 #58acfa, stop: 1 #0080ff);' \
+                    'font: bold;' \
+                    'font-size: 12px;' \
+                    'color: white;' \
+                    'height: 20px;' \
+                    'min-width: 220px;' \
+                    '}' \
+                    'QPushButton:hover {' \
+                    'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                    'stop: 0 #0080ff, stop: 1 #0174df);' \
+                    '}' \
+                    'QPushButton:pressed {' \
+                    'border-width: 1px;' \
+                    'border-style: outset;' \
+                    'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                    'stop: 0 #58acfa, stop: 1 #0080ff);' \
+                    'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                    'stop: 0 #0080ff, stop: 1 #0174df);' \
+                    '}' \
+                    'QPushButton:checked {' \
+                    'border-width: 1px;' \
+                    'border-style: inset;' \
+                    'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                    'stop: 0 #faac58, stop: 1 #ff8000);' \
+                    'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                    'stop: 0 #faac58, stop: 1 #ff8000);' \
+                    '}' \
+                    'QPushButton:hover:checked {' \
+                    'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                    'stop: 0 #ff8000, stop: 1 #df7401);' \
+                    '}' \
+                    'QPushButton:pressed:checked {' \
+                    'border-width: 1px;' \
+                    'border-style: outset;' \
+                    'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                    'stop: 0 #faac58, stop: 1 #ff8000);' \
+                    'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                    'stop: 0 #ff8000, stop: 1 #df7401);' \
+                    '}'
+
 """
     Different border style:
         - dotted
@@ -442,3 +537,9 @@ lineEditGeneral = 'QLineEdit {' \
                   'height: 20px;' \
                   'font-size: 14px;' \
                   '}'
+
+labelBtnInit = 'QLabel {' \
+               'font: bold;' \
+               'font-size: 12px;' \
+               'color: white;' \
+               '}'

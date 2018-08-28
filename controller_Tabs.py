@@ -25,7 +25,7 @@ import sys
 class ControllerTabs:
     def __init__(self):
         self.serialPort = None
-        self.dataInit = []
+        self.dataInit = {}
         self.btnChecked = {
             'Laser': False,
             'Peristaltic': False,
@@ -45,18 +45,32 @@ class ControllerTabs:
             'Impulsional A': False,
             'Impulsional B': False
         }
-        self.valuePeristaltic = 0
-        self.valueImpulsionalA = 0
-        self.valueImpulsionalB = 0
-        self.valueGainA = 0
-        self.valueGainB = 0
-        self.valueOffsetA = 0
-        self.valueOffsetB = 0
-        self.valueInitAngle = 0
-        self.valueAngleLongitude = 3
-        self.valueAngleResolution = 0.2
-        self.valueFinalAngle = 0
-        self.valuePointsCurve = 0
+        self.values = {
+            'Peristaltic': 0,
+            'Impulsional A': 0,
+            'Impulsional B': 0,
+            'Gain A': 0,
+            'Gain B': 0,
+            'Offset A': 0,
+            'Offset B': 0,
+            'Init Angle': 0,
+            'Angle Longitude': 3,
+            'Angle Resolution': 0.2,
+            'Final Angle': 0,
+            'Points Curve': 0
+        }
+        # self.valuePeristaltic = 0
+        # self.valueImpulsionalA = 0
+        # self.valueImpulsionalB = 0
+        # self.valueGainA = 0
+        # self.valueGainB = 0
+        # self.valueOffsetA = 0
+        # self.valueOffsetB = 0
+        # self.valueInitAngle = 0
+        # self.valueAngleLongitude = 3
+        # self.valueAngleResolution = 0.2
+        # self.valueFinalAngle = 0
+        # self.valuePointsCurve = 0
 
         self.tmrBtnImpulsional_A = QTimer()
         self.tmrBtnImpulsional_B = QTimer()
@@ -65,10 +79,12 @@ class ControllerTabs:
         self.viewTabs = ViewTabs(None)
         self.viewSystemControl = self.viewTabs.tab_SystemControl
         self.viewCurveSetup = self.viewTabs.tab_CurveSetup
+        self.viewDataAcquisition = self.viewTabs.tab_DataAcquisition
 
         self.viewTabs.mainWindow()
         self.viewSystemControl.mainWindow()
         self.viewCurveSetup.mainWindow()
+        self.viewDataAcquisition.mainWindow()
 
         self.viewTabs.show()
 
@@ -90,29 +106,29 @@ class ControllerTabs:
             # if controllerConnect.loadedFile:
             #     self.sendValuesLoaded()
 
-            self.valuePeristaltic = self.dataInit["PER1"]
-            self.valueImpulsionalA = self.dataInit["Impul1"]
-            self.valueImpulsionalB = self.dataInit["Impul2"]
+            self.values['Peristaltic'] = self.dataInit["PER1"]
+            self.values['Impulsional A'] = self.dataInit["Impul1"]
+            self.values['Impulsional B'] = self.dataInit["Impul2"]
 
-            self.viewSystemControl.edtPeristaltic.setValue(self.valuePeristaltic)
-            self.viewSystemControl.edtImpulsional_A.setValue(self.valueImpulsionalA)
-            self.viewSystemControl.edtImpulsional_B.setValue(self.valueImpulsionalB)
+            self.viewSystemControl.edtPeristaltic.setValue(self.values['Peristaltic'])
+            self.viewSystemControl.edtImpulsional_A.setValue(self.values['Impulsional A'])
+            self.viewSystemControl.edtImpulsional_B.setValue(self.values['Impulsional B'])
 
-            self.valueGainA = self.dataInit["Gain1"]
-            self.valueGainB = self.dataInit["Gain2"]
-            self.valueOffsetA = self.dataInit["Offset1"]
-            self.valueOffsetB = self.dataInit["Offset2"]
+            self.values['Gain A'] = self.dataInit["Gain1"]
+            self.values['Gain B'] = self.dataInit["Gain2"]
+            self.values['Offset A'] = self.dataInit["Offset1"]
+            self.values['Offset B'] = self.dataInit["Offset2"]
 
-            self.viewCurveSetup.edtGainA.setValue(self.valueGainA)
-            self.viewCurveSetup.edtGainB.setValue(self.valueGainB)
-            self.viewCurveSetup.edtOffsetA.setValue(self.valueOffsetA)
-            self.viewCurveSetup.edtOffsetB.setValue(self.valueOffsetB)
+            self.viewCurveSetup.edtGainA.setValue(self.values['Gain A'])
+            self.viewCurveSetup.edtGainB.setValue(self.values['Gain B'])
+            self.viewCurveSetup.edtOffsetA.setValue(self.values['Offset A'])
+            self.viewCurveSetup.edtOffsetB.setValue(self.values['Offset B'])
 
-            self.viewCurveSetup.edtInitialAngle.setValue(self.valueInitAngle)
-            self.viewCurveSetup.edtAngleLongitude.setValue(self.valueAngleLongitude)
-            self.viewCurveSetup.edtAngleResolution.setValue(self.valueAngleResolution)
-            self.viewCurveSetup.edtFinalAngle.setText(str(self.valueFinalAngle))
-            self.viewCurveSetup.edtPointsCurve.setText(str(self.valuePointsCurve))
+            self.viewCurveSetup.edtInitialAngle.setValue(self.values['Init Angle'])
+            self.viewCurveSetup.edtAngleLongitude.setValue(self.values['Angle Longitude'])
+            self.viewCurveSetup.edtAngleResolution.setValue(self.values['Angle Resolution'])
+            self.viewCurveSetup.edtFinalAngle.setText(str(self.values['Final Angle']))
+            self.viewCurveSetup.edtPointsCurve.setText(str(self.values['Points Curve']))
 
             self.viewSystemControl.btnLaser.clicked.connect(self.laserChange)
             self.viewSystemControl.btnPeristaltic.clicked.connect(self.btnPeristalticChange)
@@ -133,8 +149,6 @@ class ControllerTabs:
             self.viewCurveSetup.edtInitialAngle.valueChanged.connect(self.curvePerformanceChange)
             self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.curvePerformanceChange)
             self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.curvePerformanceChange)
-            self.viewCurveSetup.edtFinalAngle.textChanged.connect(self.curvePerformanceChange)
-            self.viewCurveSetup.edtPointsCurve.textChanged.connect(self.curvePerformanceChange)
 
             self.viewTabs.btnExit.clicked.connect(self.exit_App)
 
@@ -183,9 +197,9 @@ class ControllerTabs:
         self.serialPort.write_port('\n')
 
     def pumpsControlChange(self):
-        self.valuePeristaltic = self.viewSystemControl.edtPeristaltic.value()
-        self.valueImpulsionalA = self.viewSystemControl.edtImpulsional_A.value()
-        self.valueImpulsionalB = self.viewSystemControl.edtImpulsional_B.value()
+        self.values['Peristaltic'] = self.viewSystemControl.edtPeristaltic.value()
+        self.values['Impulsional A'] = self.viewSystemControl.edtImpulsional_A.value()
+        self.values['Impulsional B'] = self.viewSystemControl.edtImpulsional_B.value()
 
     def btnPeristalticChange(self):
         if not self.btnChecked['Peristaltic']:
@@ -238,10 +252,10 @@ class ControllerTabs:
 
     def sendCalibrateParameters(self):
         toSend = [
-            self.valueGainA,
-            self.valueOffsetA,
-            self.valueGainB,
-            self.valueOffsetB
+            self.values['Gain A'],
+            self.values['Offset A'],
+            self.values['Gain B'],
+            self.values['Offset B']
         ]
 
         self.serialPort.send_Gain_Offset(toSend)
@@ -250,10 +264,10 @@ class ControllerTabs:
         self.serialPort.packet_received.connect(self.calibrateReceive)
 
     def calibrateChange(self):
-        self.valueGainA = self.viewCurveSetup.edtGainA.value()
-        self.valueOffsetA = self.viewCurveSetup.edtOffsetA.value()
-        self.valueGainB = self.viewCurveSetup.edtGainB.value()
-        self.valueOffsetB = self.viewCurveSetup.edtOffsetB.value()
+        self.values['Gain A'] = self.viewCurveSetup.edtGainA.value()
+        self.values['Offset A'] = self.viewCurveSetup.edtOffsetA.value()
+        self.values['Gain B'] = self.viewCurveSetup.edtGainB.value()
+        self.values['Offset B'] = self.viewCurveSetup.edtOffsetB.value()
 
     def calibrateReceive(self, data):
         if data != '@':
@@ -304,17 +318,23 @@ class ControllerTabs:
             self.tmrBtnReset.timeout.connect(self.resetCurvePerformance)
             self.tmrBtnReset.start(1000)
 
-            self.valueInitAngle = 0
-            self.valueAngleLongitude = 3
-            self.valueAngleResolution = 0.2
-            self.valueFinalAngle = 0
-            self.valuePointsCurve = 0
+            self.viewCurveSetup.btnResetValues.setDisabled(True)
 
-            self.viewCurveSetup.edtInitialAngle.setValue(self.valueInitAngle)
-            self.viewCurveSetup.edtAngleLongitude.setValue(self.valueAngleLongitude)
-            self.viewCurveSetup.edtAngleResolution.setValue(self.valueAngleResolution)
-            self.viewCurveSetup.edtFinalAngle.setText(str(self.valueFinalAngle))
-            self.viewCurveSetup.edtPointsCurve.setText(str(self.valuePointsCurve))
+            self.viewCurveSetup.edtInitialAngle.valueChanged.disconnect()
+            self.viewCurveSetup.edtAngleLongitude.valueChanged.disconnect()
+            self.viewCurveSetup.edtAngleResolution.valueChanged.disconnect()
+
+            self.values['Init Angle'] = 0
+            self.values['Angle Longitude'] = 3
+            self.values['Angle Resolution'] = 0.2
+            self.values['Final Angle'] = 0
+            self.values['Points Curve'] = 0
+
+            self.viewCurveSetup.edtInitialAngle.setValue(self.values['Init Angle'])
+            self.viewCurveSetup.edtAngleLongitude.setValue(self.values['Angle Longitude'])
+            self.viewCurveSetup.edtAngleResolution.setValue(self.values['Angle Resolution'])
+            self.viewCurveSetup.edtFinalAngle.setText(str(self.values['Final Angle']))
+            self.viewCurveSetup.edtPointsCurve.setText(str(self.values['Points Curve']))
 
             self.btnChecked['Reset'] = True
 
@@ -323,21 +343,17 @@ class ControllerTabs:
             self.tmrBtnReset.stop()
 
             self.viewCurveSetup.btnResetValues.setChecked(False)
+            self.viewCurveSetup.btnResetValues.setDisabled(False)
             self.btnChecked['Reset'] = False
 
+            self.viewCurveSetup.edtInitialAngle.valueChanged.connect(self.curvePerformanceChange)
+            self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.curvePerformanceChange)
+            self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.curvePerformanceChange)
+
     def curvePerformanceChange(self):
-        self.valueInitAngle = self.viewCurveSetup.edtInitialAngle.value()
-        self.valueAngleLongitude = self.viewCurveSetup.edtAngleLongitude.value()
-        self.valueAngleResolution = self.viewCurveSetup.edtAngleResolution.value()
-
-        try:
-            self.valueFinalAngle = int(self.viewCurveSetup.edtFinalAngle.text())
-            self.valuePointsCurve = int(self.viewCurveSetup.edtPointsCurve.text())
-
-        except Exception:
-            self.viewCurveSetup.setMessageCritical("Error", "The value can only be a number.")
-            self.viewCurveSetup.edtFinalAngle.setText(str(self.valueFinalAngle))
-            self.viewCurveSetup.edtPointsCurve.setText(str(self.valuePointsCurve))
+        self.values['Init Angle'] = self.viewCurveSetup.edtInitialAngle.value()
+        self.values['Angle Longitude'] = self.viewCurveSetup.edtAngleLongitude.value()
+        self.values['Angle Resolution'] = self.viewCurveSetup.edtAngleResolution.value()
 
     def exit_App(self):
         exitApp = self.viewTabs.setMessageExit()

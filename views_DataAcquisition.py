@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox
 from PyQt5.QtCore import Qt, QRect
+from lib.LedIndicatorWidget import LedIndicator
 import styles as style
 
 
@@ -26,82 +27,46 @@ class ViewDataAcquisition(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.lblGainA = QLabel("Gain A:")
-        self.edtGainA = QSpinBox()
-        self.edtGainA.setRange(0, 100)
-        self.lblGainB = QLabel("Gain B:")
-        self.edtGainB = QSpinBox()
-        self.edtGainB.setRange(0, 100)
-        self.lblOffsetA = QLabel("Offset A:")
-        self.edtOffsetA = QSpinBox()
-        self.edtOffsetA.setRange(0, 100)
-        self.lblOffsetB = QLabel("Offset B:")
-        self.edtOffsetB = QSpinBox()
-        self.edtOffsetB.setRange(0, 100)
-
-        self.btnCalibrate = QPushButton("Calibrate")
-        self.btnLaser = QPushButton("Laser OFF")
-
-        self.lblInitialAngle = QLabel("Initial Angle:")
-        self.edtInitialAngle = QSpinBox()
-        self.lblAngleLongitude = QLabel("Angle Longitude:")
-        self.edtAngleLongitude = QSpinBox()
-        self.lblAngleResolution = QLabel("Angle Resolution:")
-        self.edtAngleResolution = QDoubleSpinBox()
-        self.edtAngleResolution.setSingleStep(0.1)
-        self.lblFinalAngle = QLabel("Final Angle:")
-        self.edtFinalAngle = QLineEdit()
-        self.edtFinalAngle.setReadOnly(True)
-        self.lblPointsCurve = QLabel("Points of Curve:")
-        self.edtPointsCurve = QLineEdit()
-        self.edtPointsCurve.setReadOnly(True)
-
-        self.btnResetValues = QPushButton("Reset")
-
-        self.edtAcquisition = QLineEdit()
-        self.lblDataSampling = QLabel("Data Sampling (seconds):")
+        self.lblDataSampling = QLabel("Data Sampling:")
         self.edtDataSampling = QSpinBox()
-        self.lblACQChannel_1 = QLabel("Channel 1:")
-        self.edtACQChannel_1 = QLineEdit()
-        self.lblACQChannel_2 = QLabel("Channel 2:")
-        self.edtACQChannel_2 = QLineEdit()
+        self.lblExperimentTime = QLabel("Experiment Time:")
+        self.edtExperimentTime = QSpinBox()
+        self.lblStatusLaser = QLabel("Status Laser")
+        self.lblChannel_1 = QLabel("Channel 1")
+        self.edtChannel_1 = QLineEdit()
+        self.lblChannel_2 = QLabel("Channel 2")
+        self.edtChannel_2 = QLineEdit()
+        self.lblTime = QLabel("Time")
+        self.edtTime = QLineEdit()
+        self.lblBtnInit = QLabel("Experiment Start")
 
-        self.btnAutoAcquisition = QPushButton("Automatic")
+        self.btnInit = QPushButton()
+        self.btnFreeRunning = QPushButton("Free Running")
+
+        self.ledStatusLaser = LedIndicator(self)
+        self.ledStatusLaser.setDisabled(True)
 
         self.layoutGrid = QGridLayout(self)
 
-        self.calibrationBoxLayout = QGroupBox("Calibration Parameters")
-        self.gainBoxLayout = QGroupBox()
-        self.offsetBoxLayout = QGroupBox()
-        self.btnCalibrateBoxLayout = QGroupBox()
-        self.btnLaserBoxLayout = QGroupBox()
-
-        self.curveBoxLayout = QGroupBox("Curve Performance")
+        self.timeBoxLayout = QGroupBox("Time Parameters")
+        self.dataSamplingBoxLayout = QGroupBox()
+        self.experimentTimeBoxLayout = QGroupBox()
+        self.statusLaserBoxLayout = QGroupBox()
 
         self.filledBoxLayout_1 = QGroupBox()
         self.filledLayout_2 = QGroupBox()
 
-        self.acquisitionBoxLayout = QGroupBox("Acquisition Mode")
-        self.autoACQBoxLayout = QGroupBox()
+        self.timeLayout = QGridLayout(self)
+        self.dataSamplingLayout = QGridLayout(self)
+        self.experimentTimeLayout = QGridLayout(self)
+        self.statusLaserLayout = QGridLayout(self)
 
-        self.calibrationLayout = QGridLayout(self)
-        self.curveLayout = QGridLayout(self)
-        self.acquisitionLayout = QGridLayout(self)
-        self.autoACQLayout = QGridLayout(self)
-
-        self.gainLayout = QVBoxLayout(self)
-        self.offsetLayout = QVBoxLayout(self)
-        self.btnCalibrateLayout = QVBoxLayout(self)
-        self.btnLaserLayout = QVBoxLayout(self)
-
-        self.gainALayout = QHBoxLayout(self)
-        self.gainBLayout = QHBoxLayout(self)
-        self.offsetALayout = QHBoxLayout(self)
-        self.offsetBLayout = QHBoxLayout(self)
+        self.btnInitLayout = QVBoxLayout(self)
 
         self.setStyleButtons()
         self.setStyleSpinBox()
         self.setStyleLineEdit()
+        self.setStyleLabels()
 
         self.resize(1200, 800)
         self.centerWindowOnScreen()
@@ -114,11 +79,8 @@ class ViewDataAcquisition(QWidget):
         self.move(windowGeometry.topLeft())
 
     def mainWindow(self):
-        self.layoutGrid.addWidget(self.setCalibrationGroup(), 0, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setLaserGroup(), 0, 2, 1, 1)
-        self.layoutGrid.addWidget(self.setCurveGroup(), 1, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setAcquisitionGroup(), 2, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setFilledGroup_1(), 3, 0, 5, 10)
+        self.layoutGrid.addWidget(self.setTimeGroup(), 0, 0, 1, 2)
+        self.layoutGrid.addWidget(self.setFilledGroup_1(), 1, 0, 5, 10)
 
     def setFilledGroup_1(self):
         self.filledBoxLayout_1.setStyleSheet(style.groupBoxFilled)
@@ -130,145 +92,84 @@ class ViewDataAcquisition(QWidget):
 
         return self.filledLayout_2
 
-    def setCalibrationGroup(self):
-        self.lblGainA.setFixedWidth(50)
-        self.lblGainB.setFixedWidth(50)
-        self.lblOffsetA.setFixedWidth(50)
-        self.lblOffsetB.setFixedWidth(50)
-        self.edtGainA.setFixedWidth(100)
-        self.edtGainB.setFixedWidth(100)
-        self.edtOffsetA.setFixedWidth(100)
-        self.edtOffsetB.setFixedWidth(100)
-
-        self.gainALayout.addWidget(self.lblGainA)
-        self.gainALayout.addWidget(self.edtGainA)
-        self.gainBLayout.addWidget(self.lblGainB)
-        self.gainBLayout.addWidget(self.edtGainB)
-
-        self.gainLayout.addLayout(self.gainALayout)
-        self.gainLayout.addLayout(self.gainBLayout)
-
-        self.offsetALayout.addWidget(self.lblOffsetA)
-        self.offsetALayout.addWidget(self.edtOffsetA)
-        self.offsetBLayout.addWidget(self.lblOffsetB)
-        self.offsetBLayout.addWidget(self.edtOffsetB)
-
-        self.offsetLayout.addLayout(self.offsetALayout)
-        self.offsetLayout.addLayout(self.offsetBLayout)
-
-        self.gainBoxLayout.setStyleSheet(style.groupBoxGeneral)
-        self.gainBoxLayout.setLayout(self.gainLayout)
-
-        self.offsetBoxLayout.setStyleSheet(style.groupBoxGeneral)
-        self.offsetBoxLayout.setLayout(self.offsetLayout)
-
-        self.calibrationLayout.addWidget(self.gainBoxLayout, 0, 0)
-        self.calibrationLayout.addWidget(self.offsetBoxLayout, 1, 0)
-        self.calibrationLayout.addWidget(self.btnCalibrate, 1, 1, 1, 1)
-
-        self.calibrationBoxLayout.setStyleSheet(style.groupBoxGeneral)
-        self.calibrationBoxLayout.setLayout(self.calibrationLayout)
-
-        return self.calibrationBoxLayout
-
-    def setLaserGroup(self):
-        self.btnLaserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
-
-        self.btnLaserBoxLayout.setStyleSheet(style.groupBoxGeneral)
-        self.btnLaserBoxLayout.setLayout(self.btnLaserLayout)
-
-        return self.btnLaserBoxLayout
-
-    def setCurveGroup(self):
-        self.lblInitialAngle.setFixedWidth(100)
-        self.lblAngleLongitude.setFixedWidth(100)
-        self.lblAngleResolution.setFixedWidth(100)
-        self.lblFinalAngle.setFixedWidth(100)
-        self.lblPointsCurve.setFixedWidth(100)
-        self.edtFinalAngle.setFixedWidth(100)
-        self.edtPointsCurve.setFixedWidth(100)
-
-        self.curveLayout.addWidget(self.lblInitialAngle, 0, 0)
-        self.curveLayout.addWidget(self.edtInitialAngle, 0, 1)
-        self.curveLayout.addWidget(self.lblAngleLongitude, 1, 0)
-        self.curveLayout.addWidget(self.edtAngleLongitude, 1, 1)
-        self.curveLayout.addWidget(self.lblAngleResolution, 2, 0)
-        self.curveLayout.addWidget(self.edtAngleResolution, 2, 1)
-        self.curveLayout.addWidget(self.lblFinalAngle, 3, 0)
-        self.curveLayout.addWidget(self.edtFinalAngle, 3, 1)
-        self.curveLayout.addWidget(self.lblPointsCurve, 4, 0)
-        self.curveLayout.addWidget(self.edtPointsCurve, 4, 1)
-        self.curveLayout.addWidget(self.btnResetValues, 3, 2, 2, 1)
-
-        self.curveBoxLayout.setStyleSheet(style.groupBoxGeneral)
-        self.curveBoxLayout.setLayout(self.curveLayout)
-
-        return self.curveBoxLayout
-
-    def setAcquisitionGroup(self):
+    def setTimeGroup(self):
         self.lblDataSampling.setFixedWidth(75)
-        self.lblDataSampling.setWordWrap(True)
-        self.lblACQChannel_1.setFixedWidth(50)
-        self.lblACQChannel_2.setFixedWidth(50)
-        self.edtAcquisition.setFixedWidth(50)
-        self.edtACQChannel_1.setFixedWidth(100)
-        self.edtACQChannel_2.setFixedWidth(100)
+        self.lblDataSampling.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.lblExperimentTime.setFixedWidth(85)
+        self.lblExperimentTime.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.lblChannel_1.setFixedWidth(50)
+        self.lblChannel_2.setFixedWidth(50)
+        self.lblTime.setFixedWidth(50)
+        self.lblStatusLaser.setFixedWidth(50)
+        self.lblStatusLaser.setWordWrap(True)
+        self.lblStatusLaser.setAlignment(Qt.AlignCenter)
+        self.lblBtnInit.setWordWrap(True)
+        self.edtDataSampling.setFixedWidth(75)
+        self.edtDataSampling.setAlignment(Qt.AlignRight)
+        self.edtExperimentTime.setFixedWidth(75)
+        self.edtExperimentTime.setAlignment(Qt.AlignRight)
+        self.edtChannel_1.setFixedWidth(100)
+        self.edtChannel_2.setFixedWidth(100)
+        self.edtTime.setFixedWidth(100)
 
-        self.autoACQLayout.addWidget(self.edtAcquisition, 0, 1)
-        self.autoACQLayout.addWidget(self.btnAutoAcquisition, 1, 0, 1, 3)
+        self.dataSamplingLayout.setAlignment(Qt.AlignRight)
+        self.experimentTimeLayout.setAlignment(Qt.AlignRight)
 
-        self.autoACQBoxLayout.setStyleSheet(style.groupBoxAutoAcquisition)
-        self.autoACQBoxLayout.setLayout(self.autoACQLayout)
+        self.btnInitLayout.addWidget(self.lblBtnInit)
 
-        self.acquisitionLayout.addWidget(self.autoACQBoxLayout, 0, 0, 4, 1)
-        self.acquisitionLayout.addWidget(self.lblDataSampling, 1, 1)
-        self.acquisitionLayout.addWidget(self.edtDataSampling, 1, 2)
-        self.acquisitionLayout.addWidget(self.lblACQChannel_1, 2, 1)
-        self.acquisitionLayout.addWidget(self.edtACQChannel_1, 2, 2)
-        self.acquisitionLayout.addWidget(self.lblACQChannel_2, 3, 1)
-        self.acquisitionLayout.addWidget(self.edtACQChannel_2, 3, 2)
+        self.btnInit.setLayout(self.btnInitLayout)
 
-        self.acquisitionBoxLayout.setStyleSheet(style.groupBoxGeneral)
-        self.acquisitionBoxLayout.setLayout(self.acquisitionLayout)
+        self.dataSamplingLayout.addWidget(self.lblDataSampling, 0, 0)
+        self.dataSamplingLayout.addWidget(self.edtDataSampling, 0, 1)
 
-        return self.acquisitionBoxLayout
+        self.dataSamplingBoxLayout.setLayout(self.dataSamplingLayout)
 
-    def setCalibrateDone(self):
-        self.btnCalibrate.setStyleSheet(style.buttonCalibrateDone)
-        self.btnCalibrate.setChecked(False)
+        self.experimentTimeLayout.addWidget(self.lblExperimentTime, 0, 1)
+        self.experimentTimeLayout.addWidget(self.edtExperimentTime, 0, 2)
+        self.experimentTimeLayout.addWidget(self.btnFreeRunning, 1, 0, 1, 3)
+
+        self.experimentTimeBoxLayout.setLayout(self.experimentTimeLayout)
+
+        self.statusLaserLayout.addWidget(self.lblStatusLaser, 0, 0)
+        self.statusLaserLayout.addWidget(self.ledStatusLaser, 1, 0)
+
+        self.statusLaserBoxLayout.setLayout(self.statusLaserLayout)
+
+        self.timeLayout.addWidget(self.btnInit, 0, 0, 5, 1)
+        self.timeLayout.addWidget(self.dataSamplingBoxLayout, 0, 1, 1, 3)
+        self.timeLayout.addWidget(self.experimentTimeBoxLayout, 1, 1, 1, 3)
+        self.timeLayout.addWidget(self.statusLaserBoxLayout, 2, 1, 3, 1)
+        self.timeLayout.addWidget(self.lblChannel_1, 2, 2)
+        self.timeLayout.addWidget(self.edtChannel_1, 2, 3)
+        self.timeLayout.addWidget(self.lblChannel_2, 3, 2)
+        self.timeLayout.addWidget(self.edtChannel_2, 3, 3)
+        self.timeLayout.addWidget(self.lblTime, 4, 2)
+        self.timeLayout.addWidget(self.edtTime, 4, 3)
+
+        self.timeBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.timeBoxLayout.setLayout(self.timeLayout)
+
+        return self.timeBoxLayout
 
     def setStyleButtons(self):
-        self.btnLaser.setStyleSheet(style.buttonLaserSmall)
-        self.btnLaser.setCheckable(True)
+        self.btnInit.setStyleSheet(style.buttonInit)
+        self.btnInit.setCheckable(True)
 
-        self.btnCalibrate.setStyleSheet(style.buttonCalibrate)
-        self.btnCalibrate.setCheckable(True)
-
-        self.btnResetValues.setStyleSheet(style.buttonReset)
-        self.btnResetValues.setCheckable(True)
-
-        self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisition)
-        self.btnAutoAcquisition.setCheckable(True)
+        self.btnFreeRunning.setStyleSheet(style.buttonFreeRunning)
+        self.btnFreeRunning.setCheckable(True)
 
     def setStyleSpinBox(self):
-        self.edtGainA.setStyleSheet(style.spinBoxGeneral)
-        self.edtGainB.setStyleSheet(style.spinBoxGeneral)
-        self.edtOffsetA.setStyleSheet(style.spinBoxGeneral)
-        self.edtOffsetB.setStyleSheet(style.spinBoxGeneral)
-        self.edtInitialAngle.setStyleSheet(style.spinBoxGeneral)
-        self.edtAngleLongitude.setStyleSheet(style.spinBoxGeneral)
-
-        self.edtAngleResolution.setStyleSheet(style.doubleSpinBoxGeneral)
-
         self.edtDataSampling.setStyleSheet(style.spinBoxGeneral)
+        self.edtExperimentTime.setStyleSheet(style.spinBoxGeneral)
 
     def setStyleLineEdit(self):
-        self.edtFinalAngle.setStyleSheet(style.lineEditGeneral)
-        self.edtPointsCurve.setStyleSheet(style.lineEditGeneral)
+        self.edtChannel_1.setStyleSheet(style.lineEditGeneral)
+        self.edtChannel_2.setStyleSheet(style.lineEditGeneral)
+        self.edtTime.setStyleSheet(style.lineEditGeneral)
 
-        self.edtAcquisition.setStyleSheet(style.lineEditGeneral)
-        self.edtACQChannel_1.setStyleSheet(style.lineEditGeneral)
-        self.edtACQChannel_2.setStyleSheet(style.lineEditGeneral)
+    def setStyleLabels(self):
+        self.lblBtnInit.setStyleSheet(style.labelBtnInit)
+        self.lblBtnInit.setAlignment(Qt.AlignCenter)
 
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)
