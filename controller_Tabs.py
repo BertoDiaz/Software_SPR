@@ -144,8 +144,8 @@ class ControllerTabs:
             self.viewCurveSetup.edtACQChannel_1.setText(str(self.values['Acquisition Channel 1']))
             self.viewCurveSetup.edtACQChannel_2.setText(str(self.values['Acquisition Channel 2']))
 
-            self.viewSystemControl.btnLaser.clicked.connect(self.laserChanged)
-            self.viewSystemControl.btnPeristaltic.clicked.connect(self.btnPeristalticChange)
+            self.viewSystemControl.btnLaser.clicked.connect(self.btnLaserChanged)
+            self.viewSystemControl.btnPeristaltic.clicked.connect(self.btnPeristalticChanged)
             self.viewSystemControl.btnImpulsional_A.clicked.connect(self.btnImpulsionalAChange)
             self.viewSystemControl.btnImpulsional_B.clicked.connect(self.btnImpulsionalBChange)
 
@@ -154,7 +154,7 @@ class ControllerTabs:
             self.viewSystemControl.edtImpulsional_B.valueChanged.connect(self.pumpsControlChange)
 
             self.viewCurveSetup.btnCalibrate.clicked.connect(self.sendCalibrateParameters)
-            self.viewCurveSetup.btnLaser.clicked.connect(self.laserChanged)
+            self.viewCurveSetup.btnLaser.clicked.connect(self.btnLaserChanged)
             self.viewCurveSetup.btnResetValues.clicked.connect(self.resetCurvePerformance)
 
             self.viewCurveSetup.btnAutoAcquisition.clicked.connect(self.initAutoAcquisition)
@@ -242,74 +242,42 @@ class ControllerTabs:
         self.values['Impulsional A'] = self.viewSystemControl.edtImpulsional_A.value()
         self.values['Impulsional B'] = self.viewSystemControl.edtImpulsional_B.value()
 
-    def btnPeristalticChange(self):
+    def btnPeristalticChanged(self):
         if not self.btnChecked['Peristaltic']:
+            self.btnChecked['Peristaltic'] = True
             toSend = [
                 self.peristalticON,
                 self.values['Peristaltic']
             ]
 
-            self.btnStatus['Peristaltic'] = 'STARTING'
-            self.viewSystemControl.btnPeristaltic.setDisabled(True)
-
-            self.btnChecked['Peristaltic'] = True
-
-            self.viewSystemControl.btnPeristaltic.setText(self.btnStatus['Peristaltic'])
-
         else:
-            self.viewSystemControl.btnPeristaltic.setChecked(True)
-
             self.btnChecked['Peristaltic'] = False
-
             toSend = [
                 self.peristalticOFF,
                 self.values['Peristaltic']
             ]
 
         self.serialPort.send_Control_Peristaltic(toSend)
+        self.bufferWaitACK.append(self.peristalticCommandReceived)
 
-        self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_data)
-        self.serialPort.packet_received.connect(self.peristalticReceive)
-
-        functionTimeout = partial(self.setTimeout, functionTimeout=self.peristalticReceive)
+        functionTimeout = partial(self.setTimeout, messageTimeout=self.viewSystemControl.timeoutMessage['Peristaltic'],
+                                  functionTimeout=self.peristalticCommandReceived)
         self.tmrTimeout.timeout.connect(functionTimeout)
         self.tmrTimeout.start(self.msTimeout)
 
-    def peristalticReceive(self, data):
-        if data == '@':
-            if self.btnChecked['Peristaltic']:
-                self.viewSystemControl.btnPeristaltic.setDisabled(False)
+        if self.btnTimeout:
+            self.btnChecked['Laser'] = not self.btnChecked['Laser']
+            self.btnTimeout = False
 
-                self.btnStatus['Peristaltic'] = 'STOP'
+        self.viewSystemControl.setBtnLaserStatus(self.btnChecked['Laser'])
+        self.viewCurveSetup.setBtnLaserStatus(self.btnChecked['Laser'])
 
-            else:
-                self.viewSystemControl.btnPeristaltic.setChecked(False)
+    def peristalticCommandReceived(self):
+        if self.btnTimeout:
+            self.btnChecked['Peristaltic'] = not self.btnChecked['Peristaltic']
+            self.btnTimeout = False
 
-                self.btnStatus['Peristaltic'] = 'START'
-
-            self.tmrTimeout.stop()
-            self.tmrTimeout.timeout.disconnect()
-
-        else:
-            self.viewSystemControl.setMessageCritical("Error", "The peristaltic did not respond, try again.")
-
-            if self.btnChecked['Peristaltic']:
-                self.viewSystemControl.btnPeristaltic.setDisabled(False)
-
-                self.btnStatus['Peristaltic'] = 'START'
-                self.btnChecked['Peristaltic'] = False
-
-            else:
-                self.btnStatus['Peristaltic'] = 'STOP'
-                self.btnChecked['Peristaltic'] = True
-
-            self.viewSystemControl.btnPeristaltic.setChecked(self.btnChecked['Peristaltic'])
-
-        self.serialPort.serialPort.readyRead.disconnect()
-        self.serialPort.packet_received.disconnect()
-
-        self.viewSystemControl.setPeristalticStyle(self.btnStatus['Peristaltic'])
-        self.viewSystemControl.btnPeristaltic.setText(self.btnStatus['Peristaltic'])
+        self.viewSystemControl.setBtnPeristalticStatus(self.btnChecked['Peristaltic'])
 
     def btnImpulsionalAChange(self):
         if not self.btnChecked['Impulsional A']:
@@ -370,7 +338,7 @@ class ControllerTabs:
         self.serialPort.serialPort.readyRead.disconnect()
         self.serialPort.packet_received.disconnect()
 
-    def laserChanged(self):
+    def btnLaserChanged(self):
         if not self.btnChecked['Laser']:
             self.btnChecked['Laser'] = True
             toSend = self.laserON

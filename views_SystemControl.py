@@ -27,7 +27,8 @@ class ViewSystemControl(QWidget):
         super().__init__(parent)
 
         self.timeoutMessage = {
-            'Laser': 'The laser was not switch ON/OFF, try again.'
+            'Laser': 'The laser was not switch ON/OFF, try again.',
+            'Peristaltic': 'The peristaltic did not respond, try again.'
         }
 
         self.btnLaser = QPushButton('Laser OFF')
@@ -132,12 +133,15 @@ class ViewSystemControl(QWidget):
 
         return self.otherBoxLayout
 
-    def setPeristalticStyle(self, stylePeristaltic):
-        if stylePeristaltic == 'STOP':
-            self.btnPeristaltic.setStyleSheet(style.buttonPeristalticStop)
+    def setBtnPeristalticStatus(self, status):
+        if status:
+            text = 'STOP'
 
         else:
-            self.btnPeristaltic.setStyleSheet(style.buttonPeristaltic)
+            text = 'START'
+
+        self.btnPeristaltic.setText(text)
+        self.btnPeristaltic.setChecked(status)
 
     def setBtnLaserStatus(self, status):
         if status:
