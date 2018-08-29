@@ -112,10 +112,15 @@ class SerialPort(QObject):
         return self.serialData
 
     def receive_data(self):
+        dataRead = self.serialPort.read(1).decode('utf8')
+
+        self.packet_received.emit(dataRead)
+
+    def receive_multiple_data(self):
         data = self.serialPort.readAll()
-        # print(data.size())
+
         dataRead = data.data().decode('utf8')
-        # if sizeData != -1:
+
         self.packet_received.emit(dataRead)
 
     def write_port(self, data):
@@ -130,6 +135,12 @@ class SerialPort(QObject):
 
     def send_Gain_Offset(self, toSend):
         self.write_port(self.commands['GainOffset'])
+
+        for value in toSend:
+            self.write_port(f'{value:02x}')
+
+    def send_Control_Peristaltic(self, toSend):
+        self.write_port(self.commands['ControlPeris'])
 
         for value in toSend:
             self.write_port(f'{value:02x}')

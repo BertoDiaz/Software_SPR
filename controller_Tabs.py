@@ -19,6 +19,7 @@ from controller_connect import ControllerConnect
 from views_Tabs import ViewTabs
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer
+from functools import partial
 import sys
 
 
@@ -68,10 +69,14 @@ class ControllerTabs:
             'Photodiode A': [],
             'Photodiode B': []
         }
+        self.peristalticON = 1
+        self.peristalticOFF = 0
+        self.msTimeout = 1000
 
         self.tmrBtnImpulsional_A = QTimer()
         self.tmrBtnImpulsional_B = QTimer()
         self.tmrBtnReset = QTimer()
+        self.tmrTimeout = QTimer()
 
         self.viewTabs = ViewTabs(None)
         self.viewSystemControl = self.viewTabs.tab_SystemControl
@@ -137,7 +142,9 @@ class ControllerTabs:
             self.viewSystemControl.btnImpulsional_A.clicked.connect(self.btnImpulsionalAChange)
             self.viewSystemControl.btnImpulsional_B.clicked.connect(self.btnImpulsionalBChange)
 
-            self.viewSystemControl.edtPeristaltic.valueChanged.connect(self.pumpsControlChange)
+            self.viewSystemControl.edtPeristaltic.valueChanged.connect(self.pumpPeristalticChange)
+            self.viewSystemControl.edtImpulsional_A.valueChanged.connect(self.pumpsControlChange)
+            self.viewSystemControl.edtImpulsional_B.valueChanged.connect(self.pumpsControlChange)
 
             self.viewCurveSetup.btnCalibrate.clicked.connect(self.sendCalibrateParameters)
             self.viewCurveSetup.btnLaser.clicked.connect(self.laserChange)
@@ -202,6 +209,24 @@ class ControllerTabs:
         """New line to be easier to read the data."""
         self.serialPort.write_port('\n')
 
+    def pumpPeristalticChange(self):
+        self.values['Peristaltic'] = self.viewSystemControl.edtPeristaltic.value()
+
+        if self.btnChecked['Peristaltic']:
+            toSend = [
+                self.peristalticON,
+                self.values['Peristaltic']
+            ]
+
+            self.serialPort.send_Control_Peristaltic(toSend)
+
+            self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_data)
+            self.serialPort.packet_received.connect(self.peristalticReceive)
+
+            functionTimeout = partial(self.setTimeout, functionTimeout=self.peristalticReceive)
+            self.tmrTimeout.timeout.connect(functionTimeout)
+            self.tmrTimeout.start(self.msTimeout)
+
     def pumpsControlChange(self):
         self.values['Peristaltic'] = self.viewSystemControl.edtPeristaltic.value()
         self.values['Impulsional A'] = self.viewSystemControl.edtImpulsional_A.value()
@@ -209,13 +234,71 @@ class ControllerTabs:
 
     def btnPeristalticChange(self):
         if not self.btnChecked['Peristaltic']:
-            self.btnStatus['Peristaltic'] = 'STOP'
+            toSend = [
+                self.peristalticON,
+                self.values['Peristaltic']
+            ]
+
+            self.btnStatus['Peristaltic'] = 'STARTING'
+            self.viewSystemControl.btnPeristaltic.setDisabled(True)
+
             self.btnChecked['Peristaltic'] = True
 
+            self.viewSystemControl.btnPeristaltic.setText(self.btnStatus['Peristaltic'])
+
         else:
-            self.btnStatus['Peristaltic'] = 'START'
+            self.viewSystemControl.btnPeristaltic.setChecked(True)
+
             self.btnChecked['Peristaltic'] = False
 
+            toSend = [
+                self.peristalticOFF,
+                self.values['Peristaltic']
+            ]
+
+        self.serialPort.send_Control_Peristaltic(toSend)
+
+        self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_data)
+        self.serialPort.packet_received.connect(self.peristalticReceive)
+
+        functionTimeout = partial(self.setTimeout, functionTimeout=self.peristalticReceive)
+        self.tmrTimeout.timeout.connect(functionTimeout)
+        self.tmrTimeout.start(self.msTimeout)
+
+    def peristalticReceive(self, data):
+        if data == '@':
+            if self.btnChecked['Peristaltic']:
+                self.viewSystemControl.btnPeristaltic.setDisabled(False)
+
+                self.btnStatus['Peristaltic'] = 'STOP'
+
+            else:
+                self.viewSystemControl.btnPeristaltic.setChecked(False)
+
+                self.btnStatus['Peristaltic'] = 'START'
+
+            self.tmrTimeout.stop()
+            self.tmrTimeout.timeout.disconnect()
+
+        else:
+            self.viewSystemControl.setMessageCritical("Error", "The peristaltic did not respond, try again.")
+
+            if self.btnChecked['Peristaltic']:
+                self.viewSystemControl.btnPeristaltic.setDisabled(False)
+
+                self.btnStatus['Peristaltic'] = 'START'
+                self.btnChecked['Peristaltic'] = False
+
+            else:
+                self.btnStatus['Peristaltic'] = 'STOP'
+                self.btnChecked['Peristaltic'] = True
+
+            self.viewSystemControl.btnPeristaltic.setChecked(self.btnChecked['Peristaltic'])
+
+        self.serialPort.serialPort.readyRead.disconnect()
+        self.serialPort.packet_received.disconnect()
+
+        self.viewSystemControl.setPeristalticStyle(self.btnStatus['Peristaltic'])
         self.viewSystemControl.btnPeristaltic.setText(self.btnStatus['Peristaltic'])
 
     def btnImpulsionalAChange(self):
@@ -354,7 +437,7 @@ class ControllerTabs:
         if not self.btnChecked['Auto Acquisition']:
             self.serialPort.send_Auto_Acquisition(self.values['Data Sampling'])
 
-            self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_data)
+            self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_multiple_data)
             self.serialPort.packet_received.connect(self.acquisitionReceive)
 
             self.valuesPhotodiodes['Photodiode A'] = []
@@ -399,6 +482,12 @@ class ControllerTabs:
         if self.values['Automatic'] >= 48:
             self.viewCurveSetup.btnAutoAcquisition.setChecked(False)
             self.initAutoAcquisition()
+
+    def setTimeout(self, functionTimeout):
+        functionTimeout(0)
+
+        self.tmrTimeout.stop()
+        self.tmrTimeout.timeout.disconnect()
 
     def exit_App(self):
         exitApp = self.viewTabs.setMessageExit()

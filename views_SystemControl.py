@@ -128,6 +128,13 @@ class ViewSystemControl(QWidget):
 
         return self.otherBoxLayout
 
+    def setPeristalticStyle(self, stylePeristaltic):
+        if stylePeristaltic == 'STOP':
+            self.btnPeristaltic.setStyleSheet(style.buttonPeristalticStop)
+
+        else:
+            self.btnPeristaltic.setStyleSheet(style.buttonPeristaltic)
+
     def setStyleButtons(self):
         self.btnLaser.setStyleSheet(style.buttonLaserBig)
         self.btnLaser.setCheckable(True)

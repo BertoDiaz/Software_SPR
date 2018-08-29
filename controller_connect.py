@@ -44,14 +44,14 @@ class ControllerConnect:
             'Offset1': 0,
             'Gain2': 0,
             'Offset2': 0,
-            'Impul1': 50,
+            'Impul1': 0,
             'DC1': 50,
-            'PER1': 400,
-            'Impul2': 50,
+            'PER1': 0,
+            'Impul2': 0,
             'DC2': 50,
-            'PER2': 400,
-            'PURG1': 1000,
-            'PURG2': 1000,
+            'PER2': 0,
+            'PURG1': 0,
+            'PURG2': 0,
             'N_SERIE_SPR': "None"
         }
 
