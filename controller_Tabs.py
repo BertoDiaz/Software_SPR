@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from controller_connect import ControllerConnect
 from views_Tabs import ViewTabs
+from lib.Queue import Queue
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer
 from functools import partial
@@ -27,6 +28,15 @@ class ControllerTabs:
     def __init__(self):
         self.serialPort = None
         self.dataInit = {}
+        self.ackCommand = '@'
+        self.laserON = 1
+        self.laserOFF = 0
+        self.peristalticON = 1
+        self.peristalticOFF = 0
+        self.msTimeout = 1000
+        self.bufferWaitACK = Queue()
+        self.btnTimeout = False
+
         self.btnChecked = {
             'Laser': False,
             'Peristaltic': False,
@@ -69,9 +79,6 @@ class ControllerTabs:
             'Photodiode A': [],
             'Photodiode B': []
         }
-        self.peristalticON = 1
-        self.peristalticOFF = 0
-        self.msTimeout = 1000
 
         self.tmrBtnImpulsional_A = QTimer()
         self.tmrBtnImpulsional_B = QTimer()
@@ -137,7 +144,7 @@ class ControllerTabs:
             self.viewCurveSetup.edtACQChannel_1.setText(str(self.values['Acquisition Channel 1']))
             self.viewCurveSetup.edtACQChannel_2.setText(str(self.values['Acquisition Channel 2']))
 
-            self.viewSystemControl.btnLaser.clicked.connect(self.laserChange)
+            self.viewSystemControl.btnLaser.clicked.connect(self.laserChanged)
             self.viewSystemControl.btnPeristaltic.clicked.connect(self.btnPeristalticChange)
             self.viewSystemControl.btnImpulsional_A.clicked.connect(self.btnImpulsionalAChange)
             self.viewSystemControl.btnImpulsional_B.clicked.connect(self.btnImpulsionalBChange)
@@ -147,7 +154,7 @@ class ControllerTabs:
             self.viewSystemControl.edtImpulsional_B.valueChanged.connect(self.pumpsControlChange)
 
             self.viewCurveSetup.btnCalibrate.clicked.connect(self.sendCalibrateParameters)
-            self.viewCurveSetup.btnLaser.clicked.connect(self.laserChange)
+            self.viewCurveSetup.btnLaser.clicked.connect(self.laserChanged)
             self.viewCurveSetup.btnResetValues.clicked.connect(self.resetCurvePerformance)
 
             self.viewCurveSetup.btnAutoAcquisition.clicked.connect(self.initAutoAcquisition)
@@ -162,6 +169,9 @@ class ControllerTabs:
             self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.curvePerformanceChange)
 
             self.viewCurveSetup.edtDataSampling.valueChanged.connect(self.acquisitionChange)
+
+            self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_multiple_data)
+            self.serialPort.packet_received.connect(self.receiveData)
 
             self.viewTabs.btnExit.clicked.connect(self.exit_App)
 
@@ -360,39 +370,30 @@ class ControllerTabs:
         self.serialPort.serialPort.readyRead.disconnect()
         self.serialPort.packet_received.disconnect()
 
-    def laserChange(self):
+    def laserChanged(self):
         if not self.btnChecked['Laser']:
-            self.btnStatus['Laser'] = 'Laser ON'
-
             self.btnChecked['Laser'] = True
-
-            send = 1
+            toSend = self.laserON
 
         else:
-            self.btnStatus['Laser'] = 'Laser OFF'
-
             self.btnChecked['Laser'] = False
+            toSend = self.laserOFF
 
-            send = 0
+        self.serialPort.send_Laser(toSend)
+        self.bufferWaitACK.append(self.laserCommandReceived)
 
-        self.serialPort.send_Laser(send)
+        messageTimeout = partial(self.setTimeout, messageTimeout=self.viewSystemControl.timeoutMessage['Laser'],
+                                 functionTimeout=self.laserCommandReceived)
+        self.tmrTimeout.timeout.connect(messageTimeout)
+        self.tmrTimeout.start(self.msTimeout)
 
-        self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_data)
-        self.serialPort.packet_received.connect(self.laserReceive)
+    def laserCommandReceived(self):
+        if self.btnTimeout:
+            self.btnChecked['Laser'] = not self.btnChecked['Laser']
+            self.btnTimeout = False
 
-    def laserReceive(self, data):
-        if data == '@':
-            self.viewSystemControl.btnLaser.setText(self.btnStatus['Laser'])
-            self.viewCurveSetup.btnLaser.setText(self.btnStatus['Laser'])
-
-            self.viewSystemControl.btnLaser.setChecked(self.btnChecked['Laser'])
-            self.viewCurveSetup.btnLaser.setChecked(self.btnChecked['Laser'])
-
-        else:
-            self.viewCurveSetup.setMessageCritical("Error", "The laser was not switch ON/OFF, try again.")
-
-        self.serialPort.serialPort.readyRead.disconnect()
-        self.serialPort.packet_received.disconnect()
+        self.viewSystemControl.setBtnLaserStatus(self.btnChecked['Laser'])
+        self.viewCurveSetup.setBtnLaserStatus(self.btnChecked['Laser'])
 
     def resetCurvePerformance(self):
         if not self.btnChecked['Reset']:
@@ -437,8 +438,8 @@ class ControllerTabs:
         if not self.btnChecked['Auto Acquisition']:
             self.serialPort.send_Auto_Acquisition(self.values['Data Sampling'])
 
-            self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_multiple_data)
-            self.serialPort.packet_received.connect(self.acquisitionReceive)
+            # self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_multiple_data)
+            # self.serialPort.packet_received.connect(self.acquisitionReceive)
 
             self.valuesPhotodiodes['Photodiode A'] = []
             self.valuesPhotodiodes['Photodiode B'] = []
@@ -483,8 +484,20 @@ class ControllerTabs:
             self.viewCurveSetup.btnAutoAcquisition.setChecked(False)
             self.initAutoAcquisition()
 
-    def setTimeout(self, functionTimeout):
-        functionTimeout(0)
+    def receiveData(self, data):
+        for value in data:
+            if value == self.ackCommand:
+                valueACK = self.bufferWaitACK.pop()
+
+                if valueACK != -1:
+                    self.tmrTimeout.stop()
+                    self.tmrTimeout.timeout.disconnect()
+                    valueACK()
+
+    def setTimeout(self, messageTimeout, functionTimeout):
+        self.btnTimeout = True
+        self.viewSystemControl.setMessageCritical('Error', messageTimeout)
+        functionTimeout()
 
         self.tmrTimeout.stop()
         self.tmrTimeout.timeout.disconnect()

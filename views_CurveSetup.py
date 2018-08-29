@@ -240,6 +240,16 @@ class ViewCurveSetup(QWidget):
         self.btnCalibrate.setStyleSheet(style.buttonCalibrateDone)
         self.btnCalibrate.setChecked(False)
 
+    def setBtnLaserStatus(self, status):
+        if status:
+            text = 'Laser ON'
+
+        else:
+            text = 'Laser OFF'
+
+        self.btnLaser.setText(text)
+        self.btnLaser.setChecked(status)
+
     def setAutoAcquisitionInProcess(self):
         self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisitionInProcess)
 
