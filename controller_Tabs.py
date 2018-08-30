@@ -149,9 +149,9 @@ class ControllerTabs:
             self.viewSystemControl.btnImpulsional_A.clicked.connect(self.btnImpulsionalAChanged)
             self.viewSystemControl.btnImpulsional_B.clicked.connect(self.btnImpulsionalBChanged)
 
-            self.viewSystemControl.edtPeristaltic.valueChanged.connect(self.pumpPeristalticChange)
-            self.viewSystemControl.edtImpulsional_A.valueChanged.connect(self.pumpsControlChange)
-            self.viewSystemControl.edtImpulsional_B.valueChanged.connect(self.pumpsControlChange)
+            self.viewSystemControl.edtPeristaltic.valueChanged.connect(self.edtPeristalticChanged)
+            self.viewSystemControl.edtImpulsional_A.valueChanged.connect(self.edtImpulsionalsChanged)
+            self.viewSystemControl.edtImpulsional_B.valueChanged.connect(self.edtImpulsionalsChanged)
 
             self.viewCurveSetup.btnCalibrate.clicked.connect(self.sendCalibrateParameters)
             self.viewCurveSetup.btnLaser.clicked.connect(self.btnLaserChanged)
@@ -219,28 +219,23 @@ class ControllerTabs:
         """New line to be easier to read the data."""
         self.serialPort.write_port('\n')
 
-    def pumpPeristalticChange(self):
-        self.values['Peristaltic'] = self.viewSystemControl.edtPeristaltic.value()
+    def edtPeristalticChanged(self):
+        self.values['Peristaltic'] = self.viewSystemControl.getEdtPeristalticValue()
 
-        if self.btnChecked['Peristaltic']:
+        if self.viewSystemControl.getBtnPeristalticStatus():
             toSend = [
                 self.peristalticON,
                 self.values['Peristaltic']
             ]
 
             self.serialPort.send_Control_Peristaltic(toSend)
+            self.bufferWaitACK.append(self.peristalticCommandReceived)
 
-            self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_data)
-            self.serialPort.packet_received.connect(self.peristalticReceive)
-
-            functionTimeout = partial(self.setTimeout, functionTimeout=self.peristalticReceive)
+            functionTimeout = partial(self.setTimeout,
+                                      messageTimeout=self.viewSystemControl.timeoutMessage['Peristaltic'],
+                                      functionTimeout=self.peristalticCommandReceived)
             self.tmrTimeout.timeout.connect(functionTimeout)
             self.tmrTimeout.start(self.msTimeout)
-
-    def pumpsControlChange(self):
-        self.values['Peristaltic'] = self.viewSystemControl.edtPeristaltic.value()
-        self.values['Impulsional A'] = self.viewSystemControl.edtImpulsional_A.value()
-        self.values['Impulsional B'] = self.viewSystemControl.edtImpulsional_B.value()
 
     def btnPeristalticChanged(self):
         self.viewSystemControl.setBtnPeristalticDisable(True)
@@ -275,12 +270,17 @@ class ControllerTabs:
         self.viewSystemControl.setBtnPeristalticStatus(status)
         self.viewSystemControl.setBtnPeristalticDisable(False)
 
+    def edtImpulsionalsChanged(self):
+        self.values['Impulsional A'] = self.viewSystemControl.getEdtImpulsionalAValue()
+        self.values['Impulsional B'] = self.viewSystemControl.getEdtImpulsionalBValue()
+
     def btnImpulsionalAChanged(self):
         if self.viewSystemControl.getBtnImpulsionalAStatus():
+
             if self.viewSystemControl.getEdtImpulsionalAValue() != 0:
                 self.viewSystemControl.setBtnImpulsionalADisable(True)
 
-                toSend = self.viewSystemControl.edtImpulsional_A.value() * 50
+                toSend = self.values['Impulsional A'] * 50
 
                 self.serialPort.send_Control_Impul_A(toSend)
                 self.bufferWaitACK.append(self.impulsionalACommandReceived)
@@ -302,17 +302,18 @@ class ControllerTabs:
             self.btnTimeout = False
 
         else:
-            timeImpulses = self.viewSystemControl.edtImpulsional_A.value() * 500
+            timeImpulses = self.values['Impulsional A'] * 500
 
         finishImpulses = partial(self.viewSystemControl.setBtnImpulsionalAStatus, status=False)
         self.tmrBtnImpulsional_A.singleShot(timeImpulses, finishImpulses)
 
     def btnImpulsionalBChanged(self):
         if self.viewSystemControl.getBtnImpulsionalBStatus():
+
             if self.viewSystemControl.getEdtImpulsionalBValue() != 0:
                 self.viewSystemControl.setBtnImpulsionalBDisable(True)
 
-                toSend = self.viewSystemControl.edtImpulsional_B.value() * 50
+                toSend = self.values['Impulsional B'] * 50
 
                 self.serialPort.send_Control_Impul_B(toSend)
                 self.bufferWaitACK.append(self.impulsionalBCommandReceived)
@@ -334,7 +335,7 @@ class ControllerTabs:
             self.btnTimeout = False
 
         else:
-            timeImpulses = self.viewSystemControl.edtImpulsional_B.value() * 500
+            timeImpulses = self.values['Impulsional B'] * 500
 
         finishImpulses = partial(self.viewSystemControl.setBtnImpulsionalBStatus, status=False)
         self.tmrBtnImpulsional_B.singleShot(timeImpulses, finishImpulses)

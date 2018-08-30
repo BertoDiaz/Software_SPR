@@ -187,6 +187,9 @@ class ViewSystemControl(QWidget):
     def setBtnPeristalticDisable(self, disable):
         self.btnPeristaltic.setDisabled(disable)
 
+    def getEdtPeristalticValue(self):
+        return self.edtPeristaltic.value()
+
     """
     ********************************************************************************************************************
     *                                         End Peristaltic button Functions                                         *
