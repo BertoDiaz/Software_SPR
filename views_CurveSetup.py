@@ -28,6 +28,7 @@ class ViewCurveSetup(QWidget):
 
         self.timeoutMessage = {
             'Calibrate': 'The device has not been calibrated, try again.',
+            'Automatic': 'The device has not respond, try again.'
         }
 
         self.lblGainA = QLabel("Gain A:")
@@ -343,12 +344,16 @@ class ViewCurveSetup(QWidget):
     ********************************************************************************************************************
     """
 
-    def setAutoAcquisitionInProcess(self):
-        self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisitionInProcess)
+    def getBtnAutoAcquisitionStatus(self):
+        return self.btnAutoAcquisition.isChecked()
 
-    def setAutoAcquisitionFinish(self):
-        self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisition)
-        self.btnAutoAcquisition.setChecked(False)
+    def setBtnAutoAcquisitionInProcess(self, inProcess):
+        if inProcess:
+            self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisitionInProcess)
+
+        else:
+            self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisition)
+            self.btnAutoAcquisition.setChecked(False)
 
     """
     ********************************************************************************************************************

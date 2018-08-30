@@ -29,6 +29,7 @@ class ControllerTabs:
         self.serialPort = None
         self.dataInit = {}
         self.ackCommand = '@'
+        self.acquisitionCommand = '&'
         self.laserON = 1
         self.laserOFF = 0
         self.peristalticON = 1
@@ -36,6 +37,7 @@ class ControllerTabs:
         self.msTimeout = 1000
         self.bufferWaitACK = Queue()
         self.btnTimeout = False
+        self.acquisitionInProcess = False
 
         self.btnChecked = {
             'Laser': False,
@@ -153,7 +155,7 @@ class ControllerTabs:
             self.viewCurveSetup.btnLaser.clicked.connect(self.btnLaserChanged)
             self.viewCurveSetup.btnReset.clicked.connect(self.btnResetChanged)
 
-            self.viewCurveSetup.btnAutoAcquisition.clicked.connect(self.initAutoAcquisition)
+            self.viewCurveSetup.btnAutoAcquisition.clicked.connect(self.btnAutoAcquisitionChanged)
 
             self.viewCurveSetup.edtGainA.valueChanged.connect(self.edtCalibrateChanged)
             self.viewCurveSetup.edtGainB.valueChanged.connect(self.edtCalibrateChanged)
@@ -463,44 +465,56 @@ class ControllerTabs:
     ********************************************************************************************************************
     """
 
-    def initAutoAcquisition(self):
-        if not self.btnChecked['Auto Acquisition']:
-            self.serialPort.send_Auto_Acquisition(self.values['Data Sampling'])
+    def acquisitionChange(self):
+        self.values['Data Sampling'] = self.viewCurveSetup.edtDataSampling.value()
 
-            # self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_multiple_data)
-            # self.serialPort.packet_received.connect(self.acquisitionReceive)
+    def btnAutoAcquisitionChanged(self):
+        if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
+            toSend = self.values['Data Sampling']
+
+            self.serialPort.send_Auto_Acquisition(toSend)
 
             self.valuesPhotodiodes['Photodiode A'] = []
             self.valuesPhotodiodes['Photodiode B'] = []
 
-            self.btnChecked['Auto Acquisition'] = True
-
         else:
             self.serialPort.send_Finish_Experiment()
 
-            self.btnChecked['Auto Acquisition'] = False
+        self.bufferWaitACK.append(self.acquisitionCommandReceived)
 
-    def acquisitionChange(self):
-        self.values['Data Sampling'] = self.viewCurveSetup.edtDataSampling.value()
+        functionTimeout = partial(self.setTimeout,
+                                  messageTimeout=self.viewCurveSetup.timeoutMessage['Automatic'],
+                                  functionTimeout=self.acquisitionCommandReceived)
+        self.tmrTimeout.timeout.connect(functionTimeout)
+        self.tmrTimeout.start(self.msTimeout)
 
-    def acquisitionReceive(self, data):
-        if data == '@':
-            if self.btnChecked['Auto Acquisition']:
-                self.viewCurveSetup.setAutoAcquisitionInProcess()
+    def acquisitionCommandReceived(self):
+        if not self.acquisitionInProcess:
+            if self.btnTimeout:
+                inProcess = False
+                self.btnTimeout = False
 
             else:
-                self.serialPort.serialPort.readyRead.disconnect()
-                self.serialPort.packet_received.disconnect()
+                if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
+                    inProcess = True
 
-                self.viewCurveSetup.setAutoAcquisitionFinish()
+                else:
+                    inProcess = False
 
-        elif data[0] == '&':
-            self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
-            self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
+            self.viewCurveSetup.setBtnAutoAcquisitionInProcess(inProcess)
 
-            self.dataReceived()
+        # else:
+        #     self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
+        #     self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
 
-    def dataReceived(self):
+        #     self.dataReceived()
+
+    def dataReceived(self, data):
+        print(data)
+
+        self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
+        self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
+
         self.values['Acquisition Channel 1'] = self.valuesPhotodiodes['Photodiode A'][self.values['Automatic']]
         self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
         self.values['Automatic'] += 1
@@ -522,6 +536,10 @@ class ControllerTabs:
                     self.tmrTimeout.stop()
                     self.tmrTimeout.timeout.disconnect()
                     valueACK()
+
+            else:
+                if value == self.acquisitionCommand:
+                    self.dataReceived(data)
 
     def setTimeout(self, messageTimeout, functionTimeout):
         self.btnTimeout = True
