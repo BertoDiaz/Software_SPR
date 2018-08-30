@@ -111,10 +111,6 @@ class ControllerTabs:
             self.serialPort = controllerConnect.serialPort
             self.dataInit = controllerConnect.dataInit
 
-            """For now it's not necessary to send the data to SPR."""
-            # if controllerConnect.loadedFile:
-            #     self.sendValuesLoaded()
-
             self.values['Peristaltic'] = self.dataInit["PER1"]
             self.values['Impulsional A'] = self.dataInit["Impul1"]
             self.values['Impulsional B'] = self.dataInit["Impul2"]
@@ -175,49 +171,11 @@ class ControllerTabs:
 
             self.viewTabs.btnExit.clicked.connect(self.exit_App)
 
-    def sendValuesLoaded(self):
-
-        toSend = [
-            self.dataInit["Gain1"],
-            self.dataInit["Offset1"],
-            self.dataInit["Gain2"],
-            self.dataInit["Offset2"]
-        ]
-
-        self.serialPort.send_Gain_Offset(toSend)
-
-        """New line to be easier to read the data."""
-        self.serialPort.write_port('\n')
-
-        toSend = [
-            self.dataInit["Impul1"]
-        ]
-
-        self.serialPort.send_Control_Impul_A(toSend)
-
-        """New line to be easier to read the data."""
-        self.serialPort.write_port('\n')
-
-        """Here yuo have to send DC1"""
-
-        toSend = [
-            self.dataInit["Impul2"]
-        ]
-
-        self.serialPort.send_Control_Impul_B(toSend)
-
-        """New line to be easier to read the data."""
-        self.serialPort.write_port('\n')
-
-        toSend = [
-            self.dataInit["PURG1"],
-            self.dataInit["PURG2"]
-        ]
-
-        self.serialPort.send_Volume_Purges(toSend)
-
-        """New line to be easier to read the data."""
-        self.serialPort.write_port('\n')
+    """
+    ********************************************************************************************************************
+    *                                              Laser Control Functions                                             *
+    ********************************************************************************************************************
+    """
 
     def btnLaserChanged(self):
         self.viewSystemControl.setBtnLaserDisable(True)
@@ -249,6 +207,18 @@ class ControllerTabs:
 
         self.viewSystemControl.setBtnLaserDisable(False)
         self.viewCurveSetup.setBtnLaserDisable(False)
+
+    """
+    ********************************************************************************************************************
+    *                                            End Laser Control Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                           Peristaltic Control Functions                                          *
+    ********************************************************************************************************************
+    """
 
     def edtPeristalticChanged(self):
         self.values['Peristaltic'] = self.viewSystemControl.getEdtPeristalticValue()
@@ -301,6 +271,18 @@ class ControllerTabs:
 
         self.viewSystemControl.setBtnPeristalticStatus(status)
         self.viewSystemControl.setBtnPeristalticDisable(False)
+
+    """
+    ********************************************************************************************************************
+    *                                         End Peristaltic Control Functions                                        *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                          Impulsionals Control Functions                                          *
+    ********************************************************************************************************************
+    """
 
     def edtImpulsionalsChanged(self):
         self.values['Impulsional A'] = self.viewSystemControl.getEdtImpulsionalAValue()
@@ -372,6 +354,18 @@ class ControllerTabs:
         finishImpulses = partial(self.viewSystemControl.setBtnImpulsionalBStatus, status=False)
         self.tmrBtnImpulsional_B.singleShot(timeImpulses, finishImpulses)
 
+    """
+    ********************************************************************************************************************
+    *                                        End Impulsionals Control Functions                                        *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                        Calibration Parameters Functions                                          *
+    ********************************************************************************************************************
+    """
+
     def edtCalibrateChanged(self):
         self.viewCurveSetup.setBtnCalibrateStatus(False)
 
@@ -409,6 +403,18 @@ class ControllerTabs:
 
         self.viewCurveSetup.setBtnCalibrateStatus(done)
         self.viewCurveSetup.setBtnCalibrateDisable(False)
+
+    """
+    ********************************************************************************************************************
+    *                                       End Calibration Parameters Functions                                       *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                          Curve Performance Functions                                             *
+    ********************************************************************************************************************
+    """
 
     def edtCurvePerformanceChanged(self):
         self.viewCurveSetup.setBtnResetStatus(False)
@@ -450,6 +456,12 @@ class ControllerTabs:
             self.viewCurveSetup.edtInitialAngle.valueChanged.connect(self.edtCurvePerformanceChanged)
             self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.edtCurvePerformanceChanged)
             self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.edtCurvePerformanceChanged)
+
+    """
+    ********************************************************************************************************************
+    *                                        End Curve Performance Functions                                           *
+    ********************************************************************************************************************
+    """
 
     def initAutoAcquisition(self):
         if not self.btnChecked['Auto Acquisition']:
