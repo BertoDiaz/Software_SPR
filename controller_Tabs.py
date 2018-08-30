@@ -146,7 +146,7 @@ class ControllerTabs:
 
             self.viewSystemControl.btnLaser.clicked.connect(self.btnLaserChanged)
             self.viewSystemControl.btnPeristaltic.clicked.connect(self.btnPeristalticChanged)
-            self.viewSystemControl.btnImpulsional_A.clicked.connect(self.btnImpulsionalAChange)
+            self.viewSystemControl.btnImpulsional_A.clicked.connect(self.btnImpulsionalAChanged)
             self.viewSystemControl.btnImpulsional_B.clicked.connect(self.btnImpulsionalBChange)
 
             self.viewSystemControl.edtPeristaltic.valueChanged.connect(self.pumpPeristalticChange)
@@ -243,15 +243,15 @@ class ControllerTabs:
         self.values['Impulsional B'] = self.viewSystemControl.edtImpulsional_B.value()
 
     def btnPeristalticChanged(self):
-        if not self.btnChecked['Peristaltic']:
-            self.btnChecked['Peristaltic'] = True
+        self.viewSystemControl.setBtnPeristalticDisable(True)
+
+        if self.viewSystemControl.getBtnPeristalticStatus():
             toSend = [
                 self.peristalticON,
                 self.values['Peristaltic']
             ]
 
         else:
-            self.btnChecked['Peristaltic'] = False
             toSend = [
                 self.peristalticOFF,
                 self.values['Peristaltic']
@@ -265,34 +265,47 @@ class ControllerTabs:
         self.tmrTimeout.timeout.connect(functionTimeout)
         self.tmrTimeout.start(self.msTimeout)
 
-        if self.btnTimeout:
-            self.btnChecked['Laser'] = not self.btnChecked['Laser']
-            self.btnTimeout = False
-
-        self.viewSystemControl.setBtnLaserStatus(self.btnChecked['Laser'])
-        self.viewCurveSetup.setBtnLaserStatus(self.btnChecked['Laser'])
-
     def peristalticCommandReceived(self):
+        status = self.viewSystemControl.getBtnPeristalticStatus()
+
         if self.btnTimeout:
-            self.btnChecked['Peristaltic'] = not self.btnChecked['Peristaltic']
+            status = not self.viewSystemControl.getBtnPeristalticStatus()
             self.btnTimeout = False
 
-        self.viewSystemControl.setBtnPeristalticStatus(self.btnChecked['Peristaltic'])
+        self.viewSystemControl.setBtnPeristalticStatus(status)
+        self.viewSystemControl.setBtnPeristalticDisable(False)
 
-    def btnImpulsionalAChange(self):
-        if not self.btnChecked['Impulsional A']:
-            self.btnChecked['Impulsional A'] = True
-            self.btnDisable['Impulsional A'] = True
+    def btnImpulsionalAChanged(self):
+        if self.viewSystemControl.getBtnImpulsionalAStatus():
+            if self.viewSystemControl.getEdtImpulsionalAValue() != 0:
+                self.viewSystemControl.setBtnImpulsionalADisable(True)
 
-            self.tmrBtnImpulsional_A.singleShot(3000, self.btnImpulsionalAChange)
+                toSend = self.viewSystemControl.edtImpulsional_A.value() * 50
+
+                self.serialPort.send_Control_Impul_A(toSend)
+                self.bufferWaitACK.append(self.impulsionalACommandReceived)
+
+                functionTimeout = partial(self.setTimeout,
+                                          messageTimeout=self.viewSystemControl.timeoutMessage['Impulsional A'],
+                                          functionTimeout=self.impulsionalACommandReceived)
+                self.tmrTimeout.timeout.connect(functionTimeout)
+                self.tmrTimeout.start(self.msTimeout)
+
+            else:
+                self.viewSystemControl.setBtnImpulsionalAStatus(False)
+                self.viewSystemControl.setMessageCritical("Error",
+                                                          self.viewSystemControl.notCeroMessage['Impulsional A'])
+
+    def impulsionalACommandReceived(self):
+        if self.btnTimeout:
+            timeImpulses = 0
+            self.btnTimeout = False
 
         else:
-            self.btnChecked['Impulsional A'] = False
-            self.btnDisable['Impulsional A'] = False
+            timeImpulses = self.viewSystemControl.edtImpulsional_A.value() * 500
 
-            self.viewSystemControl.btnImpulsional_A.setChecked(False)
-
-        self.viewSystemControl.btnImpulsional_A.setDisabled(self.btnDisable['Impulsional A'])
+        finishImpulses = partial(self.viewSystemControl.setBtnImpulsionalAStatus, status=False)
+        self.tmrBtnImpulsional_A.singleShot(timeImpulses, finishImpulses)
 
     def btnImpulsionalBChange(self):
         if not self.btnChecked['Impulsional B']:
@@ -339,6 +352,9 @@ class ControllerTabs:
         self.serialPort.packet_received.disconnect()
 
     def btnLaserChanged(self):
+        self.viewSystemControl.setBtnLaserDisable(True)
+        self.viewCurveSetup.setBtnLaserDisable(True)
+
         if not self.btnChecked['Laser']:
             self.btnChecked['Laser'] = True
             toSend = self.laserON
@@ -362,6 +378,9 @@ class ControllerTabs:
 
         self.viewSystemControl.setBtnLaserStatus(self.btnChecked['Laser'])
         self.viewCurveSetup.setBtnLaserStatus(self.btnChecked['Laser'])
+
+        self.viewSystemControl.setBtnLaserDisable(False)
+        self.viewCurveSetup.setBtnLaserDisable(False)
 
     def resetCurvePerformance(self):
         if not self.btnChecked['Reset']:

@@ -28,7 +28,12 @@ class ViewSystemControl(QWidget):
 
         self.timeoutMessage = {
             'Laser': 'The laser was not switch ON/OFF, try again.',
-            'Peristaltic': 'The peristaltic did not respond, try again.'
+            'Peristaltic': 'The peristaltic did not respond, try again.',
+            'Impulsional A': 'The impulsional A pump did not respond, try again.'
+        }
+
+        self.notCeroMessage = {
+            'Impulsional A': 'The value of the impulsional A cannot be 0.'
         }
 
         self.btnLaser = QPushButton('Laser OFF')
@@ -133,6 +138,34 @@ class ViewSystemControl(QWidget):
 
         return self.otherBoxLayout
 
+    """
+    ********************************************************************************************************************
+    *                                              Laser button Functions                                              *
+    ********************************************************************************************************************
+    """
+    def setBtnLaserStatus(self, status):
+        if status:
+            text = 'Laser ON'
+
+        else:
+            text = 'Laser OFF'
+
+        self.btnLaser.setText(text)
+        self.btnLaser.setChecked(status)
+
+    def setBtnLaserDisable(self, disable):
+        self.btnLaser.setDisabled(disable)
+    """
+    ********************************************************************************************************************
+    *                                            End Laser button Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                           Peristaltic button Functions                                           *
+    ********************************************************************************************************************
+    """
     def setBtnPeristalticStatus(self, status):
         if status:
             text = 'STOP'
@@ -143,15 +176,39 @@ class ViewSystemControl(QWidget):
         self.btnPeristaltic.setText(text)
         self.btnPeristaltic.setChecked(status)
 
-    def setBtnLaserStatus(self, status):
-        if status:
-            text = 'Laser ON'
+    def getBtnPeristalticStatus(self):
+        return self.btnPeristaltic.isChecked()
 
-        else:
-            text = 'Laser OFF'
+    def setBtnPeristalticDisable(self, disable):
+        self.btnPeristaltic.setDisabled(disable)
+    """
+    ********************************************************************************************************************
+    *                                         End Peristaltic button Functions                                         *
+    ********************************************************************************************************************
+    """
 
-        self.btnLaser.setText(text)
-        self.btnLaser.setChecked(status)
+    """
+    ********************************************************************************************************************
+    *                                          Impulsional A button Functions                                          *
+    ********************************************************************************************************************
+    """
+    def setBtnImpulsionalAStatus(self, status):
+        self.btnImpulsional_A.setChecked(status)
+        self.setBtnImpulsionalADisable(status)
+
+    def getBtnImpulsionalAStatus(self):
+        return self.btnImpulsional_A.isChecked()
+
+    def setBtnImpulsionalADisable(self, disable):
+        self.btnImpulsional_A.setDisabled(disable)
+
+    def getEdtImpulsionalAValue(self):
+        return self.edtImpulsional_A.value()
+    """
+    ********************************************************************************************************************
+    *                                        End Impulsional A button Functions                                        *
+    ********************************************************************************************************************
+    """
 
     def setStyleButtons(self):
         self.btnLaser.setStyleSheet(style.buttonLaserBig)

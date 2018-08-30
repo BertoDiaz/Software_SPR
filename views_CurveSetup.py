@@ -250,6 +250,9 @@ class ViewCurveSetup(QWidget):
         self.btnLaser.setText(text)
         self.btnLaser.setChecked(status)
 
+    def setBtnLaserDisable(self, disable):
+        self.btnLaser.setDisabled(disable)
+
     def setAutoAcquisitionInProcess(self):
         self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisitionInProcess)
 

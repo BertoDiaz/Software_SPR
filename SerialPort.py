@@ -148,8 +148,8 @@ class SerialPort(QObject):
     def send_Control_Impul_A(self, toSend):
         self.write_port(self.commands['ControlImpulA'])
 
-        for value in toSend:
-            self.write_port(f'{value:04x}')
+        # for value in toSend:
+        self.write_port(f'{toSend:04x}')
 
     def send_Control_Impul_B(self, toSend):
         self.write_port(self.commands['ControlImpulB'])
