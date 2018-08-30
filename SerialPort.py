@@ -154,8 +154,8 @@ class SerialPort(QObject):
     def send_Control_Impul_B(self, toSend):
         self.write_port(self.commands['ControlImpulB'])
 
-        for value in toSend:
-            self.write_port(f'{value:04x}')
+        # for value in toSend:
+        self.write_port(f'{toSend:04x}')
 
     def send_Volume_Purges(self, toSend):
         self.write_port(self.commands['VolumePurge'])

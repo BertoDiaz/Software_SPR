@@ -147,7 +147,7 @@ class ControllerTabs:
             self.viewSystemControl.btnLaser.clicked.connect(self.btnLaserChanged)
             self.viewSystemControl.btnPeristaltic.clicked.connect(self.btnPeristalticChanged)
             self.viewSystemControl.btnImpulsional_A.clicked.connect(self.btnImpulsionalAChanged)
-            self.viewSystemControl.btnImpulsional_B.clicked.connect(self.btnImpulsionalBChange)
+            self.viewSystemControl.btnImpulsional_B.clicked.connect(self.btnImpulsionalBChanged)
 
             self.viewSystemControl.edtPeristaltic.valueChanged.connect(self.pumpPeristalticChange)
             self.viewSystemControl.edtImpulsional_A.valueChanged.connect(self.pumpsControlChange)
@@ -307,20 +307,37 @@ class ControllerTabs:
         finishImpulses = partial(self.viewSystemControl.setBtnImpulsionalAStatus, status=False)
         self.tmrBtnImpulsional_A.singleShot(timeImpulses, finishImpulses)
 
-    def btnImpulsionalBChange(self):
-        if not self.btnChecked['Impulsional B']:
-            self.btnChecked['Impulsional B'] = True
-            self.btnDisable['Impulsional B'] = True
+    def btnImpulsionalBChanged(self):
+        if self.viewSystemControl.getBtnImpulsionalBStatus():
+            if self.viewSystemControl.getEdtImpulsionalBValue() != 0:
+                self.viewSystemControl.setBtnImpulsionalBDisable(True)
 
-            self.tmrBtnImpulsional_B.singleShot(3000, self.btnImpulsionalBChange)
+                toSend = self.viewSystemControl.edtImpulsional_B.value() * 50
+
+                self.serialPort.send_Control_Impul_B(toSend)
+                self.bufferWaitACK.append(self.impulsionalBCommandReceived)
+
+                functionTimeout = partial(self.setTimeout,
+                                          messageTimeout=self.viewSystemControl.timeoutMessage['Impulsional B'],
+                                          functionTimeout=self.impulsionalBCommandReceived)
+                self.tmrTimeout.timeout.connect(functionTimeout)
+                self.tmrTimeout.start(self.msTimeout)
+
+            else:
+                self.viewSystemControl.setBtnImpulsionalBStatus(False)
+                self.viewSystemControl.setMessageCritical("Error",
+                                                          self.viewSystemControl.notCeroMessage['Impulsional B'])
+
+    def impulsionalBCommandReceived(self):
+        if self.btnTimeout:
+            timeImpulses = 0
+            self.btnTimeout = False
 
         else:
-            self.btnChecked['Impulsional B'] = False
-            self.btnDisable['Impulsional B'] = False
+            timeImpulses = self.viewSystemControl.edtImpulsional_B.value() * 500
 
-            self.viewSystemControl.btnImpulsional_B.setChecked(False)
-
-        self.viewSystemControl.btnImpulsional_B.setDisabled(self.btnDisable['Impulsional B'])
+        finishImpulses = partial(self.viewSystemControl.setBtnImpulsionalBStatus, status=False)
+        self.tmrBtnImpulsional_B.singleShot(timeImpulses, finishImpulses)
 
     def sendCalibrateParameters(self):
         toSend = [

@@ -29,11 +29,13 @@ class ViewSystemControl(QWidget):
         self.timeoutMessage = {
             'Laser': 'The laser was not switch ON/OFF, try again.',
             'Peristaltic': 'The peristaltic did not respond, try again.',
-            'Impulsional A': 'The impulsional A pump did not respond, try again.'
+            'Impulsional A': 'The impulsional A pump did not respond, try again.',
+            'Impulsional B': 'The impulsional B pump did not respond, try again.'
         }
 
         self.notCeroMessage = {
-            'Impulsional A': 'The value of the impulsional A cannot be 0.'
+            'Impulsional A': 'The value of the impulsional A cannot be 0.',
+            'Impulsional B': 'The value of the impulsional B cannot be 0.'
         }
 
         self.btnLaser = QPushButton('Laser OFF')
@@ -143,6 +145,7 @@ class ViewSystemControl(QWidget):
     *                                              Laser button Functions                                              *
     ********************************************************************************************************************
     """
+
     def setBtnLaserStatus(self, status):
         if status:
             text = 'Laser ON'
@@ -155,6 +158,7 @@ class ViewSystemControl(QWidget):
 
     def setBtnLaserDisable(self, disable):
         self.btnLaser.setDisabled(disable)
+
     """
     ********************************************************************************************************************
     *                                            End Laser button Functions                                            *
@@ -166,6 +170,7 @@ class ViewSystemControl(QWidget):
     *                                           Peristaltic button Functions                                           *
     ********************************************************************************************************************
     """
+
     def setBtnPeristalticStatus(self, status):
         if status:
             text = 'STOP'
@@ -181,6 +186,7 @@ class ViewSystemControl(QWidget):
 
     def setBtnPeristalticDisable(self, disable):
         self.btnPeristaltic.setDisabled(disable)
+
     """
     ********************************************************************************************************************
     *                                         End Peristaltic button Functions                                         *
@@ -192,6 +198,7 @@ class ViewSystemControl(QWidget):
     *                                          Impulsional A button Functions                                          *
     ********************************************************************************************************************
     """
+
     def setBtnImpulsionalAStatus(self, status):
         self.btnImpulsional_A.setChecked(status)
         self.setBtnImpulsionalADisable(status)
@@ -204,9 +211,35 @@ class ViewSystemControl(QWidget):
 
     def getEdtImpulsionalAValue(self):
         return self.edtImpulsional_A.value()
+
     """
     ********************************************************************************************************************
     *                                        End Impulsional A button Functions                                        *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                          Impulsional B button Functions                                          *
+    ********************************************************************************************************************
+    """
+
+    def setBtnImpulsionalBStatus(self, status):
+        self.btnImpulsional_B.setChecked(status)
+        self.setBtnImpulsionalBDisable(status)
+
+    def getBtnImpulsionalBStatus(self):
+        return self.btnImpulsional_B.isChecked()
+
+    def setBtnImpulsionalBDisable(self, disable):
+        self.btnImpulsional_B.setDisabled(disable)
+
+    def getEdtImpulsionalBValue(self):
+        return self.edtImpulsional_B.value()
+
+    """
+    ********************************************************************************************************************
+    *                                        End Impulsional B button Functions                                        *
     ********************************************************************************************************************
     """
 
