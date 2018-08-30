@@ -26,6 +26,10 @@ class ViewCurveSetup(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
+        self.timeoutMessage = {
+            'Calibrate': 'The device has not been calibrated, try again.',
+        }
+
         self.lblGainA = QLabel("Gain A:")
         self.edtGainA = QSpinBox()
         self.edtGainA.setRange(0, 100)
@@ -236,9 +240,29 @@ class ViewCurveSetup(QWidget):
 
         return self.acquisitionBoxLayout
 
-    def setCalibrateDone(self):
-        self.btnCalibrate.setStyleSheet(style.buttonCalibrateDone)
-        self.btnCalibrate.setChecked(False)
+    def setCalibrateStatus(self, done):
+        if done:
+            self.btnCalibrate.setStyleSheet(style.buttonCalibrateDone)
+            self.btnCalibrate.setChecked(False)
+
+        else:
+            self.btnCalibrate.setStyleSheet(style.buttonCalibrate)
+            self.btnCalibrate.setChecked(False)
+
+    def setCalibrateDisable(self, disable):
+        self.btnCalibrate.setDisabled(disable)
+
+    def getEdtGainAValue(self):
+        return self.edtGainA.value()
+
+    def getEdtGainBValue(self):
+        return self.edtGainB.value()
+
+    def getEdtOffsetAValue(self):
+        return self.edtOffsetA.value()
+
+    def getEdtOffsetBValue(self):
+        return self.edtOffsetB.value()
 
     def setBtnLaserStatus(self, status):
         if status:

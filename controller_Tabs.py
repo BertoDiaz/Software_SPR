@@ -153,16 +153,16 @@ class ControllerTabs:
             self.viewSystemControl.edtImpulsional_A.valueChanged.connect(self.edtImpulsionalsChanged)
             self.viewSystemControl.edtImpulsional_B.valueChanged.connect(self.edtImpulsionalsChanged)
 
-            self.viewCurveSetup.btnCalibrate.clicked.connect(self.sendCalibrateParameters)
+            self.viewCurveSetup.btnCalibrate.clicked.connect(self.btnCalibrateChanged)
             self.viewCurveSetup.btnLaser.clicked.connect(self.btnLaserChanged)
             self.viewCurveSetup.btnResetValues.clicked.connect(self.resetCurvePerformance)
 
             self.viewCurveSetup.btnAutoAcquisition.clicked.connect(self.initAutoAcquisition)
 
-            self.viewCurveSetup.edtGainA.valueChanged.connect(self.calibrateChange)
-            self.viewCurveSetup.edtGainB.valueChanged.connect(self.calibrateChange)
-            self.viewCurveSetup.edtOffsetA.valueChanged.connect(self.calibrateChange)
-            self.viewCurveSetup.edtOffsetB.valueChanged.connect(self.calibrateChange)
+            self.viewCurveSetup.edtGainA.valueChanged.connect(self.edtCalibrateChanged)
+            self.viewCurveSetup.edtGainB.valueChanged.connect(self.edtCalibrateChanged)
+            self.viewCurveSetup.edtOffsetA.valueChanged.connect(self.edtCalibrateChanged)
+            self.viewCurveSetup.edtOffsetB.valueChanged.connect(self.edtCalibrateChanged)
 
             self.viewCurveSetup.edtInitialAngle.valueChanged.connect(self.curvePerformanceChange)
             self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.curvePerformanceChange)
@@ -219,6 +219,37 @@ class ControllerTabs:
         """New line to be easier to read the data."""
         self.serialPort.write_port('\n')
 
+    def btnLaserChanged(self):
+        self.viewSystemControl.setBtnLaserDisable(True)
+        self.viewCurveSetup.setBtnLaserDisable(True)
+
+        if not self.btnChecked['Laser']:
+            self.btnChecked['Laser'] = True
+            toSend = self.laserON
+
+        else:
+            self.btnChecked['Laser'] = False
+            toSend = self.laserOFF
+
+        self.serialPort.send_Laser(toSend)
+        self.bufferWaitACK.append(self.laserCommandReceived)
+
+        messageTimeout = partial(self.setTimeout, messageTimeout=self.viewSystemControl.timeoutMessage['Laser'],
+                                 functionTimeout=self.laserCommandReceived)
+        self.tmrTimeout.timeout.connect(messageTimeout)
+        self.tmrTimeout.start(self.msTimeout)
+
+    def laserCommandReceived(self):
+        if self.btnTimeout:
+            self.btnChecked['Laser'] = not self.btnChecked['Laser']
+            self.btnTimeout = False
+
+        self.viewSystemControl.setBtnLaserStatus(self.btnChecked['Laser'])
+        self.viewCurveSetup.setBtnLaserStatus(self.btnChecked['Laser'])
+
+        self.viewSystemControl.setBtnLaserDisable(False)
+        self.viewCurveSetup.setBtnLaserDisable(False)
+
     def edtPeristalticChanged(self):
         self.values['Peristaltic'] = self.viewSystemControl.getEdtPeristalticValue()
 
@@ -261,11 +292,12 @@ class ControllerTabs:
         self.tmrTimeout.start(self.msTimeout)
 
     def peristalticCommandReceived(self):
-        status = self.viewSystemControl.getBtnPeristalticStatus()
-
         if self.btnTimeout:
             status = not self.viewSystemControl.getBtnPeristalticStatus()
             self.btnTimeout = False
+
+        else:
+            status = self.viewSystemControl.getBtnPeristalticStatus()
 
         self.viewSystemControl.setBtnPeristalticStatus(status)
         self.viewSystemControl.setBtnPeristalticDisable(False)
@@ -340,7 +372,17 @@ class ControllerTabs:
         finishImpulses = partial(self.viewSystemControl.setBtnImpulsionalBStatus, status=False)
         self.tmrBtnImpulsional_B.singleShot(timeImpulses, finishImpulses)
 
-    def sendCalibrateParameters(self):
+    def edtCalibrateChanged(self):
+        self.viewCurveSetup.setCalibrateStatus(False)
+
+        self.values['Gain A'] = self.viewCurveSetup.getEdtGainAValue()
+        self.values['Offset A'] = self.viewCurveSetup.getEdtOffsetAValue()
+        self.values['Gain B'] = self.viewCurveSetup.getEdtGainBValue()
+        self.values['Offset B'] = self.viewCurveSetup.getEdtOffsetBValue()
+
+    def btnCalibrateChanged(self):
+        self.viewCurveSetup.setCalibrateDisable(True)
+
         toSend = [
             self.values['Gain A'],
             self.values['Offset A'],
@@ -349,56 +391,24 @@ class ControllerTabs:
         ]
 
         self.serialPort.send_Gain_Offset(toSend)
+        self.bufferWaitACK.append(self.calibrateCommandReceived)
 
-        self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_data)
-        self.serialPort.packet_received.connect(self.calibrateReceive)
-
-    def calibrateChange(self):
-        self.values['Gain A'] = self.viewCurveSetup.edtGainA.value()
-        self.values['Offset A'] = self.viewCurveSetup.edtOffsetA.value()
-        self.values['Gain B'] = self.viewCurveSetup.edtGainB.value()
-        self.values['Offset B'] = self.viewCurveSetup.edtOffsetB.value()
-
-    def calibrateReceive(self, data):
-        if data != '@':
-            self.viewCurveSetup.setMessageCritical("Error", "The device has not been calibrated, try again.")
-
-        else:
-            self.viewCurveSetup.setCalibrateDone()
-
-        self.serialPort.serialPort.readyRead.disconnect()
-        self.serialPort.packet_received.disconnect()
-
-    def btnLaserChanged(self):
-        self.viewSystemControl.setBtnLaserDisable(True)
-        self.viewCurveSetup.setBtnLaserDisable(True)
-
-        if not self.btnChecked['Laser']:
-            self.btnChecked['Laser'] = True
-            toSend = self.laserON
-
-        else:
-            self.btnChecked['Laser'] = False
-            toSend = self.laserOFF
-
-        self.serialPort.send_Laser(toSend)
-        self.bufferWaitACK.append(self.laserCommandReceived)
-
-        messageTimeout = partial(self.setTimeout, messageTimeout=self.viewSystemControl.timeoutMessage['Laser'],
-                                 functionTimeout=self.laserCommandReceived)
-        self.tmrTimeout.timeout.connect(messageTimeout)
+        functionTimeout = partial(self.setTimeout,
+                                  messageTimeout=self.viewCurveSetup.timeoutMessage['Calibrate'],
+                                  functionTimeout=self.calibrateCommandReceived)
+        self.tmrTimeout.timeout.connect(functionTimeout)
         self.tmrTimeout.start(self.msTimeout)
 
-    def laserCommandReceived(self):
+    def calibrateCommandReceived(self):
         if self.btnTimeout:
-            self.btnChecked['Laser'] = not self.btnChecked['Laser']
+            done = False
             self.btnTimeout = False
 
-        self.viewSystemControl.setBtnLaserStatus(self.btnChecked['Laser'])
-        self.viewCurveSetup.setBtnLaserStatus(self.btnChecked['Laser'])
+        else:
+            done = True
 
-        self.viewSystemControl.setBtnLaserDisable(False)
-        self.viewCurveSetup.setBtnLaserDisable(False)
+        self.viewCurveSetup.setCalibrateStatus(done)
+        self.viewCurveSetup.setCalibrateDisable(False)
 
     def resetCurvePerformance(self):
         if not self.btnChecked['Reset']:
