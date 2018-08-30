@@ -60,7 +60,7 @@ class ViewCurveSetup(QWidget):
         self.edtPointsCurve = QLineEdit()
         self.edtPointsCurve.setReadOnly(True)
 
-        self.btnResetValues = QPushButton("Reset")
+        self.btnReset = QPushButton("Reset")
 
         self.edtAcquisition = QLineEdit()
         self.edtAcquisition.setReadOnly(True)
@@ -205,7 +205,7 @@ class ViewCurveSetup(QWidget):
         self.curveLayout.addWidget(self.edtFinalAngle, 3, 1)
         self.curveLayout.addWidget(self.lblPointsCurve, 4, 0)
         self.curveLayout.addWidget(self.edtPointsCurve, 4, 1)
-        self.curveLayout.addWidget(self.btnResetValues, 3, 2, 2, 1)
+        self.curveLayout.addWidget(self.btnReset, 3, 2, 2, 1)
 
         self.curveBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.curveBoxLayout.setLayout(self.curveLayout)
@@ -240,7 +240,13 @@ class ViewCurveSetup(QWidget):
 
         return self.acquisitionBoxLayout
 
-    def setCalibrateStatus(self, done):
+    """
+    ********************************************************************************************************************
+    *                                         Calibration Parameters Functions                                         *
+    ********************************************************************************************************************
+    """
+
+    def setBtnCalibrateStatus(self, done):
         if done:
             self.btnCalibrate.setStyleSheet(style.buttonCalibrateDone)
             self.btnCalibrate.setChecked(False)
@@ -249,7 +255,7 @@ class ViewCurveSetup(QWidget):
             self.btnCalibrate.setStyleSheet(style.buttonCalibrate)
             self.btnCalibrate.setChecked(False)
 
-    def setCalibrateDisable(self, disable):
+    def setBtnCalibrateDisable(self, disable):
         self.btnCalibrate.setDisabled(disable)
 
     def getEdtGainAValue(self):
@@ -264,6 +270,18 @@ class ViewCurveSetup(QWidget):
     def getEdtOffsetBValue(self):
         return self.edtOffsetB.value()
 
+    """
+    ********************************************************************************************************************
+    *                                       End Calibration Parameters Functions                                       *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                              Laser Button Functions                                              *
+    ********************************************************************************************************************
+    """
+
     def setBtnLaserStatus(self, status):
         if status:
             text = 'Laser ON'
@@ -277,12 +295,72 @@ class ViewCurveSetup(QWidget):
     def setBtnLaserDisable(self, disable):
         self.btnLaser.setDisabled(disable)
 
+    """
+    ********************************************************************************************************************
+    *                                            End Laser Button Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                           Curve Performance Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    def setBtnResetStatus(self, status):
+        self.btnReset.setChecked(status)
+
+    def getBtnResetStatus(self):
+        return self.btnReset.isChecked()
+
+    def setBtnResetDisable(self, disable):
+        self.btnReset.setDisabled(disable)
+
+    def getEdtInitialAngleValue(self):
+        return self.edtInitialAngle.value()
+
+    def getEdtAngleLongitudeValue(self):
+        return self.edtAngleLongitude.value()
+
+    def getEdtAngleResolutionValue(self):
+        return self.edtAngleResolution.value()
+
+    def getEdtFinalAngleValue(self):
+        return self.edtFinalAngle.text()
+
+    def getEdtPointsCurveValue(self):
+        return self.edtPointsCurve.text()
+
+    """
+    ********************************************************************************************************************
+    *                                          End Curve Performance Functions                                         *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                           Acquisition Mode Functions                                             *
+    ********************************************************************************************************************
+    """
+
     def setAutoAcquisitionInProcess(self):
         self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisitionInProcess)
 
     def setAutoAcquisitionFinish(self):
         self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisition)
         self.btnAutoAcquisition.setChecked(False)
+
+    """
+    ********************************************************************************************************************
+    *                                         End Acquisition Mode Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                             Buttons Styles Functions                                             *
+    ********************************************************************************************************************
+    """
 
     def setStyleButtons(self):
         self.btnLaser.setStyleSheet(style.buttonLaserSmall)
@@ -291,11 +369,23 @@ class ViewCurveSetup(QWidget):
         self.btnCalibrate.setStyleSheet(style.buttonCalibrate)
         self.btnCalibrate.setCheckable(True)
 
-        self.btnResetValues.setStyleSheet(style.buttonReset)
-        self.btnResetValues.setCheckable(True)
+        self.btnReset.setStyleSheet(style.buttonReset)
+        self.btnReset.setCheckable(True)
 
         self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisition)
         self.btnAutoAcquisition.setCheckable(True)
+
+    """
+    ********************************************************************************************************************
+    *                                           End Buttons Styles Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                            Spin Boxes Styles Functions                                           *
+    ********************************************************************************************************************
+    """
 
     def setStyleSpinBox(self):
         self.edtGainA.setStyleSheet(style.spinBoxGeneral)
@@ -309,6 +399,18 @@ class ViewCurveSetup(QWidget):
 
         self.edtDataSampling.setStyleSheet(style.spinBoxGeneral)
 
+    """
+    ********************************************************************************************************************
+    *                                          End Spin Boxes Styles Functions                                         *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                            Line Edits Styles Functions                                           *
+    ********************************************************************************************************************
+    """
+
     def setStyleLineEdit(self):
         self.edtFinalAngle.setStyleSheet(style.lineEditGeneral)
         self.edtPointsCurve.setStyleSheet(style.lineEditGeneral)
@@ -317,6 +419,24 @@ class ViewCurveSetup(QWidget):
         self.edtACQChannel_1.setStyleSheet(style.lineEditGeneral)
         self.edtACQChannel_2.setStyleSheet(style.lineEditGeneral)
 
+    """
+    ********************************************************************************************************************
+    *                                          End Line Edits Styles Functions                                         *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                                Messages Functions                                                *
+    ********************************************************************************************************************
+    """
+
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)
+
+    """
+    ********************************************************************************************************************
+    *                                              End Messages Functions                                              *
+    ********************************************************************************************************************
+    """
 

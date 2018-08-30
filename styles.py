@@ -379,21 +379,21 @@ buttonReset = 'QPushButton {' \
               'border-width: 1px;' \
               'border-style: inset;' \
               'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
-              'stop: 0 #faac58, stop: 1 #ff8000);' \
+              'stop: 0 #00ff00, stop: 1 #04b404);' \
               'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
-              'stop: 0 #faac58, stop: 1 #ff8000);' \
+              'stop: 0 #00ff00, stop: 1 #04b404);' \
               '}' \
               'QPushButton:hover:checked {' \
               'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
-              'stop: 0 #ff8000, stop: 1 #df7401);' \
+              'stop: 0 #04b404, stop: 1 #088a08);' \
               '}' \
               'QPushButton:pressed:checked {' \
               'border-width: 1px;' \
               'border-style: outset;' \
               'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
-              'stop: 0 #faac58, stop: 1 #ff8000);' \
+              'stop: 0 #00ff00, stop: 1 #04b404);' \
               'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
-              'stop: 0 #ff8000, stop: 1 #df7401);' \
+              'stop: 0 #04b404, stop: 1 #088a08);' \
               '}'
 
 buttonAutoAcquisition = 'QPushButton {' \

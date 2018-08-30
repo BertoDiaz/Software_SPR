@@ -155,7 +155,7 @@ class ControllerTabs:
 
             self.viewCurveSetup.btnCalibrate.clicked.connect(self.btnCalibrateChanged)
             self.viewCurveSetup.btnLaser.clicked.connect(self.btnLaserChanged)
-            self.viewCurveSetup.btnResetValues.clicked.connect(self.resetCurvePerformance)
+            self.viewCurveSetup.btnReset.clicked.connect(self.btnResetChanged)
 
             self.viewCurveSetup.btnAutoAcquisition.clicked.connect(self.initAutoAcquisition)
 
@@ -164,9 +164,9 @@ class ControllerTabs:
             self.viewCurveSetup.edtOffsetA.valueChanged.connect(self.edtCalibrateChanged)
             self.viewCurveSetup.edtOffsetB.valueChanged.connect(self.edtCalibrateChanged)
 
-            self.viewCurveSetup.edtInitialAngle.valueChanged.connect(self.curvePerformanceChange)
-            self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.curvePerformanceChange)
-            self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.curvePerformanceChange)
+            self.viewCurveSetup.edtInitialAngle.valueChanged.connect(self.edtCurvePerformanceChanged)
+            self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.edtCurvePerformanceChanged)
+            self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.edtCurvePerformanceChanged)
 
             self.viewCurveSetup.edtDataSampling.valueChanged.connect(self.acquisitionChange)
 
@@ -373,7 +373,7 @@ class ControllerTabs:
         self.tmrBtnImpulsional_B.singleShot(timeImpulses, finishImpulses)
 
     def edtCalibrateChanged(self):
-        self.viewCurveSetup.setCalibrateStatus(False)
+        self.viewCurveSetup.setBtnCalibrateStatus(False)
 
         self.values['Gain A'] = self.viewCurveSetup.getEdtGainAValue()
         self.values['Offset A'] = self.viewCurveSetup.getEdtOffsetAValue()
@@ -381,7 +381,7 @@ class ControllerTabs:
         self.values['Offset B'] = self.viewCurveSetup.getEdtOffsetBValue()
 
     def btnCalibrateChanged(self):
-        self.viewCurveSetup.setCalibrateDisable(True)
+        self.viewCurveSetup.setBtnCalibrateDisable(True)
 
         toSend = [
             self.values['Gain A'],
@@ -407,14 +407,23 @@ class ControllerTabs:
         else:
             done = True
 
-        self.viewCurveSetup.setCalibrateStatus(done)
-        self.viewCurveSetup.setCalibrateDisable(False)
+        self.viewCurveSetup.setBtnCalibrateStatus(done)
+        self.viewCurveSetup.setBtnCalibrateDisable(False)
 
-    def resetCurvePerformance(self):
-        if not self.btnChecked['Reset']:
-            self.tmrBtnReset.singleShot(1000, self.resetCurvePerformance)
+    def edtCurvePerformanceChanged(self):
+        self.viewCurveSetup.setBtnResetStatus(False)
 
-            self.viewCurveSetup.btnResetValues.setDisabled(True)
+        self.values['Init Angle'] = self.viewCurveSetup.getEdtInitialAngleValue()
+        self.values['Angle Longitude'] = self.viewCurveSetup.getEdtAngleLongitudeValue()
+        self.values['Angle Resolution'] = self.viewCurveSetup.getEdtAngleResolutionValue()
+        self.values['Final Angle'] = int(self.viewCurveSetup.getEdtFinalAngleValue())
+        self.values['Points Curve'] = int(self.viewCurveSetup.getEdtPointsCurveValue())
+
+    def btnResetChanged(self):
+        if self.viewCurveSetup.getBtnResetStatus():
+            self.tmrBtnReset.singleShot(500, self.btnResetChanged)
+
+            self.viewCurveSetup.setBtnResetDisable(True)
 
             self.viewCurveSetup.edtInitialAngle.valueChanged.disconnect()
             self.viewCurveSetup.edtAngleLongitude.valueChanged.disconnect()
@@ -432,22 +441,15 @@ class ControllerTabs:
             self.viewCurveSetup.edtFinalAngle.setText(str(self.values['Final Angle']))
             self.viewCurveSetup.edtPointsCurve.setText(str(self.values['Points Curve']))
 
-            self.btnChecked['Reset'] = True
+            self.viewCurveSetup.setBtnResetStatus(False)
 
         else:
+            self.viewCurveSetup.setBtnResetDisable(False)
+            self.viewCurveSetup.setBtnResetStatus(True)
 
-            self.viewCurveSetup.btnResetValues.setChecked(False)
-            self.viewCurveSetup.btnResetValues.setDisabled(False)
-            self.btnChecked['Reset'] = False
-
-            self.viewCurveSetup.edtInitialAngle.valueChanged.connect(self.curvePerformanceChange)
-            self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.curvePerformanceChange)
-            self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.curvePerformanceChange)
-
-    def curvePerformanceChange(self):
-        self.values['Init Angle'] = self.viewCurveSetup.edtInitialAngle.value()
-        self.values['Angle Longitude'] = self.viewCurveSetup.edtAngleLongitude.value()
-        self.values['Angle Resolution'] = self.viewCurveSetup.edtAngleResolution.value()
+            self.viewCurveSetup.edtInitialAngle.valueChanged.connect(self.edtCurvePerformanceChanged)
+            self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.edtCurvePerformanceChanged)
+            self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.edtCurvePerformanceChanged)
 
     def initAutoAcquisition(self):
         if not self.btnChecked['Auto Acquisition']:
