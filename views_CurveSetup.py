@@ -344,8 +344,14 @@ class ViewCurveSetup(QWidget):
     ********************************************************************************************************************
     """
 
+    def setBtnAutoAcquisitionStatus(self, status):
+        self.btnAutoAcquisition.setChecked(status)
+
     def getBtnAutoAcquisitionStatus(self):
         return self.btnAutoAcquisition.isChecked()
+
+    def setBtnAutoAcquisitionDisable(self, disable):
+        self.btnAutoAcquisition.setDisabled(disable)
 
     def setBtnAutoAcquisitionInProcess(self, inProcess):
         if inProcess:
@@ -353,7 +359,12 @@ class ViewCurveSetup(QWidget):
 
         else:
             self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisition)
-            self.btnAutoAcquisition.setChecked(False)
+
+        self.setBtnAutoAcquisitionStatus(inProcess)
+        self.setBtnAutoAcquisitionDisable(False)
+
+    def getEdtDataSampling(self):
+        return self.edtDataSampling.value()
 
     """
     ********************************************************************************************************************

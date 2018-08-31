@@ -37,7 +37,6 @@ class ControllerTabs:
         self.msTimeout = 1000
         self.bufferWaitACK = Queue()
         self.btnTimeout = False
-        self.acquisitionInProcess = False
 
         self.btnChecked = {
             'Laser': False,
@@ -166,10 +165,10 @@ class ControllerTabs:
             self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.edtCurvePerformanceChanged)
             self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.edtCurvePerformanceChanged)
 
-            self.viewCurveSetup.edtDataSampling.valueChanged.connect(self.acquisitionChange)
+            self.viewCurveSetup.edtDataSampling.valueChanged.connect(self.edtAcquisitionChange)
 
             self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_multiple_data)
-            self.serialPort.packet_received.connect(self.receiveData)
+            self.serialPort.packet_received.connect(self.commandReceived)
 
             self.viewTabs.btnExit.clicked.connect(self.exit_App)
 
@@ -389,8 +388,7 @@ class ControllerTabs:
         self.serialPort.send_Gain_Offset(toSend)
         self.bufferWaitACK.append(self.calibrateCommandReceived)
 
-        functionTimeout = partial(self.setTimeout,
-                                  messageTimeout=self.viewCurveSetup.timeoutMessage['Calibrate'],
+        functionTimeout = partial(self.setTimeout, messageTimeout=self.viewCurveSetup.timeoutMessage['Calibrate'],
                                   functionTimeout=self.calibrateCommandReceived)
         self.tmrTimeout.timeout.connect(functionTimeout)
         self.tmrTimeout.start(self.msTimeout)
@@ -465,8 +463,14 @@ class ControllerTabs:
     ********************************************************************************************************************
     """
 
-    def acquisitionChange(self):
-        self.values['Data Sampling'] = self.viewCurveSetup.edtDataSampling.value()
+    """
+    ********************************************************************************************************************
+    *                                          Acquisition Mode Functions                                              *
+    ********************************************************************************************************************
+    """
+
+    def edtAcquisitionChange(self):
+        self.values['Data Sampling'] = self.viewCurveSetup.getEdtDataSampling()
 
     def btnAutoAcquisitionChanged(self):
         if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
@@ -480,38 +484,33 @@ class ControllerTabs:
         else:
             self.serialPort.send_Finish_Experiment()
 
+        self.viewCurveSetup.setBtnAutoAcquisitionDisable(True)
         self.bufferWaitACK.append(self.acquisitionCommandReceived)
 
-        functionTimeout = partial(self.setTimeout,
-                                  messageTimeout=self.viewCurveSetup.timeoutMessage['Automatic'],
+        functionTimeout = partial(self.setTimeout, messageTimeout=self.viewCurveSetup.timeoutMessage['Automatic'],
                                   functionTimeout=self.acquisitionCommandReceived)
         self.tmrTimeout.timeout.connect(functionTimeout)
         self.tmrTimeout.start(self.msTimeout)
 
     def acquisitionCommandReceived(self):
-        if not self.acquisitionInProcess:
-            if self.btnTimeout:
-                inProcess = False
-                self.btnTimeout = False
+        if self.btnTimeout:
+            if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
+                acquisitionInProcess = False
 
             else:
-                if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
-                    inProcess = True
+                acquisitionInProcess = True
+            self.btnTimeout = False
 
-                else:
-                    inProcess = False
+        else:
+            if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
+                acquisitionInProcess = True
 
-            self.viewCurveSetup.setBtnAutoAcquisitionInProcess(inProcess)
+            else:
+                acquisitionInProcess = False
 
-        # else:
-        #     self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
-        #     self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
+        self.viewCurveSetup.setBtnAutoAcquisitionInProcess(acquisitionInProcess)
 
-        #     self.dataReceived()
-
-    def dataReceived(self, data):
-        print(data)
-
+    def acquisitionDataReceived(self, data):
         self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
         self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
 
@@ -523,11 +522,23 @@ class ControllerTabs:
         self.viewCurveSetup.edtACQChannel_2.setText(str(self.values['Acquisition Channel 2']))
         self.viewCurveSetup.edtAcquisition.setText(str(self.values['Automatic']))
 
-        if self.values['Automatic'] >= 48:
-            self.viewCurveSetup.btnAutoAcquisition.setChecked(False)
-            self.initAutoAcquisition()
+        if self.values['Automatic'] >= 5:
+            self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
+            self.btnAutoAcquisitionChanged()
 
-    def receiveData(self, data):
+    """
+    ********************************************************************************************************************
+    *                                         End Acquisition Mode Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                               Extra Functions                                                    *
+    ********************************************************************************************************************
+    """
+
+    def commandReceived(self, data):
         for value in data:
             if value == self.ackCommand:
                 valueACK = self.bufferWaitACK.pop()
@@ -539,7 +550,7 @@ class ControllerTabs:
 
             else:
                 if value == self.acquisitionCommand:
-                    self.dataReceived(data)
+                    self.acquisitionDataReceived(data)
 
     def setTimeout(self, messageTimeout, functionTimeout):
         self.btnTimeout = True
@@ -558,6 +569,12 @@ class ControllerTabs:
     @staticmethod
     def exit_All():
         sys.exit()
+
+    """
+    ********************************************************************************************************************
+    *                                             End Extra Functions                                                  *
+    ********************************************************************************************************************
+    """
 
 
 if __name__ == '__main__':
