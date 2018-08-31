@@ -141,6 +141,8 @@ class ControllerTabs:
             self.viewCurveSetup.edtACQChannel_1.setText(str(self.values['Acquisition Channel 1']))
             self.viewCurveSetup.edtACQChannel_2.setText(str(self.values['Acquisition Channel 2']))
 
+            """-------------------------------------- System Control Connects ---------------------------------------"""
+
             self.viewSystemControl.btnLaser.clicked.connect(self.btnLaserChanged)
             self.viewSystemControl.btnPeristaltic.clicked.connect(self.btnPeristalticChanged)
             self.viewSystemControl.btnImpulsional_A.clicked.connect(self.btnImpulsionalAChanged)
@@ -149,6 +151,10 @@ class ControllerTabs:
             self.viewSystemControl.edtPeristaltic.valueChanged.connect(self.edtPeristalticChanged)
             self.viewSystemControl.edtImpulsional_A.valueChanged.connect(self.edtImpulsionalsChanged)
             self.viewSystemControl.edtImpulsional_B.valueChanged.connect(self.edtImpulsionalsChanged)
+
+            """------------------------------------ End System Control Connects -------------------------------------"""
+
+            """---------------------------------------- Curve Setup Connects ----------------------------------------"""
 
             self.viewCurveSetup.btnCalibrate.clicked.connect(self.btnCalibrateChanged)
             self.viewCurveSetup.btnLaser.clicked.connect(self.btnLaserChanged)
@@ -165,7 +171,15 @@ class ControllerTabs:
             self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.edtCurvePerformanceChanged)
             self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.edtCurvePerformanceChanged)
 
-            self.viewCurveSetup.edtDataSampling.valueChanged.connect(self.edtAcquisitionChange)
+            self.viewCurveSetup.edtDataSampling.valueChanged.connect(self.edtAcquisitionChanged)
+
+            """-------------------------------------- End Curve Setup Connects --------------------------------------"""
+
+            """------------------------------------- Data Acquisition Connects --------------------------------------"""
+
+            self.viewDataAcquisition.btnInitExperiment.clicked.connect(self.btnInitExperimentChanged)
+
+            """----------------------------------- End Data Acquisition Connects ------------------------------------"""
 
             self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_multiple_data)
             self.serialPort.packet_received.connect(self.commandReceived)
@@ -205,6 +219,7 @@ class ControllerTabs:
 
         self.viewSystemControl.setBtnLaserStatus(self.btnChecked['Laser'])
         self.viewCurveSetup.setBtnLaserStatus(self.btnChecked['Laser'])
+        self.viewDataAcquisition.setLedLaserStatus(self.btnChecked['Laser'])
 
         self.viewSystemControl.setBtnLaserDisable(False)
         self.viewCurveSetup.setBtnLaserDisable(False)
@@ -213,6 +228,14 @@ class ControllerTabs:
     ********************************************************************************************************************
     *                                            End Laser Control Functions                                           *
     ********************************************************************************************************************
+    """
+
+    """
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --------------------------------------------------------------------------------------------------------------------
+    ----------                                        System Control Tab                                      ---------- 
+    --------------------------------------------------------------------------------------------------------------------
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     """
 
     """
@@ -362,6 +385,22 @@ class ControllerTabs:
     """
 
     """
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --------------------------------------------------------------------------------------------------------------------
+    ----------                                      End System Control Tab                                    ---------- 
+    --------------------------------------------------------------------------------------------------------------------
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    """
+
+    """
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --------------------------------------------------------------------------------------------------------------------
+    ----------                                       SPR Curve Setup Tab                                      ---------- 
+    --------------------------------------------------------------------------------------------------------------------
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    """
+
+    """
     ********************************************************************************************************************
     *                                        Calibration Parameters Functions                                          *
     ********************************************************************************************************************
@@ -469,7 +508,7 @@ class ControllerTabs:
     ********************************************************************************************************************
     """
 
-    def edtAcquisitionChange(self):
+    def edtAcquisitionChanged(self):
         self.values['Data Sampling'] = self.viewCurveSetup.getEdtDataSamplingValue()
 
     def btnAutoAcquisitionChanged(self):
@@ -516,42 +555,96 @@ class ControllerTabs:
 
     def acquisitionCommandReceived(self):
         if self.btnTimeout:
-            if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
-                acquisitionInProcess = False
-
-            else:
-                acquisitionInProcess = True
+            acquisitionInProcess = not self.viewCurveSetup.getBtnAutoAcquisitionStatus()
             self.btnTimeout = False
 
         else:
-            if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
-                acquisitionInProcess = True
-
-            else:
-                acquisitionInProcess = False
+            acquisitionInProcess = self.viewCurveSetup.getBtnAutoAcquisitionStatus()
 
         self.viewCurveSetup.setBtnAutoAcquisitionInProcess(acquisitionInProcess)
 
     def acquisitionDataReceived(self, data):
-        self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
-        self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
+        if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
+            self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
+            self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
 
-        self.values['Acquisition Channel 1'] = self.valuesPhotodiodes['Photodiode A'][self.values['Automatic']]
-        self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
-        self.values['Automatic'] += 1
+            self.values['Acquisition Channel 1'] = self.valuesPhotodiodes['Photodiode A'][self.values['Automatic']]
+            self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
+            self.values['Automatic'] += 1
 
-        self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
-        self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
-        self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
+            self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
+            self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
+            self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
 
-        if self.values['Automatic'] >= 5:
-            self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
-            self.btnAutoAcquisitionChanged()
+            if self.values['Automatic'] >= 5:
+                self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
+                self.btnAutoAcquisitionChanged()
 
     """
     ********************************************************************************************************************
     *                                         End Acquisition Mode Functions                                           *
     ********************************************************************************************************************
+    """
+
+    """
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --------------------------------------------------------------------------------------------------------------------
+    ----------                                     End SPR Curve Setup Tab                                    ---------- 
+    --------------------------------------------------------------------------------------------------------------------
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    """
+
+    """
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --------------------------------------------------------------------------------------------------------------------
+    ----------                                       Data Acquisition Tab                                     ---------- 
+    --------------------------------------------------------------------------------------------------------------------
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    """
+
+    def btnInitExperimentChanged(self):
+        laserSwitchOFF = False
+
+        if self.viewDataAcquisition.getBtnInitExperimentStatus():
+
+            if self.viewDataAcquisition.getLedLaserStatus():
+                self.serialPort.send_Init_Experiment()
+
+            else:
+                laserSwitchOFF = True
+
+        else:
+            self.serialPort.send_Finish_Experiment()
+
+        if laserSwitchOFF:
+            self.viewDataAcquisition.setBtnInitExperimentStatus(False)
+            self.viewDataAcquisition.setMessageCritical('Error', 'It is necessary the laser is switch ON.')
+
+        else:
+
+            self.bufferWaitACK.append(self.initExperimentCommandReceived)
+
+            functionTimeout = partial(self.setTimeout,
+                                      messageTimeout=self.viewDataAcquisition.timeoutMessage['Init Experiment'],
+                                      functionTimeout=self.initExperimentCommandReceived)
+            self.tmrTimeout.timeout.connect(functionTimeout)
+            self.tmrTimeout.start(self.msTimeout)
+
+    def initExperimentCommandReceived(self):
+        if self.btnTimeout:
+            self.viewDataAcquisition.setBtnInitExperimentStatus(not self.viewDataAcquisition.
+                                                                getBtnInitExperimentStatus())
+            self.btnTimeout = False
+
+        else:
+            self.viewDataAcquisition.setBtnInitExperimentStatus(self.viewDataAcquisition.getBtnInitExperimentStatus())
+
+    """
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    --------------------------------------------------------------------------------------------------------------------
+    ----------                                     End Data Acquisition Tab                                   ---------- 
+    --------------------------------------------------------------------------------------------------------------------
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     """
 
     """

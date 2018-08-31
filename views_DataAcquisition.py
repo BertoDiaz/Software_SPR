@@ -27,24 +27,27 @@ class ViewDataAcquisition(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
+        self.timeoutMessage = {
+            'Init Experiment': 'The device has not respond, try again.'
+        }
+
         self.lblDataSampling = QLabel("Data Sampling:")
         self.edtDataSampling = QSpinBox()
         self.lblExperimentTime = QLabel("Experiment Time:")
         self.edtExperimentTime = QSpinBox()
-        self.lblStatusLaser = QLabel("Status Laser")
+        self.lblLaser = QLabel("Status Laser")
         self.lblChannel_1 = QLabel("Channel 1")
         self.edtChannel_1 = QLineEdit()
         self.lblChannel_2 = QLabel("Channel 2")
         self.edtChannel_2 = QLineEdit()
         self.lblTime = QLabel("Time")
         self.edtTime = QLineEdit()
-        self.lblBtnInit = QLabel("Experiment Start")
+        self.lblBtnInit = QLabel("Start Experiment")
 
-        self.btnInit = QPushButton()
+        self.btnInitExperiment = QPushButton()
         self.btnFreeRunning = QPushButton("Free Running")
 
-        self.ledStatusLaser = LedIndicator(self)
-        self.ledStatusLaser.setDisabled(True)
+        self.ledLaser = LedIndicator(self)
 
         self.layoutGrid = QGridLayout(self)
 
@@ -100,9 +103,9 @@ class ViewDataAcquisition(QWidget):
         self.lblChannel_1.setFixedWidth(50)
         self.lblChannel_2.setFixedWidth(50)
         self.lblTime.setFixedWidth(50)
-        self.lblStatusLaser.setFixedWidth(50)
-        self.lblStatusLaser.setWordWrap(True)
-        self.lblStatusLaser.setAlignment(Qt.AlignCenter)
+        self.lblLaser.setFixedWidth(50)
+        self.lblLaser.setWordWrap(True)
+        self.lblLaser.setAlignment(Qt.AlignCenter)
         self.lblBtnInit.setWordWrap(True)
         self.edtDataSampling.setFixedWidth(75)
         self.edtDataSampling.setAlignment(Qt.AlignRight)
@@ -112,12 +115,14 @@ class ViewDataAcquisition(QWidget):
         self.edtChannel_2.setFixedWidth(100)
         self.edtTime.setFixedWidth(100)
 
+        self.setLedLaserDisable(True)
+
         self.dataSamplingLayout.setAlignment(Qt.AlignRight)
         self.experimentTimeLayout.setAlignment(Qt.AlignRight)
 
         self.btnInitLayout.addWidget(self.lblBtnInit)
 
-        self.btnInit.setLayout(self.btnInitLayout)
+        self.btnInitExperiment.setLayout(self.btnInitLayout)
 
         self.dataSamplingLayout.addWidget(self.lblDataSampling, 0, 0)
         self.dataSamplingLayout.addWidget(self.edtDataSampling, 0, 1)
@@ -130,12 +135,12 @@ class ViewDataAcquisition(QWidget):
 
         self.experimentTimeBoxLayout.setLayout(self.experimentTimeLayout)
 
-        self.statusLaserLayout.addWidget(self.lblStatusLaser, 0, 0)
-        self.statusLaserLayout.addWidget(self.ledStatusLaser, 1, 0)
+        self.statusLaserLayout.addWidget(self.lblLaser, 0, 0)
+        self.statusLaserLayout.addWidget(self.ledLaser, 1, 0)
 
         self.statusLaserBoxLayout.setLayout(self.statusLaserLayout)
 
-        self.timeLayout.addWidget(self.btnInit, 0, 0, 5, 1)
+        self.timeLayout.addWidget(self.btnInitExperiment, 0, 0, 5, 1)
         self.timeLayout.addWidget(self.dataSamplingBoxLayout, 0, 1, 1, 3)
         self.timeLayout.addWidget(self.experimentTimeBoxLayout, 1, 1, 1, 3)
         self.timeLayout.addWidget(self.statusLaserBoxLayout, 2, 1, 3, 1)
@@ -151,9 +156,55 @@ class ViewDataAcquisition(QWidget):
 
         return self.timeBoxLayout
 
+    """
+    ********************************************************************************************************************
+    *                                        Init Experiment Button Functions                                          *
+    ********************************************************************************************************************
+    """
+
+    def setBtnInitExperimentStatus(self, status):
+        if status:
+            text = 'Stop Experiment'
+
+        else:
+            text = 'Start Experiment'
+
+        self.lblBtnInit.setText(text)
+        self.btnInitExperiment.setChecked(status)
+
+    def getBtnInitExperimentStatus(self):
+        return self.btnInitExperiment.isChecked()
+
+    """
+    ********************************************************************************************************************
+    *                                      End Init Experiment Button Functions                                        *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                               Laser Led Functions                                                *
+    ********************************************************************************************************************
+    """
+
+    def setLedLaserStatus(self, status):
+        self.ledLaser.setChecked(status)
+
+    def getLedLaserStatus(self):
+        return self.ledLaser.isChecked()
+
+    def setLedLaserDisable(self, disable):
+        self.ledLaser.setDisabled(disable)
+
+    """
+    ********************************************************************************************************************
+    *                                             End Laser Led Functions                                              *
+    ********************************************************************************************************************
+    """
+
     def setStyleButtons(self):
-        self.btnInit.setStyleSheet(style.buttonInit)
-        self.btnInit.setCheckable(True)
+        self.btnInitExperiment.setStyleSheet(style.buttonInit)
+        self.btnInitExperiment.setCheckable(True)
 
         self.btnFreeRunning.setStyleSheet(style.buttonFreeRunning)
         self.btnFreeRunning.setCheckable(True)

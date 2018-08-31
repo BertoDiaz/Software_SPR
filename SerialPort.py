@@ -176,3 +176,9 @@ class SerialPort(QObject):
 
     def send_Finish_Experiment(self):
         self.write_port('[')
+
+    def send_Init_Experiment(self):
+        self.write_port(self.commands['CurveTemporal'])
+        self.write_port('@')
+
+        self.write_port(f'{1:04x}')
