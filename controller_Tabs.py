@@ -470,27 +470,49 @@ class ControllerTabs:
     """
 
     def edtAcquisitionChange(self):
-        self.values['Data Sampling'] = self.viewCurveSetup.getEdtDataSampling()
+        self.values['Data Sampling'] = self.viewCurveSetup.getEdtDataSamplingValue()
 
     def btnAutoAcquisitionChanged(self):
+        self.viewCurveSetup.setBtnAutoAcquisitionDisable(True)
+        self.viewCurveSetup.setEdtDataSamplingDisable(True)
+
+        laserSwitchOFF = False
+
         if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
-            toSend = self.values['Data Sampling']
 
-            self.serialPort.send_Auto_Acquisition(toSend)
+            if self.viewCurveSetup.getBtnLaserStatus():
+                toSend = self.values['Data Sampling']
 
-            self.valuesPhotodiodes['Photodiode A'] = []
-            self.valuesPhotodiodes['Photodiode B'] = []
+                self.serialPort.send_Auto_Acquisition(toSend)
+
+                self.valuesPhotodiodes['Photodiode A'] = []
+                self.valuesPhotodiodes['Photodiode B'] = []
+
+                self.values['Acquisition Channel 1'] = 0
+                self.values['Acquisition Channel 2'] = 0
+                self.values['Automatic'] = 0
+
+                self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
+                self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
+                self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
+
+            else:
+                laserSwitchOFF = True
 
         else:
             self.serialPort.send_Finish_Experiment()
 
-        self.viewCurveSetup.setBtnAutoAcquisitionDisable(True)
-        self.bufferWaitACK.append(self.acquisitionCommandReceived)
+        if laserSwitchOFF:
+            self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
+            self.viewCurveSetup.setMessageCritical('Error', 'It is necessary the laser is switch ON.')
 
-        functionTimeout = partial(self.setTimeout, messageTimeout=self.viewCurveSetup.timeoutMessage['Automatic'],
-                                  functionTimeout=self.acquisitionCommandReceived)
-        self.tmrTimeout.timeout.connect(functionTimeout)
-        self.tmrTimeout.start(self.msTimeout)
+        else:
+            self.bufferWaitACK.append(self.acquisitionCommandReceived)
+
+            functionTimeout = partial(self.setTimeout, messageTimeout=self.viewCurveSetup.timeoutMessage['Automatic'],
+                                      functionTimeout=self.acquisitionCommandReceived)
+            self.tmrTimeout.timeout.connect(functionTimeout)
+            self.tmrTimeout.start(self.msTimeout)
 
     def acquisitionCommandReceived(self):
         if self.btnTimeout:
@@ -518,9 +540,9 @@ class ControllerTabs:
         self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
         self.values['Automatic'] += 1
 
-        self.viewCurveSetup.edtACQChannel_1.setText(str(self.values['Acquisition Channel 1']))
-        self.viewCurveSetup.edtACQChannel_2.setText(str(self.values['Acquisition Channel 2']))
-        self.viewCurveSetup.edtAcquisition.setText(str(self.values['Automatic']))
+        self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
+        self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
+        self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
 
         if self.values['Automatic'] >= 5:
             self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)

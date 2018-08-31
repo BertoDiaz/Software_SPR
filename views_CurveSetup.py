@@ -293,6 +293,9 @@ class ViewCurveSetup(QWidget):
         self.btnLaser.setText(text)
         self.btnLaser.setChecked(status)
 
+    def getBtnLaserStatus(self):
+        return self.btnLaser.isChecked()
+
     def setBtnLaserDisable(self, disable):
         self.btnLaser.setDisabled(disable)
 
@@ -359,12 +362,34 @@ class ViewCurveSetup(QWidget):
 
         else:
             self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisition)
+            self.setEdtDataSamplingDisable(False)
 
         self.setBtnAutoAcquisitionStatus(inProcess)
         self.setBtnAutoAcquisitionDisable(False)
 
-    def getEdtDataSampling(self):
+    def getEdtDataSamplingValue(self):
         return self.edtDataSampling.value()
+
+    def setEdtDataSamplingDisable(self, disable):
+        self.edtDataSampling.setDisabled(disable)
+
+    def setEdtAcquisitionText(self, text):
+        self.edtAcquisition.setText(str(text))
+
+    def getEdtAcquisitionText(self):
+        return int(self.edtAcquisition.text())
+
+    def setEdtACQChannel1Text(self, text):
+        self.edtACQChannel_1.setText(str(text))
+
+    def getEdtACQChannel1Text(self):
+        return int(self.edtACQChannel_1.text())
+
+    def setEdtACQChannel2Text(self, text):
+        self.edtACQChannel_2.setText(str(text))
+
+    def getEdtACQChannel2Text(self):
+        return int(self.edtACQChannel_2.text())
 
     """
     ********************************************************************************************************************
