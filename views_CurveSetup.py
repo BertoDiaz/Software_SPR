@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox
-from PyQt5.QtCore import Qt, QRect
+from PyQt5.QtCore import Qt, QLocale
 import styles as style
 
 
@@ -467,6 +467,11 @@ class ViewCurveSetup(QWidget):
         self.edtAngleLongitude.setStyleSheet(style.spinBoxGeneral)
 
         self.edtAngleResolution.setStyleSheet(style.doubleSpinBoxGeneral)
+        """
+        This method (QLocale) can change the format of the value, for example, if we have a float with a dot as
+        separator with this method we can convert from dot to comma or vice versa.
+        """
+        self.edtAngleResolution.setLocale(QLocale('English'))
 
         self.edtDataSampling.setStyleSheet(style.spinBoxGeneral)
 

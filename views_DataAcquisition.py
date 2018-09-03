@@ -211,13 +211,15 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setEdtChannel1Text(self, text):
-        self.edtChannel_1.setText(str(text))
+        text = str('{0:.3f}'.format(text))
+        self.edtChannel_1.setText(text)
 
     def getEdtChannel1Text(self):
         return float(self.edtChannel_1.text())
 
     def setEdtChannel2Text(self, text):
-        self.edtChannel_2.setText(str(text))
+        text = str('{0:.3f}'.format(text))
+        self.edtChannel_2.setText(text)
 
     def getEdtChannel2Text(self):
         return float(self.edtChannel_2.text())

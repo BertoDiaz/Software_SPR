@@ -30,6 +30,7 @@ class ControllerTabs:
         self.dataInit = {}
         self.ackCommand = '@'
         self.acquisitionCommand = '&'
+        self.experimentCommand = '|'
         self.laserON = 1
         self.laserOFF = 0
         self.peristalticON = 1
@@ -82,6 +83,11 @@ class ControllerTabs:
         self.valuesPhotodiodes = {
             'Photodiode A': [],
             'Photodiode B': []
+        }
+
+        self.valuesExperiment = {
+            'Channel 1': [],
+            'Channel 2': []
         }
 
         self.tmrBtnImpulsional_A = QTimer()
@@ -617,6 +623,17 @@ class ControllerTabs:
             if self.viewDataAcquisition.getLedLaserStatus():
                 self.serialPort.send_Init_Experiment()
 
+                self.valuesExperiment['Channel 1'] = []
+                self.valuesExperiment['Channel 2'] = []
+
+                self.values['Channel 1'] = 0.0
+                self.values['Channel 2'] = 0.0
+                self.values['Time'] = 0
+
+                self.viewDataAcquisition.setEdtChannel1Text(self.values['Channel 1'])
+                self.viewDataAcquisition.setEdtChannel2Text(self.values['Channel 2'])
+                self.viewDataAcquisition.setEdtTimeText(self.values['Time'])
+
             else:
                 laserSwitchOFF = True
 
@@ -646,6 +663,19 @@ class ControllerTabs:
         else:
             self.viewDataAcquisition.setBtnInitExperimentStatus(self.viewDataAcquisition.getBtnInitExperimentStatus())
 
+    def experimentDataReceived(self, data):
+        if self.viewDataAcquisition.getBtnInitExperimentStatus():
+            self.valuesExperiment['Channel 1'].append(float(data[1] + data[2]))
+            self.valuesExperiment['Channel 2'].append(float(data[3] + data[4]))
+
+            self.values['Channel 1'] = self.valuesExperiment['Channel 1'][self.values['Time']]
+            self.values['Channel 2'] = self.valuesExperiment['Channel 2'][self.values['Time']]
+            self.values['Time'] += 1
+
+            self.viewDataAcquisition.setEdtChannel1Text(self.values['Channel 1'])
+            self.viewDataAcquisition.setEdtChannel2Text(self.values['Channel 2'])
+            self.viewDataAcquisition.setEdtTimeText(self.values['Time'])
+
     """
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     --------------------------------------------------------------------------------------------------------------------
@@ -673,6 +703,9 @@ class ControllerTabs:
             else:
                 if value == self.acquisitionCommand:
                     self.acquisitionDataReceived(data)
+
+                elif value == self.experimentCommand:
+                    self.experimentDataReceived(data)
 
     def setTimeout(self, messageTimeout, functionTimeout):
         self.btnTimeout = True
