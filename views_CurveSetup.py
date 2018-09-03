@@ -259,14 +259,26 @@ class ViewCurveSetup(QWidget):
     def setBtnCalibrateDisable(self, disable):
         self.btnCalibrate.setDisabled(disable)
 
+    def setEdtGainAValue(self, value):
+        self.edtGainA.setValue(value)
+
     def getEdtGainAValue(self):
         return self.edtGainA.value()
+
+    def setEdtGainBValue(self, value):
+        self.edtGainB.setValue(value)
 
     def getEdtGainBValue(self):
         return self.edtGainB.value()
 
+    def setEdtOffsetAValue(self, value):
+        self.edtOffsetA.setValue(value)
+
     def getEdtOffsetAValue(self):
         return self.edtOffsetA.value()
+
+    def setEdtOffsetBValue(self, value):
+        self.edtOffsetB.setValue(value)
 
     def getEdtOffsetBValue(self):
         return self.edtOffsetB.value()
@@ -320,20 +332,35 @@ class ViewCurveSetup(QWidget):
     def setBtnResetDisable(self, disable):
         self.btnReset.setDisabled(disable)
 
+    def setEdtInitialAngleValue(self, value):
+        self.edtInitialAngle.setValue(value)
+
     def getEdtInitialAngleValue(self):
         return self.edtInitialAngle.value()
+
+    def setEdtAngleLongitudeValue(self, value):
+        self.edtAngleLongitude.setValue(value)
 
     def getEdtAngleLongitudeValue(self):
         return self.edtAngleLongitude.value()
 
+    def setEdtAngleResolutionValue(self, value):
+        self.edtAngleResolution.setValue(value)
+
     def getEdtAngleResolutionValue(self):
         return self.edtAngleResolution.value()
 
+    def setEdtFinalAngleValue(self, text):
+        self.edtFinalAngle.setText(str(text))
+
     def getEdtFinalAngleValue(self):
-        return self.edtFinalAngle.text()
+        return int(self.edtFinalAngle.text())
+
+    def setEdtPointsCurveValue(self, text):
+        self.edtPointsCurve.setText(str(text))
 
     def getEdtPointsCurveValue(self):
-        return self.edtPointsCurve.text()
+        return int(self.edtPointsCurve.text())
 
     """
     ********************************************************************************************************************
@@ -366,6 +393,9 @@ class ViewCurveSetup(QWidget):
 
         self.setBtnAutoAcquisitionStatus(inProcess)
         self.setBtnAutoAcquisitionDisable(False)
+
+    def setEdtDataSamplingValue(self, value):
+        self.edtDataSampling.setValue(value)
 
     def getEdtDataSamplingValue(self):
         return self.edtDataSampling.value()

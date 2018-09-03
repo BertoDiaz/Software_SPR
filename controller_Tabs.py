@@ -74,7 +74,10 @@ class ControllerTabs:
             'Automatic': 0,
             'Data Sampling': 2,
             'Acquisition Channel 1': 0,
-            'Acquisition Channel 2': 0
+            'Acquisition Channel 2': 0,
+            'Channel 1': 0.000,
+            'Channel 2': 0.000,
+            'Time': 0
         }
         self.valuesPhotodiodes = {
             'Photodiode A': [],
@@ -116,30 +119,34 @@ class ControllerTabs:
             self.values['Impulsional A'] = self.dataInit["Impul1"]
             self.values['Impulsional B'] = self.dataInit["Impul2"]
 
-            self.viewSystemControl.edtPeristaltic.setValue(self.values['Peristaltic'])
-            self.viewSystemControl.edtImpulsional_A.setValue(self.values['Impulsional A'])
-            self.viewSystemControl.edtImpulsional_B.setValue(self.values['Impulsional B'])
+            self.viewSystemControl.setEdtPeristalticValue(self.values['Peristaltic'])
+            self.viewSystemControl.setEdtImpulsionalAValue(self.values['Impulsional A'])
+            self.viewSystemControl.setEdtImpulsionalBValue(self.values['Impulsional B'])
 
             self.values['Gain A'] = self.dataInit["Gain1"]
             self.values['Gain B'] = self.dataInit["Gain2"]
             self.values['Offset A'] = self.dataInit["Offset1"]
             self.values['Offset B'] = self.dataInit["Offset2"]
 
-            self.viewCurveSetup.edtGainA.setValue(self.values['Gain A'])
-            self.viewCurveSetup.edtGainB.setValue(self.values['Gain B'])
-            self.viewCurveSetup.edtOffsetA.setValue(self.values['Offset A'])
-            self.viewCurveSetup.edtOffsetB.setValue(self.values['Offset B'])
+            self.viewCurveSetup.setEdtGainAValue(self.values['Gain A'])
+            self.viewCurveSetup.setEdtGainBValue(self.values['Gain B'])
+            self.viewCurveSetup.setEdtOffsetAValue(self.values['Offset A'])
+            self.viewCurveSetup.setEdtOffsetBValue(self.values['Offset B'])
 
-            self.viewCurveSetup.edtInitialAngle.setValue(self.values['Init Angle'])
-            self.viewCurveSetup.edtAngleLongitude.setValue(self.values['Angle Longitude'])
-            self.viewCurveSetup.edtAngleResolution.setValue(self.values['Angle Resolution'])
-            self.viewCurveSetup.edtFinalAngle.setText(str(self.values['Final Angle']))
-            self.viewCurveSetup.edtPointsCurve.setText(str(self.values['Points Curve']))
+            self.viewCurveSetup.setEdtInitialAngleValue(self.values['Init Angle'])
+            self.viewCurveSetup.setEdtAngleLongitudeValue(self.values['Angle Longitude'])
+            self.viewCurveSetup.setEdtAngleResolutionValue(self.values['Angle Resolution'])
+            self.viewCurveSetup.setEdtFinalAngleValue(self.values['Final Angle'])
+            self.viewCurveSetup.setEdtPointsCurveValue(self.values['Points Curve'])
 
-            self.viewCurveSetup.edtAcquisition.setText(str(self.values['Automatic']))
-            self.viewCurveSetup.edtDataSampling.setValue(self.values['Data Sampling'])
-            self.viewCurveSetup.edtACQChannel_1.setText(str(self.values['Acquisition Channel 1']))
-            self.viewCurveSetup.edtACQChannel_2.setText(str(self.values['Acquisition Channel 2']))
+            self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
+            self.viewCurveSetup.setEdtDataSamplingValue(self.values['Data Sampling'])
+            self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
+            self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
+
+            self.viewDataAcquisition.setEdtChannel1Text(self.values['Channel 1'])
+            self.viewDataAcquisition.setEdtChannel2Text(self.values['Channel 2'])
+            self.viewDataAcquisition.setEdtTimeText(self.values['Time'])
 
             """-------------------------------------- System Control Connects ---------------------------------------"""
 

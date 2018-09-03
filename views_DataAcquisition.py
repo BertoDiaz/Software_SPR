@@ -27,6 +27,8 @@ class ViewDataAcquisition(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
+        self.unitTime = ' s'
+
         self.timeoutMessage = {
             'Init Experiment': 'The device has not respond, try again.'
         }
@@ -202,6 +204,37 @@ class ViewDataAcquisition(QWidget):
     ********************************************************************************************************************
     """
 
+    """
+    ********************************************************************************************************************
+    *                                          Acquisition Values Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    def setEdtChannel1Text(self, text):
+        self.edtChannel_1.setText(str(text))
+
+    def getEdtChannel1Text(self):
+        return float(self.edtChannel_1.text())
+
+    def setEdtChannel2Text(self, text):
+        self.edtChannel_2.setText(str(text))
+
+    def getEdtChannel2Text(self):
+        return float(self.edtChannel_2.text())
+
+    def setEdtTimeText(self, text):
+        self.edtTime.setText(str(text) + self.unitTime)
+
+    def getEdtTimeText(self):
+        text = self.edtTime.text().replace(' s', '')
+        return int(text)
+
+    """
+    ********************************************************************************************************************
+    *                                        End Acquisition Values Functions                                          *
+    ********************************************************************************************************************
+    """
+
     def setStyleButtons(self):
         self.btnInitExperiment.setStyleSheet(style.buttonInit)
         self.btnInitExperiment.setCheckable(True)
@@ -217,6 +250,10 @@ class ViewDataAcquisition(QWidget):
         self.edtChannel_1.setStyleSheet(style.lineEditGeneral)
         self.edtChannel_2.setStyleSheet(style.lineEditGeneral)
         self.edtTime.setStyleSheet(style.lineEditGeneral)
+
+        self.edtChannel_1.setAlignment(Qt.AlignRight)
+        self.edtChannel_2.setAlignment(Qt.AlignRight)
+        self.edtTime.setAlignment(Qt.AlignRight)
 
     def setStyleLabels(self):
         self.lblBtnInit.setStyleSheet(style.labelBtnInit)

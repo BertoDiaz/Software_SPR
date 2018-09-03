@@ -187,6 +187,9 @@ class ViewSystemControl(QWidget):
     def setBtnPeristalticDisable(self, disable):
         self.btnPeristaltic.setDisabled(disable)
 
+    def setEdtPeristalticValue(self, value):
+        self.edtPeristaltic.setValue(value)
+
     def getEdtPeristalticValue(self):
         return self.edtPeristaltic.value()
 
@@ -212,6 +215,9 @@ class ViewSystemControl(QWidget):
     def setBtnImpulsionalADisable(self, disable):
         self.btnImpulsional_A.setDisabled(disable)
 
+    def setEdtImpulsionalAValue(self, value):
+        self.edtImpulsional_A.setValue(value)
+
     def getEdtImpulsionalAValue(self):
         return self.edtImpulsional_A.value()
 
@@ -236,6 +242,9 @@ class ViewSystemControl(QWidget):
 
     def setBtnImpulsionalBDisable(self, disable):
         self.btnImpulsional_B.setDisabled(disable)
+
+    def setEdtImpulsionalBValue(self, value):
+        self.edtImpulsional_B.setValue(value)
 
     def getEdtImpulsionalBValue(self):
         return self.edtImpulsional_B.value()
