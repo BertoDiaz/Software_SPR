@@ -33,16 +33,12 @@ class ViewCurveSetup(QWidget):
 
         self.lblGainA = QLabel("Gain A:")
         self.edtGainA = QSpinBox()
-        self.edtGainA.setRange(0, 100)
         self.lblGainB = QLabel("Gain B:")
         self.edtGainB = QSpinBox()
-        self.edtGainB.setRange(0, 100)
         self.lblOffsetA = QLabel("Offset A:")
         self.edtOffsetA = QSpinBox()
-        self.edtOffsetA.setRange(0, 100)
         self.lblOffsetB = QLabel("Offset B:")
         self.edtOffsetB = QSpinBox()
-        self.edtOffsetB.setRange(0, 100)
 
         self.btnCalibrate = QPushButton("Calibrate")
         self.btnLaser = QPushButton("Laser OFF")
@@ -53,7 +49,6 @@ class ViewCurveSetup(QWidget):
         self.edtAngleLongitude = QSpinBox()
         self.lblAngleResolution = QLabel("Angle Resolution:")
         self.edtAngleResolution = QDoubleSpinBox()
-        self.edtAngleResolution.setSingleStep(0.1)
         self.lblFinalAngle = QLabel("Final Angle:")
         self.edtFinalAngle = QLineEdit()
         self.edtFinalAngle.setReadOnly(True)
@@ -474,6 +469,13 @@ class ViewCurveSetup(QWidget):
         self.edtAngleResolution.setLocale(QLocale('English'))
 
         self.edtDataSampling.setStyleSheet(style.spinBoxGeneral)
+
+        self.edtGainA.setRange(0, 100)
+        self.edtGainB.setRange(0, 100)
+        self.edtOffsetA.setRange(0, 100)
+        self.edtOffsetB.setRange(0, 100)
+
+        self.edtAngleResolution.setSingleStep(0.1)
 
     """
     ********************************************************************************************************************

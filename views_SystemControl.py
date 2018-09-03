@@ -42,21 +42,14 @@ class ViewSystemControl(QWidget):
 
         self.lblPeristaltic = QLabel("Flow Peristaltic")
         self.edtPeristaltic = QSpinBox()
-        self.edtPeristaltic.setRange(0, 100)
         self.lblImpulsional_A = QLabel("Injection Impulsional A:")
         self.edtImpulsional_A = QSpinBox()
-        self.edtImpulsional_A.setRange(0, 100)
         self.lblImpulsional_B = QLabel("Injection Impulsional B:")
         self.edtImpulsional_B = QSpinBox()
-        self.edtImpulsional_B.setRange(0, 100)
-
-        self.setStyleSpinBox()
 
         self.btnPeristaltic = QPushButton("START")
         self.btnImpulsional_A = QPushButton("INJECT")
         self.btnImpulsional_B = QPushButton("INJECT")
-
-        self.setStyleButtons()
 
         self.layoutGrid = QGridLayout(self)
 
@@ -67,12 +60,17 @@ class ViewSystemControl(QWidget):
         self.impulsionalABoxLayout = QGroupBox("Impulsional Pump A Control")
         self.impulsionalBBoxLayout = QGroupBox("Impulsional Pump B Control")
 
-        self.laserLayout = QVBoxLayout(self)
         self.dataLayout = QGridLayout(self)
         self.peristalticLayout = QGridLayout(self)
         self.impulsionalALayout = QGridLayout(self)
         self.impulsionalBLayout = QGridLayout(self)
+
+        self.laserLayout = QVBoxLayout(self)
+
         self.otherLayout = QHBoxLayout(self)
+
+        self.setStyleSpinBox()
+        self.setStyleButtons()
 
         self.resize(1200, 800)
         self.centerWindowOnScreen()
@@ -290,6 +288,10 @@ class ViewSystemControl(QWidget):
         self.edtPeristaltic.setStyleSheet(style.spinBoxGeneral)
         self.edtImpulsional_A.setStyleSheet(style.spinBoxGeneral)
         self.edtImpulsional_B.setStyleSheet(style.spinBoxGeneral)
+
+        self.edtPeristaltic.setRange(0, 100)
+        self.edtImpulsional_A.setRange(0, 100)
+        self.edtImpulsional_B.setRange(0, 100)
 
     """
     ********************************************************************************************************************

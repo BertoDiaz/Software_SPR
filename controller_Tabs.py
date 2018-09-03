@@ -157,13 +157,19 @@ class ControllerTabs:
             """-------------------------------------- System Control Connects ---------------------------------------"""
 
             self.viewSystemControl.btnLaser.clicked.connect(self.btnLaserChanged)
-            self.viewSystemControl.btnPeristaltic.clicked.connect(self.btnPeristalticChanged)
-            self.viewSystemControl.btnImpulsional_A.clicked.connect(self.btnImpulsionalAChanged)
-            self.viewSystemControl.btnImpulsional_B.clicked.connect(self.btnImpulsionalBChanged)
+            btnPeristalticParameters = partial(self.btnPeristalticChanged, who=self.viewSystemControl)
+            self.viewSystemControl.btnPeristaltic.clicked.connect(btnPeristalticParameters)
+            btnImpulsionalAParameters = partial(self.btnImpulsionalAChanged, who=self.viewSystemControl)
+            self.viewSystemControl.btnImpulsional_A.clicked.connect(btnImpulsionalAParameters)
+            btnImpulsionalBParameters = partial(self.btnImpulsionalBChanged, who=self.viewSystemControl)
+            self.viewSystemControl.btnImpulsional_B.clicked.connect(btnImpulsionalBParameters)
 
-            self.viewSystemControl.edtPeristaltic.valueChanged.connect(self.edtPeristalticChanged)
-            self.viewSystemControl.edtImpulsional_A.valueChanged.connect(self.edtImpulsionalsChanged)
-            self.viewSystemControl.edtImpulsional_B.valueChanged.connect(self.edtImpulsionalsChanged)
+            edtPeristalticParameters = partial(self.edtPeristalticChanged, who=self.viewSystemControl)
+            self.viewSystemControl.edtPeristaltic.valueChanged.connect(edtPeristalticParameters)
+            edtImpulsionalAParameters = partial(self.edtImpulsionalsChanged, who=self.viewSystemControl)
+            self.viewSystemControl.edtImpulsional_A.valueChanged.connect(edtImpulsionalAParameters)
+            edtImpulsionalBParameters = partial(self.edtImpulsionalsChanged, who=self.viewSystemControl)
+            self.viewSystemControl.edtImpulsional_B.valueChanged.connect(edtImpulsionalBParameters)
 
             """------------------------------------ End System Control Connects -------------------------------------"""
 
@@ -191,6 +197,19 @@ class ControllerTabs:
             """------------------------------------- Data Acquisition Connects --------------------------------------"""
 
             self.viewDataAcquisition.btnInitExperiment.clicked.connect(self.btnInitExperimentChanged)
+            btnPeristalticParameters = partial(self.btnPeristalticChanged, who=self.viewDataAcquisition)
+            self.viewDataAcquisition.btnPeristaltic.clicked.connect(btnPeristalticParameters)
+            btnImpulsionalAParameters = partial(self.btnImpulsionalAChanged, who=self.viewDataAcquisition)
+            self.viewDataAcquisition.btnImpulsional_A.clicked.connect(btnImpulsionalAParameters)
+            btnImpulsionalBParameters = partial(self.btnImpulsionalBChanged, who=self.viewDataAcquisition)
+            self.viewDataAcquisition.btnImpulsional_B.clicked.connect(btnImpulsionalBParameters)
+
+            edtPeristalticParameters = partial(self.edtPeristalticChanged, who=self.viewDataAcquisition)
+            self.viewDataAcquisition.edtPeristaltic.valueChanged.connect(edtPeristalticParameters)
+            edtImpulsionalAParameters = partial(self.edtImpulsionalsChanged, who=self.viewDataAcquisition)
+            self.viewDataAcquisition.edtImpulsional_A.valueChanged.connect(edtImpulsionalAParameters)
+            edtImpulsionalBParameters = partial(self.edtImpulsionalsChanged, who=self.viewDataAcquisition)
+            self.viewDataAcquisition.edtImpulsional_B.valueChanged.connect(edtImpulsionalBParameters)
 
             """----------------------------------- End Data Acquisition Connects ------------------------------------"""
 
@@ -257,10 +276,13 @@ class ControllerTabs:
     ********************************************************************************************************************
     """
 
-    def edtPeristalticChanged(self):
-        self.values['Peristaltic'] = self.viewSystemControl.getEdtPeristalticValue()
+    def edtPeristalticChanged(self, who):
+        self.values['Peristaltic'] = who.getEdtPeristalticValue()
 
-        if self.viewSystemControl.getBtnPeristalticStatus():
+        self.viewSystemControl.setEdtPeristalticValue(self.values['Peristaltic'])
+        self.viewDataAcquisition.setEdtPeristalticValue(self.values['Peristaltic'])
+
+        if who.getBtnPeristalticStatus():
             toSend = [
                 self.peristalticON,
                 self.values['Peristaltic']
@@ -275,10 +297,11 @@ class ControllerTabs:
             self.tmrTimeout.timeout.connect(functionTimeout)
             self.tmrTimeout.start(self.msTimeout)
 
-    def btnPeristalticChanged(self):
+    def btnPeristalticChanged(self, who):
         self.viewSystemControl.setBtnPeristalticDisable(True)
+        self.viewDataAcquisition.setBtnPeristalticDisable(True)
 
-        if self.viewSystemControl.getBtnPeristalticStatus():
+        if who.getBtnPeristalticStatus():
             toSend = [
                 self.peristalticON,
                 self.values['Peristaltic']
@@ -291,23 +314,26 @@ class ControllerTabs:
             ]
 
         self.serialPort.send_Control_Peristaltic(toSend)
-        self.bufferWaitACK.append(self.peristalticCommandReceived)
+        peristalticCommand = partial(self.peristalticCommandReceived, who=who)
+        self.bufferWaitACK.append(peristalticCommand)
 
         functionTimeout = partial(self.setTimeout, messageTimeout=self.viewSystemControl.timeoutMessage['Peristaltic'],
-                                  functionTimeout=self.peristalticCommandReceived)
+                                  functionTimeout=peristalticCommand)
         self.tmrTimeout.timeout.connect(functionTimeout)
         self.tmrTimeout.start(self.msTimeout)
 
-    def peristalticCommandReceived(self):
+    def peristalticCommandReceived(self, who):
         if self.btnTimeout:
-            status = not self.viewSystemControl.getBtnPeristalticStatus()
+            status = not who.getBtnPeristalticStatus()
             self.btnTimeout = False
 
         else:
-            status = self.viewSystemControl.getBtnPeristalticStatus()
+            status = who.getBtnPeristalticStatus()
 
         self.viewSystemControl.setBtnPeristalticStatus(status)
+        self.viewDataAcquisition.setBtnPeristalticStatus(status)
         self.viewSystemControl.setBtnPeristalticDisable(False)
+        self.viewDataAcquisition.setBtnPeristalticDisable(False)
 
     """
     ********************************************************************************************************************
@@ -321,15 +347,20 @@ class ControllerTabs:
     ********************************************************************************************************************
     """
 
-    def edtImpulsionalsChanged(self):
-        self.values['Impulsional A'] = self.viewSystemControl.getEdtImpulsionalAValue()
-        self.values['Impulsional B'] = self.viewSystemControl.getEdtImpulsionalBValue()
+    def edtImpulsionalsChanged(self, who):
+        self.values['Impulsional A'] = who.getEdtImpulsionalAValue()
+        self.values['Impulsional B'] = who.getEdtImpulsionalBValue()
 
-    def btnImpulsionalAChanged(self):
-        if self.viewSystemControl.getBtnImpulsionalAStatus():
+        self.viewSystemControl.setEdtImpulsionalAValue(self.values['Impulsional A'])
+        self.viewDataAcquisition.setEdtImpulsionalAValue(self.values['Impulsional A'])
+        self.viewSystemControl.setEdtImpulsionalBValue(self.values['Impulsional B'])
+        self.viewDataAcquisition.setEdtImpulsionalBValue(self.values['Impulsional B'])
 
-            if self.viewSystemControl.getEdtImpulsionalAValue() != 0:
-                self.viewSystemControl.setBtnImpulsionalADisable(True)
+    def btnImpulsionalAChanged(self, who):
+        if who.getBtnImpulsionalAStatus():
+
+            if who.getEdtImpulsionalAValue() != 0:
+                self.changeImpulsionalAStatus(True)
 
                 toSend = self.values['Impulsional A'] * 50
 
@@ -343,7 +374,7 @@ class ControllerTabs:
                 self.tmrTimeout.start(self.msTimeout)
 
             else:
-                self.viewSystemControl.setBtnImpulsionalAStatus(False)
+                self.changeImpulsionalAStatus(False)
                 self.viewSystemControl.setMessageCritical("Error",
                                                           self.viewSystemControl.notCeroMessage['Impulsional A'])
 
@@ -355,14 +386,18 @@ class ControllerTabs:
         else:
             timeImpulses = self.values['Impulsional A'] * 500
 
-        finishImpulses = partial(self.viewSystemControl.setBtnImpulsionalAStatus, status=False)
+        finishImpulses = partial(self.changeImpulsionalAStatus, status=False)
         self.tmrBtnImpulsional_A.singleShot(timeImpulses, finishImpulses)
 
-    def btnImpulsionalBChanged(self):
-        if self.viewSystemControl.getBtnImpulsionalBStatus():
+    def changeImpulsionalAStatus(self, status):
+        self.viewSystemControl.setBtnImpulsionalAStatus(status)
+        self.viewDataAcquisition.setBtnImpulsionalAStatus(status)
 
-            if self.viewSystemControl.getEdtImpulsionalBValue() != 0:
-                self.viewSystemControl.setBtnImpulsionalBDisable(True)
+    def btnImpulsionalBChanged(self, who):
+        if who.getBtnImpulsionalBStatus():
+
+            if who.getEdtImpulsionalBValue() != 0:
+                self.changeImpulsionalBStatus(True)
 
                 toSend = self.values['Impulsional B'] * 50
 
@@ -376,7 +411,7 @@ class ControllerTabs:
                 self.tmrTimeout.start(self.msTimeout)
 
             else:
-                self.viewSystemControl.setBtnImpulsionalBStatus(False)
+                self.changeImpulsionalBStatus(False)
                 self.viewSystemControl.setMessageCritical("Error",
                                                           self.viewSystemControl.notCeroMessage['Impulsional B'])
 
@@ -388,8 +423,12 @@ class ControllerTabs:
         else:
             timeImpulses = self.values['Impulsional B'] * 500
 
-        finishImpulses = partial(self.viewSystemControl.setBtnImpulsionalBStatus, status=False)
+        finishImpulses = partial(self.changeImpulsionalBStatus, status=False)
         self.tmrBtnImpulsional_B.singleShot(timeImpulses, finishImpulses)
+
+    def changeImpulsionalBStatus(self, status):
+        self.viewSystemControl.setBtnImpulsionalBStatus(status)
+        self.viewDataAcquisition.setBtnImpulsionalBStatus(status)
 
     """
     ********************************************************************************************************************

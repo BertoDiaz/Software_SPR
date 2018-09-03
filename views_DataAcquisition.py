@@ -46,8 +46,19 @@ class ViewDataAcquisition(QWidget):
         self.edtTime = QLineEdit()
         self.lblBtnInit = QLabel("Start Experiment")
 
+        self.lblPeristaltic = QLabel("Flow Peristaltic")
+        self.edtPeristaltic = QSpinBox()
+        self.lblImpulsional_A = QLabel("Injection A:")
+        self.edtImpulsional_A = QSpinBox()
+        self.lblImpulsional_B = QLabel("Injection B:")
+        self.edtImpulsional_B = QSpinBox()
+
         self.btnInitExperiment = QPushButton()
         self.btnFreeRunning = QPushButton("Free Running")
+
+        self.btnPeristaltic = QPushButton("START")
+        self.btnImpulsional_A = QPushButton("INJECT")
+        self.btnImpulsional_B = QPushButton("INJECT")
 
         self.ledLaser = LedIndicator(self)
 
@@ -58,6 +69,10 @@ class ViewDataAcquisition(QWidget):
         self.experimentTimeBoxLayout = QGroupBox()
         self.statusLaserBoxLayout = QGroupBox()
 
+        self.fluidicBoxLayout = QGroupBox("Fluidic Parameters")
+        self.peristalticControlBoxLayout = QGroupBox("Peristaltic Pump Control")
+        self.injectControlBoxLayout = QGroupBox("Injection Pump Control")
+
         self.filledBoxLayout_1 = QGroupBox()
         self.filledLayout_2 = QGroupBox()
 
@@ -65,6 +80,10 @@ class ViewDataAcquisition(QWidget):
         self.dataSamplingLayout = QGridLayout(self)
         self.experimentTimeLayout = QGridLayout(self)
         self.statusLaserLayout = QGridLayout(self)
+
+        self.fluidicLayout = QGridLayout(self)
+        self.peristalticControlLayout = QGridLayout(self)
+        self.injectControlLayout = QGridLayout(self)
 
         self.btnInitLayout = QVBoxLayout(self)
 
@@ -85,7 +104,8 @@ class ViewDataAcquisition(QWidget):
 
     def mainWindow(self):
         self.layoutGrid.addWidget(self.setTimeGroup(), 0, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setFilledGroup_1(), 1, 0, 5, 10)
+        self.layoutGrid.addWidget(self.setFluidicGroup(), 1, 0, 1, 3)
+        self.layoutGrid.addWidget(self.setFilledGroup_1(), 2, 0, 5, 10)
 
     def setFilledGroup_1(self):
         self.filledBoxLayout_1.setStyleSheet(style.groupBoxFilled)
@@ -157,6 +177,39 @@ class ViewDataAcquisition(QWidget):
         self.timeBoxLayout.setLayout(self.timeLayout)
 
         return self.timeBoxLayout
+
+    def setFluidicGroup(self):
+        self.lblPeristaltic.setFixedWidth(100)
+        self.lblPeristaltic.setAlignment(Qt.AlignBottom)
+        self.lblImpulsional_A.setFixedWidth(100)
+        self.lblImpulsional_A.setAlignment(Qt.AlignBottom)
+        self.lblImpulsional_B.setFixedWidth(100)
+        self.lblImpulsional_B.setAlignment(Qt.AlignBottom)
+
+        self.peristalticControlLayout.addWidget(self.lblPeristaltic, 0, 0)
+        self.peristalticControlLayout.addWidget(self.edtPeristaltic, 1, 0)
+        self.peristalticControlLayout.addWidget(self.btnPeristaltic, 0, 1, 2, 1)
+
+        self.peristalticControlBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.peristalticControlBoxLayout.setLayout(self.peristalticControlLayout)
+
+        self.injectControlLayout.addWidget(self.lblImpulsional_A, 0, 0)
+        self.injectControlLayout.addWidget(self.lblImpulsional_B, 0, 1)
+        self.injectControlLayout.addWidget(self.edtImpulsional_A, 1, 0)
+        self.injectControlLayout.addWidget(self.edtImpulsional_B, 1, 1)
+        self.injectControlLayout.addWidget(self.btnImpulsional_A, 2, 0)
+        self.injectControlLayout.addWidget(self.btnImpulsional_B, 2, 1)
+
+        self.injectControlBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.injectControlBoxLayout.setLayout(self.injectControlLayout)
+
+        self.fluidicLayout.addWidget(self.peristalticControlBoxLayout, 0, 0)
+        self.fluidicLayout.addWidget(self.injectControlBoxLayout, 0, 1)
+
+        self.fluidicBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.fluidicBoxLayout.setLayout(self.fluidicLayout)
+
+        return self.fluidicBoxLayout
 
     """
     ********************************************************************************************************************
@@ -237,6 +290,102 @@ class ViewDataAcquisition(QWidget):
     ********************************************************************************************************************
     """
 
+    """
+    ********************************************************************************************************************
+    *                                          Peristaltic Control Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    def setBtnPeristalticStatus(self, status):
+        if status:
+            text = 'STOP'
+
+        else:
+            text = 'START'
+
+        self.btnPeristaltic.setText(text)
+        self.btnPeristaltic.setChecked(status)
+
+    def getBtnPeristalticStatus(self):
+        return self.btnPeristaltic.isChecked()
+
+    def setBtnPeristalticDisable(self, disable):
+        self.btnPeristaltic.setDisabled(disable)
+
+    def setEdtPeristalticValue(self, value):
+        self.edtPeristaltic.setValue(value)
+
+    def getEdtPeristalticValue(self):
+        return self.edtPeristaltic.value()
+
+    """
+    ********************************************************************************************************************
+    *                                        End Peristaltic Control Functions                                         *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                          Impulsional A Control Functions                                         *
+    ********************************************************************************************************************
+    """
+
+    def setBtnImpulsionalAStatus(self, status):
+        self.btnImpulsional_A.setChecked(status)
+        self.setBtnImpulsionalADisable(status)
+
+    def getBtnImpulsionalAStatus(self):
+        return self.btnImpulsional_A.isChecked()
+
+    def setBtnImpulsionalADisable(self, disable):
+        self.btnImpulsional_A.setDisabled(disable)
+
+    def setEdtImpulsionalAValue(self, value):
+        self.edtImpulsional_A.setValue(value)
+
+    def getEdtImpulsionalAValue(self):
+        return self.edtImpulsional_A.value()
+
+    """
+    ********************************************************************************************************************
+    *                                        End Impulsional A Control Functions                                       *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                          Impulsional B Control Functions                                         *
+    ********************************************************************************************************************
+    """
+
+    def setBtnImpulsionalBStatus(self, status):
+        self.btnImpulsional_B.setChecked(status)
+        self.setBtnImpulsionalBDisable(status)
+
+    def getBtnImpulsionalBStatus(self):
+        return self.btnImpulsional_B.isChecked()
+
+    def setBtnImpulsionalBDisable(self, disable):
+        self.btnImpulsional_B.setDisabled(disable)
+
+    def setEdtImpulsionalBValue(self, value):
+        self.edtImpulsional_B.setValue(value)
+
+    def getEdtImpulsionalBValue(self):
+        return self.edtImpulsional_B.value()
+
+    """
+    ********************************************************************************************************************
+    *                                        End Impulsional B Control Functions                                       *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                             Buttons Styles Functions                                             *
+    ********************************************************************************************************************
+    """
+
     def setStyleButtons(self):
         self.btnInitExperiment.setStyleSheet(style.buttonInit)
         self.btnInitExperiment.setCheckable(True)
@@ -244,9 +393,49 @@ class ViewDataAcquisition(QWidget):
         self.btnFreeRunning.setStyleSheet(style.buttonFreeRunning)
         self.btnFreeRunning.setCheckable(True)
 
+        self.btnPeristaltic.setStyleSheet(style.buttonPeristaltic)
+        self.btnPeristaltic.setCheckable(True)
+
+        self.btnImpulsional_A.setStyleSheet(style.buttonImpulsionalSmall)
+        self.btnImpulsional_A.setCheckable(True)
+
+        self.btnImpulsional_B.setStyleSheet(style.buttonImpulsionalSmall)
+        self.btnImpulsional_B.setCheckable(True)
+
+    """
+    ********************************************************************************************************************
+    *                                           End Buttons Styles Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                            Spin Boxes Styles Functions                                           *
+    ********************************************************************************************************************
+    """
+
     def setStyleSpinBox(self):
         self.edtDataSampling.setStyleSheet(style.spinBoxGeneral)
         self.edtExperimentTime.setStyleSheet(style.spinBoxGeneral)
+        self.edtPeristaltic.setStyleSheet(style.spinBoxGeneral)
+        self.edtImpulsional_A.setStyleSheet(style.spinBoxGeneral)
+        self.edtImpulsional_B.setStyleSheet(style.spinBoxGeneral)
+
+        self.edtPeristaltic.setRange(0, 100)
+        self.edtImpulsional_A.setRange(0, 100)
+        self.edtImpulsional_B.setRange(0, 100)
+
+    """
+    ********************************************************************************************************************
+    *                                          End Spin Boxes Styles Functions                                         *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                            Line Edits Styles Functions                                           *
+    ********************************************************************************************************************
+    """
 
     def setStyleLineEdit(self):
         self.edtChannel_1.setStyleSheet(style.lineEditGeneral)
@@ -257,9 +446,27 @@ class ViewDataAcquisition(QWidget):
         self.edtChannel_2.setAlignment(Qt.AlignRight)
         self.edtTime.setAlignment(Qt.AlignRight)
 
+    """
+    ********************************************************************************************************************
+    *                                          End Line Edits Styles Functions                                         *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                              Labels Styles Functions                                             *
+    ********************************************************************************************************************
+    """
+
     def setStyleLabels(self):
         self.lblBtnInit.setStyleSheet(style.labelBtnInit)
         self.lblBtnInit.setAlignment(Qt.AlignCenter)
+
+    """
+    ********************************************************************************************************************
+    *                                            End Labels Styles Functions                                           *
+    ********************************************************************************************************************
+    """
 
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)
