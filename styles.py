@@ -540,6 +540,7 @@ buttonAutoAcquisitionInProcess = 'QPushButton {' \
 buttonInit = 'QPushButton {' \
              'border-width: 1px;' \
              'border-style: inset;' \
+             'border-radius: 4px;' \
              'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
              'stop: 0 #fa5858, stop: 1 #ff0000);' \
              'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \

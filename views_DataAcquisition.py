@@ -16,9 +16,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
-from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox
-from PyQt5.QtCore import Qt, QRect
+from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox, QStylePainter
+from PyQt5.QtCore import Qt
 from lib.LedIndicatorWidget import LedIndicator
+from lib.TriangleButton import TriangleButton
 import styles as style
 
 
@@ -28,6 +29,8 @@ class ViewDataAcquisition(QWidget):
         super().__init__(parent)
 
         self.unitTime = ' s'
+        self.forward = 'forward'
+        self.back = 'back'
 
         self.timeoutMessage = {
             'Init Experiment': 'The device has not respond, try again.'
@@ -61,6 +64,8 @@ class ViewDataAcquisition(QWidget):
         self.btnInject_B = QPushButton("INJECT")
         self.btnPurge_A = QPushButton("PURGE")
         self.btnPurge_B = QPushButton("PURGE")
+        self.btnBackPeristaltic = TriangleButton(50, self.back)
+        self.btnForwardPeristaltic = TriangleButton(50, self.forward)
 
         self.ledLaser = LedIndicator(self)
 
@@ -188,9 +193,14 @@ class ViewDataAcquisition(QWidget):
         self.lblImpulsional_B.setFixedWidth(100)
         self.lblImpulsional_B.setAlignment(Qt.AlignBottom)
 
+        self.peristalticControlLayout.setAlignment(Qt.AlignBottom)
+
         self.peristalticControlLayout.addWidget(self.lblPeristaltic, 0, 0)
         self.peristalticControlLayout.addWidget(self.edtPeristaltic, 1, 0)
         self.peristalticControlLayout.addWidget(self.btnPeristaltic, 0, 1, 2, 1)
+
+        self.peristalticControlLayout.addWidget(self.btnBackPeristaltic, 2, 0)
+        self.peristalticControlLayout.addWidget(self.btnForwardPeristaltic, 2, 2)
 
         self.peristalticControlBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.peristalticControlBoxLayout.setLayout(self.peristalticControlLayout)
@@ -431,6 +441,9 @@ class ViewDataAcquisition(QWidget):
 
         self.btnPurge_B.setStyleSheet(style.buttonImpulsionalSmall)
         self.btnPurge_B.setCheckable(True)
+
+        # self.btnBackPeristaltic.setText('Back')
+        # self.btnBackPeristaltic.setSize(50)
 
     """
     ********************************************************************************************************************
