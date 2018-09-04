@@ -92,6 +92,8 @@ class ControllerTabs:
 
         self.tmrBtnImpulsional_A = QTimer()
         self.tmrBtnImpulsional_B = QTimer()
+        self.tmrBtnInject_A = QTimer()
+        self.tmrBtnInject_B = QTimer()
         self.tmrBtnReset = QTimer()
         self.tmrTimeout = QTimer()
 
@@ -200,9 +202,11 @@ class ControllerTabs:
             btnPeristalticParameters = partial(self.btnPeristalticChanged, who=self.viewDataAcquisition)
             self.viewDataAcquisition.btnPeristaltic.clicked.connect(btnPeristalticParameters)
             btnImpulsionalAParameters = partial(self.btnImpulsionalAChanged, who=self.viewDataAcquisition)
-            self.viewDataAcquisition.btnImpulsional_A.clicked.connect(btnImpulsionalAParameters)
+            self.viewDataAcquisition.btnPurge_A.clicked.connect(btnImpulsionalAParameters)
             btnImpulsionalBParameters = partial(self.btnImpulsionalBChanged, who=self.viewDataAcquisition)
-            self.viewDataAcquisition.btnImpulsional_B.clicked.connect(btnImpulsionalBParameters)
+            self.viewDataAcquisition.btnPurge_B.clicked.connect(btnImpulsionalBParameters)
+            self.viewDataAcquisition.btnInject_A.clicked.connect(self.btnInjectAChanged)
+            self.viewDataAcquisition.btnInject_B.clicked.connect(self.btnInjectBChanged)
 
             edtPeristalticParameters = partial(self.edtPeristalticChanged, who=self.viewDataAcquisition)
             self.viewDataAcquisition.edtPeristaltic.valueChanged.connect(edtPeristalticParameters)
@@ -393,6 +397,30 @@ class ControllerTabs:
         self.viewSystemControl.setBtnImpulsionalAStatus(status)
         self.viewDataAcquisition.setBtnImpulsionalAStatus(status)
 
+    def btnInjectAChanged(self):
+        if self.viewDataAcquisition.getBtnInjectAStatus():
+            toSend = 50
+
+            self.serialPort.send_Control_Impul_A(toSend)
+            self.bufferWaitACK.append(self.injectACommandReceived)
+
+            functionTimeout = partial(self.setTimeout,
+                                      messageTimeout=self.viewSystemControl.timeoutMessage['Impulsional A'],
+                                      functionTimeout=self.injectACommandReceived)
+            self.tmrTimeout.timeout.connect(functionTimeout)
+            self.tmrTimeout.start(self.msTimeout)
+
+    def injectACommandReceived(self):
+        if self.btnTimeout:
+            timeImpulses = 0
+            self.btnTimeout = False
+
+        else:
+            timeImpulses = 500
+
+        finishImpulses = partial(self.viewDataAcquisition.setBtnInjectAStatus, status=False)
+        self.tmrBtnInject_A.singleShot(timeImpulses, finishImpulses)
+
     def btnImpulsionalBChanged(self, who):
         if who.getBtnImpulsionalBStatus():
 
@@ -429,6 +457,30 @@ class ControllerTabs:
     def changeImpulsionalBStatus(self, status):
         self.viewSystemControl.setBtnImpulsionalBStatus(status)
         self.viewDataAcquisition.setBtnImpulsionalBStatus(status)
+
+    def btnInjectBChanged(self):
+        if self.viewDataAcquisition.getBtnInjectBStatus():
+            toSend = 50
+
+            self.serialPort.send_Control_Impul_B(toSend)
+            self.bufferWaitACK.append(self.injectBCommandReceived)
+
+            functionTimeout = partial(self.setTimeout,
+                                      messageTimeout=self.viewSystemControl.timeoutMessage['Impulsional B'],
+                                      functionTimeout=self.injectBCommandReceived)
+            self.tmrTimeout.timeout.connect(functionTimeout)
+            self.tmrTimeout.start(self.msTimeout)
+
+    def injectBCommandReceived(self):
+        if self.btnTimeout:
+            timeImpulses = 0
+            self.btnTimeout = False
+
+        else:
+            timeImpulses = 500
+
+        finishImpulses = partial(self.viewDataAcquisition.setBtnInjectBStatus, status=False)
+        self.tmrBtnInject_B.singleShot(timeImpulses, finishImpulses)
 
     """
     ********************************************************************************************************************

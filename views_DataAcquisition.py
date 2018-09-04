@@ -57,8 +57,10 @@ class ViewDataAcquisition(QWidget):
         self.btnFreeRunning = QPushButton("Free Running")
 
         self.btnPeristaltic = QPushButton("START")
-        self.btnImpulsional_A = QPushButton("INJECT")
-        self.btnImpulsional_B = QPushButton("INJECT")
+        self.btnInject_A = QPushButton("INJECT")
+        self.btnInject_B = QPushButton("INJECT")
+        self.btnPurge_A = QPushButton("PURGE")
+        self.btnPurge_B = QPushButton("PURGE")
 
         self.ledLaser = LedIndicator(self)
 
@@ -197,8 +199,10 @@ class ViewDataAcquisition(QWidget):
         self.injectControlLayout.addWidget(self.lblImpulsional_B, 0, 1)
         self.injectControlLayout.addWidget(self.edtImpulsional_A, 1, 0)
         self.injectControlLayout.addWidget(self.edtImpulsional_B, 1, 1)
-        self.injectControlLayout.addWidget(self.btnImpulsional_A, 2, 0)
-        self.injectControlLayout.addWidget(self.btnImpulsional_B, 2, 1)
+        self.injectControlLayout.addWidget(self.btnInject_A, 2, 0)
+        self.injectControlLayout.addWidget(self.btnInject_B, 2, 1)
+        self.injectControlLayout.addWidget(self.btnPurge_A, 3, 0)
+        self.injectControlLayout.addWidget(self.btnPurge_B, 3, 1)
 
         self.injectControlBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.injectControlBoxLayout.setLayout(self.injectControlLayout)
@@ -331,14 +335,24 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setBtnImpulsionalAStatus(self, status):
-        self.btnImpulsional_A.setChecked(status)
+        self.btnPurge_A.setChecked(status)
         self.setBtnImpulsionalADisable(status)
 
     def getBtnImpulsionalAStatus(self):
-        return self.btnImpulsional_A.isChecked()
+        return self.btnPurge_A.isChecked()
 
     def setBtnImpulsionalADisable(self, disable):
-        self.btnImpulsional_A.setDisabled(disable)
+        self.btnPurge_A.setDisabled(disable)
+
+    def setBtnInjectAStatus(self, status):
+        self.btnInject_A.setChecked(status)
+        self.setBtnInjectADisable(status)
+
+    def getBtnInjectAStatus(self):
+        return self.btnInject_A.isChecked()
+
+    def setBtnInjectADisable(self, disable):
+        self.btnInject_A.setDisabled(disable)
 
     def setEdtImpulsionalAValue(self, value):
         self.edtImpulsional_A.setValue(value)
@@ -359,14 +373,24 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setBtnImpulsionalBStatus(self, status):
-        self.btnImpulsional_B.setChecked(status)
+        self.btnPurge_B.setChecked(status)
         self.setBtnImpulsionalBDisable(status)
 
     def getBtnImpulsionalBStatus(self):
-        return self.btnImpulsional_B.isChecked()
+        return self.btnPurge_B.isChecked()
 
     def setBtnImpulsionalBDisable(self, disable):
-        self.btnImpulsional_B.setDisabled(disable)
+        self.btnPurge_B.setDisabled(disable)
+
+    def setBtnInjectBStatus(self, status):
+        self.btnInject_B.setChecked(status)
+        self.setBtnInjectBDisable(status)
+
+    def getBtnInjectBStatus(self):
+        return self.btnInject_B.isChecked()
+
+    def setBtnInjectBDisable(self, disable):
+        self.btnInject_B.setDisabled(disable)
 
     def setEdtImpulsionalBValue(self, value):
         self.edtImpulsional_B.setValue(value)
@@ -396,11 +420,17 @@ class ViewDataAcquisition(QWidget):
         self.btnPeristaltic.setStyleSheet(style.buttonPeristaltic)
         self.btnPeristaltic.setCheckable(True)
 
-        self.btnImpulsional_A.setStyleSheet(style.buttonImpulsionalSmall)
-        self.btnImpulsional_A.setCheckable(True)
+        self.btnInject_A.setStyleSheet(style.buttonImpulsionalSmall)
+        self.btnInject_A.setCheckable(True)
 
-        self.btnImpulsional_B.setStyleSheet(style.buttonImpulsionalSmall)
-        self.btnImpulsional_B.setCheckable(True)
+        self.btnInject_B.setStyleSheet(style.buttonImpulsionalSmall)
+        self.btnInject_B.setCheckable(True)
+
+        self.btnPurge_A.setStyleSheet(style.buttonImpulsionalSmall)
+        self.btnPurge_A.setCheckable(True)
+
+        self.btnPurge_B.setStyleSheet(style.buttonImpulsionalSmall)
+        self.btnPurge_B.setCheckable(True)
 
     """
     ********************************************************************************************************************
