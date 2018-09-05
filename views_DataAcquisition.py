@@ -20,6 +20,7 @@ from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox,
 from PyQt5.QtCore import Qt
 from lib.LedIndicatorWidget import LedIndicator
 from lib.TriangleButton import TriangleButton
+from lib.RectangleButton import RectangleButton
 import styles as style
 
 
@@ -36,49 +37,54 @@ class ViewDataAcquisition(QWidget):
             'Init Experiment': 'The device has not respond, try again.'
         }
 
-        self.lblDataSampling = QLabel("Data Sampling:")
+        self.lblDataSampling = QLabel('Data Sampling:')
         self.edtDataSampling = QSpinBox()
-        self.lblExperimentTime = QLabel("Experiment Time:")
+        self.lblExperimentTime = QLabel('Experiment Time:')
         self.edtExperimentTime = QSpinBox()
-        self.lblLaser = QLabel("Status Laser")
-        self.lblChannel_1 = QLabel("Channel 1")
+        self.lblLaser = QLabel('Status Laser')
+        self.lblChannel_1 = QLabel('Channel 1')
         self.edtChannel_1 = QLineEdit()
-        self.lblChannel_2 = QLabel("Channel 2")
+        self.lblChannel_2 = QLabel('Channel 2')
         self.edtChannel_2 = QLineEdit()
-        self.lblTime = QLabel("Time")
+        self.lblTime = QLabel('Time')
         self.edtTime = QLineEdit()
-        self.lblBtnInit = QLabel("Start Experiment")
+        self.lblBtnInit = QLabel('Start Experiment')
 
-        self.lblPeristaltic = QLabel("Flow Peristaltic")
+        self.lblPeristaltic = QLabel('Flow Peristaltic')
         self.edtPeristaltic = QSpinBox()
-        self.lblImpulsional_A = QLabel("Injection A:")
+        self.lblImpulsional_A = QLabel('Injection A:')
         self.edtImpulsional_A = QSpinBox()
-        self.lblImpulsional_B = QLabel("Injection B:")
+        self.lblImpulsional_B = QLabel('Injection B:')
         self.edtImpulsional_B = QSpinBox()
+        self.lblBack = QLabel('BACK')
+        self.lblForward = QLabel('FORWARD')
+        self.lblStop = QLabel('STOP')
 
         self.btnInitExperiment = QPushButton()
-        self.btnFreeRunning = QPushButton("Free Running")
+        self.btnFreeRunning = QPushButton('Free Running')
 
-        self.btnPeristaltic = QPushButton("START")
-        self.btnInject_A = QPushButton("INJECT")
-        self.btnInject_B = QPushButton("INJECT")
-        self.btnPurge_A = QPushButton("PURGE")
-        self.btnPurge_B = QPushButton("PURGE")
+        self.btnPeristaltic = QPushButton('START')
+        self.btnInject_A = QPushButton('INJECT')
+        self.btnInject_B = QPushButton('INJECT')
+        self.btnPurge_A = QPushButton('PURGE')
+        self.btnPurge_B = QPushButton('PURGE')
         self.btnBackPeristaltic = TriangleButton(50, self.back)
         self.btnForwardPeristaltic = TriangleButton(50, self.forward)
+        self.btnStopPeristaltic = RectangleButton(50)
 
         self.ledLaser = LedIndicator(self)
 
         self.layoutGrid = QGridLayout(self)
 
-        self.timeBoxLayout = QGroupBox("Time Parameters")
+        self.timeBoxLayout = QGroupBox('Time Parameters')
         self.dataSamplingBoxLayout = QGroupBox()
         self.experimentTimeBoxLayout = QGroupBox()
         self.statusLaserBoxLayout = QGroupBox()
 
-        self.fluidicBoxLayout = QGroupBox("Fluidic Parameters")
-        self.peristalticControlBoxLayout = QGroupBox("Peristaltic Pump Control")
-        self.injectControlBoxLayout = QGroupBox("Injection Pump Control")
+        self.fluidicBoxLayout = QGroupBox('Fluidic Parameters')
+        self.peristalticControlBoxLayout = QGroupBox('Peristaltic Pump Control')
+        self.injectControlBoxLayout = QGroupBox('Injection Pump Control')
+        self.peristalticBoxLayout = QGroupBox()
 
         self.filledBoxLayout_1 = QGroupBox()
         self.filledLayout_2 = QGroupBox()
@@ -91,6 +97,7 @@ class ViewDataAcquisition(QWidget):
         self.fluidicLayout = QGridLayout(self)
         self.peristalticControlLayout = QGridLayout(self)
         self.injectControlLayout = QGridLayout(self)
+        self.peristalticLayout = QGridLayout(self)
 
         self.btnInitLayout = QVBoxLayout(self)
 
@@ -199,8 +206,19 @@ class ViewDataAcquisition(QWidget):
         self.peristalticControlLayout.addWidget(self.edtPeristaltic, 1, 0)
         self.peristalticControlLayout.addWidget(self.btnPeristaltic, 0, 1, 2, 1)
 
-        self.peristalticControlLayout.addWidget(self.btnBackPeristaltic, 2, 0)
-        self.peristalticControlLayout.addWidget(self.btnForwardPeristaltic, 2, 2)
+        self.peristalticLayout.addWidget(self.btnBackPeristaltic, 0, 0)
+        self.peristalticLayout.addWidget(self.btnStopPeristaltic, 0, 1)
+        self.peristalticLayout.addWidget(self.btnForwardPeristaltic, 0, 2)
+        self.peristalticLayout.addWidget(self.lblBack, 1, 0)
+        self.peristalticLayout.addWidget(self.lblStop, 1, 1)
+        self.peristalticLayout.addWidget(self.lblForward, 1, 2)
+
+        self.peristalticLayout.setAlignment(Qt.AlignCenter)
+
+        self.peristalticBoxLayout.setStyleSheet(style.groupBoxGeneralWithoutBorder)
+        self.peristalticBoxLayout.setLayout(self.peristalticLayout)
+
+        self.peristalticControlLayout.addWidget(self.peristalticBoxLayout, 2, 0, 1, 3)
 
         self.peristalticControlBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.peristalticControlBoxLayout.setLayout(self.peristalticControlLayout)
@@ -442,9 +460,6 @@ class ViewDataAcquisition(QWidget):
         self.btnPurge_B.setStyleSheet(style.buttonImpulsionalSmall)
         self.btnPurge_B.setCheckable(True)
 
-        # self.btnBackPeristaltic.setText('Back')
-        # self.btnBackPeristaltic.setSize(50)
-
     """
     ********************************************************************************************************************
     *                                           End Buttons Styles Functions                                           *
@@ -504,6 +519,12 @@ class ViewDataAcquisition(QWidget):
     def setStyleLabels(self):
         self.lblBtnInit.setStyleSheet(style.labelBtnInit)
         self.lblBtnInit.setAlignment(Qt.AlignCenter)
+        self.lblBack.setStyleSheet(style.labelBtnPeristaltic)
+        self.lblBack.setAlignment(Qt.AlignCenter)
+        self.lblStop.setStyleSheet(style.labelBtnPeristaltic)
+        self.lblStop.setAlignment(Qt.AlignCenter)
+        self.lblForward.setStyleSheet(style.labelBtnPeristaltic)
+        self.lblForward.setAlignment(Qt.AlignCenter)
 
     """
     ********************************************************************************************************************

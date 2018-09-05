@@ -657,6 +657,16 @@ groupBoxGeneral = 'QGroupBox {' \
                   'left: 10px;' \
                   '}'
 
+groupBoxGeneralWithoutBorder = 'QGroupBox {' \
+                               'border: 2px outset #948682;' \
+                               'border-radius: 5px;' \
+                               'margin-top: 7px;' \
+                               '}' \
+                               'QGroupBox:title {' \
+                               'top: -7 ex;' \
+                               'left: 10px;' \
+                               '}'
+
 groupBoxAutoAcquisition = 'QGroupBox {' \
                           'border: 2px outset #948682;' \
                           'border-radius: 5px;' \
@@ -686,3 +696,9 @@ labelBtnInit = 'QLabel {' \
                'font-size: 12px;' \
                'color: white;' \
                '}'
+
+labelBtnPeristaltic = 'QLabel {' \
+                      'font: bold;' \
+                      'font-size: 10px;' \
+                      'color: black;' \
+                      '}'

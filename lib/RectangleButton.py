@@ -3,13 +3,12 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 
-class TriangleButton(QAbstractButton):
+class RectangleButton(QAbstractButton):
 
-    def __init__(self, size, direction, parent=None):
+    def __init__(self, size, parent=None):
         QAbstractButton.__init__(self, parent)
 
         self.size = size
-        self.direction = direction
 
         self.setMinimumSize(24, 24)
         self.setCheckable(True)
@@ -29,41 +28,26 @@ class TriangleButton(QAbstractButton):
         painter = QPainter(self)
         pen = QPen()
 
-        if self.direction == 'forward':
-            trianglePointsF = [
-                QPointF(self.size * 0.05, self.size * 0.05),
-                QPointF(self.size - (self.size * 0.05), self.size / 2),
-                QPointF(self.size * 0.05, self.size - (self.size * 0.05))
-            ]
+        rectanglePointsF = [
+            QPointF(self.size * 0.05, self.size * 0.05),
+            QPointF(self.size - (self.size * 0.05), self.size * 0.05),
+            QPointF(self.size - (self.size * 0.05), self.size - (self.size * 0.05)),
+            QPointF(self.size * 0.05, self.size - (self.size * 0.05))
+        ]
 
-            gradientPen = QLinearGradient(QPointF(0, 0), QPointF(100, 100))
-            gradient = QLinearGradient(0, 0, 100, 100)
-
-        else:
-            trianglePointsF = [
-                QPointF(self.size - (self.size * 0.05), self.size * 0.05),
-                QPointF(self.size * 0.05, self.size / 2),
-                QPointF(self.size - (self.size * 0.05), self.size - (self.size * 0.05))
-            ]
-
-            # gradientPen = QLinearGradient(100, 0, 0, 100)
-            gradient = QLinearGradient(100, 0, 0, 100)
+        gradient = QLinearGradient(0, 0, 100, 100)
 
         pen.setWidth(self.size * 0.04)
 
         painter.setRenderHint(QPainter.Antialiasing)
 
         if self.isChecked():
-            # gradientPen.setColorAt(0, QColor(189, 189, 189))
-            # gradientPen.setColorAt(1, QColor(110, 110, 110))
             color = QColor(110, 110, 110)
 
             gradient.setColorAt(0, self.on_color_1)
             gradient.setColorAt(1, self.on_color_2)
 
         else:
-            # gradientPen.setColorAt(1, QColor(189, 189, 189))
-            # gradientPen.setColorAt(0, QColor(110, 110, 110))
             color = QColor(189, 189, 189)
 
             gradient.setColorAt(0, self.off_color_1)
@@ -74,7 +58,7 @@ class TriangleButton(QAbstractButton):
 
         painter.setBrush(gradient)
 
-        triangleF = QPolygonF(trianglePointsF)
+        triangleF = QPolygonF(rectanglePointsF)
 
         basePoly = QPolygonF(triangleF)
         painter.drawPolygon(basePoly)
