@@ -182,3 +182,28 @@ class SerialPort(QObject):
         self.write_port('@')
 
         self.write_port(f'{1:04x}')
+
+    def send_Back_Peristaltic(self):
+        self.write_port(self.commands['BackPeris'])
+
+        self.write_port(f'{0:04x}')
+
+    def send_Stop_Peristaltic(self):
+        self.write_port(self.commands['StopPeris'])
+
+        self.write_port(f'{0:04x}')
+
+    def send_Forward_Peristaltic(self):
+        self.write_port(self.commands['ForwardPeris'])
+
+        self.write_port(f'{0:04x}')
+
+    def send_BSF_Peristaltic(self, who):
+        if who == 0:
+            self.send_Back_Peristaltic()
+
+        elif who == 1:
+            self.send_Stop_Peristaltic()
+
+        else:
+            self.send_Forward_Peristaltic()

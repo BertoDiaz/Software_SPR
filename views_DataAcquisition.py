@@ -344,6 +344,71 @@ class ViewDataAcquisition(QWidget):
     def setBtnPeristalticDisable(self, disable):
         self.btnPeristaltic.setDisabled(disable)
 
+    def setBtnBackPeristalticStatus(self, status):
+        self.btnBackPeristaltic.setChecked(status)
+
+    def getBtnBackPeristalticStatus(self):
+        return self.btnBackPeristaltic.isChecked()
+
+    def setBtnBackPeristalticDisable(self, disable):
+        self.btnBackPeristaltic.setDisabled(disable)
+
+    def setBtnStopPeristalticStatus(self, status):
+        self.btnStopPeristaltic.setChecked(status)
+
+    def getBtnStopPeristalticStatus(self):
+        return self.btnStopPeristaltic.isChecked()
+
+    def setBtnStopPeristalticDisable(self, disable):
+        self.btnStopPeristaltic.setDisabled(disable)
+
+    def setBtnForwardPeristalticStatus(self, status):
+        self.btnForwardPeristaltic.setChecked(status)
+
+    def getBtnForwardPeristalticStatus(self):
+        return self.btnForwardPeristaltic.isChecked()
+
+    def setBtnForwardPeristalticDisable(self, disable):
+        self.btnForwardPeristaltic.setDisabled(disable)
+
+    def setBtnBSFPeristalticStatus(self, status, who):
+        if who == 0:
+            self.setBtnBackPeristalticStatus(status)
+
+        elif who == 1:
+            self.setBtnStopPeristalticStatus(status)
+
+        else:
+            self.setBtnForwardPeristalticStatus(status)
+
+    def getBtnBSFPeristalticStatus(self, who):
+        if who == 0:
+            return self.getBtnBackPeristalticStatus()
+
+        elif who == 1:
+            return self.getBtnStopPeristalticStatus()
+
+        else:
+            return self.getBtnForwardPeristalticStatus()
+
+    def setBtnBSFPeristalticNotStatus(self, status, who):
+        if who == 0:
+            self.setBtnStopPeristalticStatus(status)
+            self.setBtnForwardPeristalticStatus(status)
+
+        elif who == 1:
+            self.setBtnBackPeristalticStatus(status)
+            self.setBtnForwardPeristalticStatus(status)
+
+        else:
+            self.setBtnBackPeristalticStatus(status)
+            self.setBtnStopPeristalticStatus(status)
+
+    def setBtnBSFPeristalticDisable(self, disable):
+        self.setBtnBackPeristalticDisable(disable)
+        self.setBtnStopPeristalticDisable(disable)
+        self.setBtnForwardPeristalticDisable(disable)
+
     def setEdtPeristalticValue(self, value):
         self.edtPeristaltic.setValue(value)
 

@@ -35,6 +35,9 @@ class ControllerTabs:
         self.laserOFF = 0
         self.peristalticON = 1
         self.peristalticOFF = 0
+        self.backPeristaltic = 0
+        self.stopPeristaltic = 1
+        self.forwardPeristaltic = 2
         self.msTimeout = 1000
         self.bufferWaitACK = Queue()
         self.btnTimeout = False
@@ -207,6 +210,12 @@ class ControllerTabs:
             self.viewDataAcquisition.btnPurge_B.clicked.connect(btnImpulsionalBParameters)
             self.viewDataAcquisition.btnInject_A.clicked.connect(self.btnInjectAChanged)
             self.viewDataAcquisition.btnInject_B.clicked.connect(self.btnInjectBChanged)
+            btnBackPeristaltic = partial(self.btnBSFPeristalticChanged, who=self.backPeristaltic)
+            self.viewDataAcquisition.btnBackPeristaltic.clicked.connect(btnBackPeristaltic)
+            btnStopPeristaltic = partial(self.btnBSFPeristalticChanged, who=self.stopPeristaltic)
+            self.viewDataAcquisition.btnStopPeristaltic.clicked.connect(btnStopPeristaltic)
+            btnForwardPeristaltic = partial(self.btnBSFPeristalticChanged, who=self.forwardPeristaltic)
+            self.viewDataAcquisition.btnForwardPeristaltic.clicked.connect(btnForwardPeristaltic)
 
             edtPeristalticParameters = partial(self.edtPeristalticChanged, who=self.viewDataAcquisition)
             self.viewDataAcquisition.edtPeristaltic.valueChanged.connect(edtPeristalticParameters)
@@ -338,6 +347,33 @@ class ControllerTabs:
         self.viewDataAcquisition.setBtnPeristalticStatus(status)
         self.viewSystemControl.setBtnPeristalticDisable(False)
         self.viewDataAcquisition.setBtnPeristalticDisable(False)
+
+    def btnBSFPeristalticChanged(self, who):
+        if self.viewDataAcquisition.getBtnBSFPeristalticStatus(who):
+
+            self.viewDataAcquisition.setBtnBSFPeristalticNotStatus(False, who)
+
+            self.viewDataAcquisition.setBtnBSFPeristalticDisable(True)
+            self.serialPort.send_BSF_Peristaltic(who)
+            peristalticCommand = partial(self.bsfPeristalticCommandReceived, who=who)
+            self.bufferWaitACK.append(peristalticCommand)
+
+            functionTimeout = partial(self.setTimeout,
+                                      messageTimeout=self.viewSystemControl.timeoutMessage['Peristaltic'],
+                                      functionTimeout=peristalticCommand)
+            self.tmrTimeout.timeout.connect(functionTimeout)
+            self.tmrTimeout.start(self.msTimeout)
+
+    def bsfPeristalticCommandReceived(self, who):
+        if self.btnTimeout:
+            status = not self.viewDataAcquisition.getBtnBSFPeristalticStatus(who)
+            self.btnTimeout = False
+
+        else:
+            status = self.viewDataAcquisition.getBtnBSFPeristalticStatus(who)
+
+        self.viewDataAcquisition.setBtnBSFPeristalticStatus(status, who)
+        self.viewDataAcquisition.setBtnBSFPeristalticDisable(False)
 
     """
     ********************************************************************************************************************
