@@ -235,8 +235,8 @@ class ViewDataAcquisition(QWidget):
         self.injectControlBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.injectControlBoxLayout.setLayout(self.injectControlLayout)
 
-        self.fluidicLayout.addWidget(self.peristalticControlBoxLayout, 0, 0)
-        self.fluidicLayout.addWidget(self.injectControlBoxLayout, 0, 1)
+        self.fluidicLayout.addWidget(self.peristalticControlBoxLayout, 0, 0, 2, 1)
+        self.fluidicLayout.addWidget(self.injectControlBoxLayout, 0, 1, 1, 1)
 
         self.fluidicBoxLayout.setStyleSheet(style.groupBoxGeneral)
         self.fluidicBoxLayout.setLayout(self.fluidicLayout)

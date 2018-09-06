@@ -435,6 +435,7 @@ class ControllerTabs:
 
     def btnInjectAChanged(self):
         if self.viewDataAcquisition.getBtnInjectAStatus():
+            self.viewDataAcquisition.setBtnInjectADisable(True)
             toSend = 50
 
             self.serialPort.send_Control_Impul_A(toSend)
@@ -445,6 +446,10 @@ class ControllerTabs:
                                       functionTimeout=self.injectACommandReceived)
             self.tmrTimeout.timeout.connect(functionTimeout)
             self.tmrTimeout.start(self.msTimeout)
+
+        else:
+            self.viewDataAcquisition.setBtnInjectAStatus(False)
+            self.viewDataAcquisition.setBtnInjectADisable(False)
 
     def injectACommandReceived(self):
         if self.btnTimeout:
@@ -496,6 +501,7 @@ class ControllerTabs:
 
     def btnInjectBChanged(self):
         if self.viewDataAcquisition.getBtnInjectBStatus():
+            self.viewDataAcquisition.setBtnInjectBDisable(True)
             toSend = 50
 
             self.serialPort.send_Control_Impul_B(toSend)
@@ -506,6 +512,10 @@ class ControllerTabs:
                                       functionTimeout=self.injectBCommandReceived)
             self.tmrTimeout.timeout.connect(functionTimeout)
             self.tmrTimeout.start(self.msTimeout)
+
+        else:
+            self.viewDataAcquisition.setBtnInjectBStatus(False)
+            self.viewDataAcquisition.setBtnInjectBDisable(False)
 
     def injectBCommandReceived(self):
         if self.btnTimeout:
