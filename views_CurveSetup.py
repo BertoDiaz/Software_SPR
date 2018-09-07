@@ -146,8 +146,8 @@ class ViewCurveSetup(QWidget):
         self.layoutGrid.addWidget(self.setLaserGroup(), 0, 1, 1, 1)
         self.layoutGrid.addWidget(self.setCurveGroup(), 1, 0, 1, 2)
         self.layoutGrid.addWidget(self.setAcquisitionGroup(), 2, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setGraphGroup(), 0, 2, 3, 8)
-        self.layoutGrid.addWidget(self.setFilledGroup_1(), 3, 0, 5, 10)
+        self.layoutGrid.addWidget(self.setGraphGroup(), 0, 2, 6, 8)
+        # self.layoutGrid.addWidget(self.setFilledGroup_1(), 3, 0, 5, 10)
 
     def setFilledGroup_1(self):
         self.filledBoxLayout_1.setStyleSheet(style.groupBoxFilled)
