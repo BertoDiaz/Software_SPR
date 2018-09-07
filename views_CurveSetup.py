@@ -15,9 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QGraphicsView
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox
 from PyQt5.QtCore import Qt, QLocale
+import pyqtgraph as pg
+import numpy as np
 import styles as style
 
 
@@ -26,71 +28,91 @@ class ViewCurveSetup(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
+        self.graphChannel_1PlotItem = None
+        self.graphChannel_1Plot = None
+        self.graphChannel_2PlotItem = None
+        self.graphChannel_2Plot = None
+        self.xd = None
+        self.y1d = None
+        self.y2d = None
+
         self.timeoutMessage = {
             'Calibrate': 'The device has not been calibrated, try again.',
             'Automatic': 'The device has not respond, try again.'
         }
 
-        self.lblGainA = QLabel("Gain A:")
+        self.lblGainA = QLabel('Gain A:')
         self.edtGainA = QSpinBox()
-        self.lblGainB = QLabel("Gain B:")
+        self.lblGainB = QLabel('Gain B:')
         self.edtGainB = QSpinBox()
-        self.lblOffsetA = QLabel("Offset A:")
+        self.lblOffsetA = QLabel('Offset A:')
         self.edtOffsetA = QSpinBox()
-        self.lblOffsetB = QLabel("Offset B:")
+        self.lblOffsetB = QLabel('Offset B:')
         self.edtOffsetB = QSpinBox()
 
-        self.btnCalibrate = QPushButton("Calibrate")
-        self.btnLaser = QPushButton("Laser OFF")
+        self.btnCalibrate = QPushButton('Calibrate')
+        self.btnLaser = QPushButton('Laser OFF')
 
-        self.lblInitialAngle = QLabel("Initial Angle:")
+        self.lblInitialAngle = QLabel('Initial Angle:')
         self.edtInitialAngle = QSpinBox()
-        self.lblAngleLongitude = QLabel("Angle Longitude:")
+        self.lblAngleLongitude = QLabel('Angle Longitude:')
         self.edtAngleLongitude = QSpinBox()
-        self.lblAngleResolution = QLabel("Angle Resolution:")
+        self.lblAngleResolution = QLabel('Angle Resolution:')
         self.edtAngleResolution = QDoubleSpinBox()
-        self.lblFinalAngle = QLabel("Final Angle:")
+        self.lblFinalAngle = QLabel('Final Angle:')
         self.edtFinalAngle = QLineEdit()
         self.edtFinalAngle.setReadOnly(True)
-        self.lblPointsCurve = QLabel("Points of Curve:")
+        self.lblPointsCurve = QLabel('Points of Curve:')
         self.edtPointsCurve = QLineEdit()
         self.edtPointsCurve.setReadOnly(True)
 
-        self.btnReset = QPushButton("Reset")
+        self.btnReset = QPushButton('Reset')
 
         self.edtAcquisition = QLineEdit()
         self.edtAcquisition.setReadOnly(True)
-        self.lblDataSampling = QLabel("Data Sampling (seconds):")
+        self.lblDataSampling = QLabel('Data Sampling (seconds):')
         self.edtDataSampling = QSpinBox()
-        self.lblACQChannel_1 = QLabel("Channel 1:")
+        self.lblACQChannel_1 = QLabel('Channel 1:')
         self.edtACQChannel_1 = QLineEdit()
         self.edtACQChannel_1.setReadOnly(True)
-        self.lblACQChannel_2 = QLabel("Channel 2:")
+        self.lblACQChannel_2 = QLabel('Channel 2:')
         self.edtACQChannel_2 = QLineEdit()
         self.edtACQChannel_2.setReadOnly(True)
 
-        self.btnAutoAcquisition = QPushButton("Automatic")
+        self.btnAutoAcquisition = QPushButton('Automatic')
+
+        self.graphChannel_1 = pg.PlotWidget(name='Channel 1')
+        self.graphChannel_2 = pg.PlotWidget(name='Channel 2')
+        self.graphicsViewChannel_1 = QGraphicsView(self)
+        self.graphicsViewChannel_2 = QGraphicsView(self)
 
         self.layoutGrid = QGridLayout(self)
 
-        self.calibrationBoxLayout = QGroupBox("Calibration Parameters")
+        self.calibrationBoxLayout = QGroupBox('Calibration Parameters')
         self.gainBoxLayout = QGroupBox()
         self.offsetBoxLayout = QGroupBox()
         self.btnCalibrateBoxLayout = QGroupBox()
         self.btnLaserBoxLayout = QGroupBox()
 
-        self.curveBoxLayout = QGroupBox("Curve Performance")
+        self.curveBoxLayout = QGroupBox('Curve Performance')
 
         self.filledBoxLayout_1 = QGroupBox()
         self.filledLayout_2 = QGroupBox()
 
-        self.acquisitionBoxLayout = QGroupBox("Acquisition Mode")
+        self.acquisitionBoxLayout = QGroupBox('Acquisition Mode')
         self.autoACQBoxLayout = QGroupBox()
+
+        self.graphCurveBoxLayout = QGroupBox('Graphs')
+        self.graphCurveChannel1BoxLayout = QGroupBox('Channel 1')
+        self.graphCurveChannel2BoxLayout = QGroupBox('Channel 2')
 
         self.calibrationLayout = QGridLayout(self)
         self.curveLayout = QGridLayout(self)
         self.acquisitionLayout = QGridLayout(self)
         self.autoACQLayout = QGridLayout(self)
+        self.graphCurveLayout = QGridLayout(self)
+        self.graphCurveChannel1Layout = QGridLayout(self)
+        self.graphCurveChannel2Layout = QGridLayout(self)
 
         self.gainLayout = QVBoxLayout(self)
         self.offsetLayout = QVBoxLayout(self)
@@ -101,6 +123,9 @@ class ViewCurveSetup(QWidget):
         self.gainBLayout = QHBoxLayout(self)
         self.offsetALayout = QHBoxLayout(self)
         self.offsetBLayout = QHBoxLayout(self)
+
+        self.graphChannel_1Layout = QHBoxLayout(self)
+        self.graphChannel_2Layout = QHBoxLayout(self)
 
         self.setStyleButtons()
         self.setStyleSpinBox()
@@ -117,10 +142,11 @@ class ViewCurveSetup(QWidget):
         self.move(windowGeometry.topLeft())
 
     def mainWindow(self):
-        self.layoutGrid.addWidget(self.setCalibrationGroup(), 0, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setLaserGroup(), 0, 2, 1, 1)
+        self.layoutGrid.addWidget(self.setCalibrationGroup(), 0, 0, 1, 1)
+        self.layoutGrid.addWidget(self.setLaserGroup(), 0, 1, 1, 1)
         self.layoutGrid.addWidget(self.setCurveGroup(), 1, 0, 1, 2)
         self.layoutGrid.addWidget(self.setAcquisitionGroup(), 2, 0, 1, 2)
+        self.layoutGrid.addWidget(self.setGraphGroup(), 0, 2, 3, 8)
         self.layoutGrid.addWidget(self.setFilledGroup_1(), 3, 0, 5, 10)
 
     def setFilledGroup_1(self):
@@ -134,14 +160,14 @@ class ViewCurveSetup(QWidget):
         return self.filledLayout_2
 
     def setCalibrationGroup(self):
-        self.lblGainA.setFixedWidth(50)
-        self.lblGainB.setFixedWidth(50)
-        self.lblOffsetA.setFixedWidth(50)
-        self.lblOffsetB.setFixedWidth(50)
-        self.edtGainA.setFixedWidth(100)
-        self.edtGainB.setFixedWidth(100)
-        self.edtOffsetA.setFixedWidth(100)
-        self.edtOffsetB.setFixedWidth(100)
+        self.lblGainA.setFixedWidth(45)
+        self.lblGainB.setFixedWidth(45)
+        self.lblOffsetA.setFixedWidth(45)
+        self.lblOffsetB.setFixedWidth(45)
+        self.edtGainA.setFixedWidth(50)
+        self.edtGainB.setFixedWidth(50)
+        self.edtOffsetA.setFixedWidth(50)
+        self.edtOffsetB.setFixedWidth(50)
 
         self.gainALayout.addWidget(self.lblGainA)
         self.gainALayout.addWidget(self.edtGainA)
@@ -235,6 +261,34 @@ class ViewCurveSetup(QWidget):
         self.acquisitionBoxLayout.setLayout(self.acquisitionLayout)
 
         return self.acquisitionBoxLayout
+
+    def setGraphGroup(self):
+        self.setGraphChannel1()
+        self.setGraphChannel2()
+
+        self.graphChannel_1Layout.addWidget(self.graphChannel_1)
+        self.graphicsViewChannel_1.setLayout(self.graphChannel_1Layout)
+
+        self.graphCurveChannel1Layout.addWidget(self.graphicsViewChannel_1, 0, 0)
+
+        self.graphCurveChannel1BoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.graphCurveChannel1BoxLayout.setLayout(self.graphCurveChannel1Layout)
+
+        self.graphChannel_2Layout.addWidget(self.graphChannel_2)
+        self.graphicsViewChannel_2.setLayout(self.graphChannel_2Layout)
+
+        self.graphCurveChannel2Layout.addWidget(self.graphicsViewChannel_2, 0, 0)
+
+        self.graphCurveChannel2BoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.graphCurveChannel2BoxLayout.setLayout(self.graphCurveChannel2Layout)
+
+        self.graphCurveLayout.addWidget(self.graphCurveChannel1BoxLayout, 0, 0)
+        self.graphCurveLayout.addWidget(self.graphCurveChannel2BoxLayout, 1, 0)
+
+        self.graphCurveBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.graphCurveBoxLayout.setLayout(self.graphCurveLayout)
+
+        return self.graphCurveBoxLayout
 
     """
     ********************************************************************************************************************
@@ -419,6 +473,68 @@ class ViewCurveSetup(QWidget):
     """
     ********************************************************************************************************************
     *                                         End Acquisition Mode Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                                 Graph Functions                                                  *
+    ********************************************************************************************************************
+    """
+
+    def setGraphChannel1(self):
+        self.graphChannel_1PlotItem = self.graphChannel_1.plotItem
+        self.graphChannel_1Plot = self.graphChannel_1PlotItem.plot()
+        self.graphChannel_1Plot.setPen((200, 200, 100))
+        self.graphChannel_1Plot.setSymbolBrush((255, 0, 0))
+        self.graphChannel_1Plot.setSymbolPen('w')
+        self.graphChannel_1Plot.setSymbol('o')
+        self.graphChannel_1Plot.setSymbolSize(4)
+        self.graphChannel_1PlotItem.setLabel('left', 'Signal Amplitude')
+        self.graphChannel_1PlotItem.setLabel('bottom', 'Angle of Incidence')
+        self.graphChannel_1PlotItem.showGrid(x=True, y=True)
+        self.graphChannel_1.setXRange(58.00, 62.00)
+        self.graphChannel_1.setYRange(0, 100)
+
+    def setGraphChannel2(self):
+        self.graphChannel_2PlotItem = self.graphChannel_2.plotItem
+        self.graphChannel_2Plot = self.graphChannel_2PlotItem.plot()
+        self.graphChannel_2Plot.setPen((200, 200, 100))
+        self.graphChannel_2Plot.setSymbolBrush((255, 0, 0))
+        self.graphChannel_2Plot.setSymbolPen('w')
+        self.graphChannel_2Plot.setSymbol('o')
+        self.graphChannel_2Plot.setSymbolSize(4)
+        self.graphChannel_2PlotItem.setLabel('left', 'Signal Amplitude')
+        self.graphChannel_2PlotItem.setLabel('bottom', 'Angle of Incidence')
+        self.graphChannel_2PlotItem.showGrid(x=True, y=True)
+        self.graphChannel_2.setXRange(58.00, 62.00)
+        self.graphChannel_2.setYRange(0, 100)
+
+    def updateData(self, valueX, valueY1, valueY2):
+        if valueX == 58.00:
+            self.xd = np.array([valueX])
+            self.y1d = np.array([valueY1])
+            self.y2d = np.array([valueY2])
+
+        else:
+            self.xd = np.append(self.xd, valueX)
+            self.y1d = np.append(self.y1d, valueY1)
+            self.y2d = np.append(self.y2d, valueY2)
+
+        self.graphChannel_1Plot.setData(y=self.y1d, x=self.xd)
+        self.graphChannel_2Plot.setData(y=self.y2d, x=self.xd)
+
+    def calc_parabola_vertex(self, x1, y1, x2, y2, x3, y3):
+        denom = (x1 - x2) * (x1 - x3) * (x2 - x3)
+        A = (x3 * (y2 - y1) + x2 * (y1 - y3) + x1 * (y3 - y2)) / denom
+        B = (x3 * x3 * (y1 - y2) + x2 * x2 * (y3 - y1) + x1 * x1 * (y2 - y3)) / denom
+        C = (x2 * x3 * (x2 - x3) * y1 + x3 * x1 * (x3 - x1) * y2 + x1 * x2 * (x1 - x2) * y3) / denom
+
+        return A, B, C
+
+    """
+    ********************************************************************************************************************
+    *                                               End Graph Functions                                                *
     ********************************************************************************************************************
     """
 

@@ -41,6 +41,7 @@ class ControllerTabs:
         self.msTimeout = 1000
         self.bufferWaitACK = Queue()
         self.btnTimeout = False
+        self.baseX = 58.00
 
         self.btnChecked = {
             'Laser': False,
@@ -712,6 +713,7 @@ class ControllerTabs:
             acquisitionInProcess = self.viewCurveSetup.getBtnAutoAcquisitionStatus()
 
         self.viewCurveSetup.setBtnAutoAcquisitionInProcess(acquisitionInProcess)
+        # self.viewCurveSetup.setGraphChannel1()
 
     def acquisitionDataReceived(self, data):
         if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
@@ -726,7 +728,12 @@ class ControllerTabs:
             self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
             self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
 
-            if self.values['Automatic'] >= 5:
+            self.viewCurveSetup.updateData(self.baseX, self.values['Acquisition Channel 1'],
+                                           self.values['Acquisition Channel 2'])
+
+            self.baseX += 0.04
+
+            if self.values['Automatic'] >= 100:
                 self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
                 self.btnAutoAcquisitionChanged()
 
