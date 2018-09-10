@@ -489,11 +489,11 @@ class ViewCurveSetup(QWidget):
         self.graphChannel_1Plot.setSymbolBrush((255, 0, 0))
         self.graphChannel_1Plot.setSymbolPen('w')
         self.graphChannel_1Plot.setSymbol('o')
-        self.graphChannel_1Plot.setSymbolSize(4)
+        self.graphChannel_1Plot.setSymbolSize(8)
         self.graphChannel_1PlotItem.setLabel('left', 'Signal Amplitude')
         self.graphChannel_1PlotItem.setLabel('bottom', 'Angle of Incidence')
         self.graphChannel_1PlotItem.showGrid(x=True, y=True)
-        self.graphChannel_1.setXRange(58.00, 62.00)
+        self.graphChannel_1.setXRange(58.00, 62.00, 0.01)
         self.graphChannel_1.setYRange(0, 100)
 
     def setGraphChannel2(self):
@@ -503,11 +503,11 @@ class ViewCurveSetup(QWidget):
         self.graphChannel_2Plot.setSymbolBrush((255, 0, 0))
         self.graphChannel_2Plot.setSymbolPen('w')
         self.graphChannel_2Plot.setSymbol('o')
-        self.graphChannel_2Plot.setSymbolSize(4)
+        self.graphChannel_2Plot.setSymbolSize(8)
         self.graphChannel_2PlotItem.setLabel('left', 'Signal Amplitude')
         self.graphChannel_2PlotItem.setLabel('bottom', 'Angle of Incidence')
         self.graphChannel_2PlotItem.showGrid(x=True, y=True)
-        self.graphChannel_2.setXRange(58.00, 62.00)
+        self.graphChannel_2.setXRange(58.00, 62.00, 0.01)
         self.graphChannel_2.setYRange(0, 100)
 
     def updateData(self, valueX, valueY1, valueY2):

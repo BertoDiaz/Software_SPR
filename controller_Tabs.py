@@ -731,7 +731,7 @@ class ControllerTabs:
             self.viewCurveSetup.updateData(self.baseX, self.values['Acquisition Channel 1'],
                                            self.values['Acquisition Channel 2'])
 
-            self.baseX += 0.04
+            self.baseX += 0.08
 
             if self.values['Automatic'] >= 100:
                 self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
@@ -814,11 +814,15 @@ class ControllerTabs:
 
             self.values['Channel 1'] = self.valuesExperiment['Channel 1'][self.values['Time']]
             self.values['Channel 2'] = self.valuesExperiment['Channel 2'][self.values['Time']]
-            self.values['Time'] += 1
 
             self.viewDataAcquisition.setEdtChannel1Text(self.values['Channel 1'])
             self.viewDataAcquisition.setEdtChannel2Text(self.values['Channel 2'])
             self.viewDataAcquisition.setEdtTimeText(self.values['Time'])
+
+            self.viewDataAcquisition.setDataChannel1(self.values['Time'], self.values['Channel 1'])
+            self.viewDataAcquisition.setDataChannel2(self.values['Time'], self.values['Channel 2'])
+
+            self.values['Time'] += 1
 
     """
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

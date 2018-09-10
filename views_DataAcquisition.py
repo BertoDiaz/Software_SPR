@@ -17,10 +17,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox, QStylePainter
+from PyQt5.QtChart import QChart, QChartView, QValueAxis, QLineSeries, QSplineSeries
+from PyQt5.QtGui import QPainter, QPen, QColor
 from PyQt5.QtCore import Qt
 from lib.LedIndicatorWidget import LedIndicator
 from lib.TriangleButton import TriangleButton
 from lib.RectangleButton import RectangleButton
+from lib.Chart import Chart
 import styles as style
 
 
@@ -32,6 +35,8 @@ class ViewDataAcquisition(QWidget):
         self.unitTime = ' s'
         self.forward = 'forward'
         self.back = 'back'
+        self.myChartChannel1 = None
+        self.myChartChannel2 = None
 
         self.timeoutMessage = {
             'Init Experiment': 'The device has not respond, try again.'
@@ -74,6 +79,15 @@ class ViewDataAcquisition(QWidget):
 
         self.ledLaser = LedIndicator(self)
 
+        self.chartChannel_1 = QChart()
+        self.chartChannel_2 = QChart()
+        self.chartViewChannel_1 = QChartView(self.chartChannel_1)
+        self.chartViewChannel_2 = QChartView(self.chartChannel_2)
+        self.axisX1 = QValueAxis()
+        self.axisX2 = QValueAxis()
+        self.axisY1 = QValueAxis()
+        self.axisY2 = QValueAxis()
+
         self.layoutGrid = QGridLayout(self)
 
         self.timeBoxLayout = QGroupBox('Time Parameters')
@@ -85,6 +99,7 @@ class ViewDataAcquisition(QWidget):
         self.peristalticControlBoxLayout = QGroupBox('Peristaltic Pump Control')
         self.injectControlBoxLayout = QGroupBox('Injection Pump Control')
         self.peristalticBoxLayout = QGroupBox()
+        self.chartBoxLayout = QGroupBox()
 
         self.filledBoxLayout_1 = QGroupBox()
         self.filledLayout_2 = QGroupBox()
@@ -100,6 +115,7 @@ class ViewDataAcquisition(QWidget):
         self.peristalticLayout = QGridLayout(self)
 
         self.btnInitLayout = QVBoxLayout(self)
+        self.chartLayout = QVBoxLayout(self)
 
         self.setStyleButtons()
         self.setStyleSpinBox()
@@ -118,8 +134,9 @@ class ViewDataAcquisition(QWidget):
 
     def mainWindow(self):
         self.layoutGrid.addWidget(self.setTimeGroup(), 0, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setFluidicGroup(), 1, 0, 1, 3)
-        self.layoutGrid.addWidget(self.setFilledGroup_1(), 2, 0, 5, 10)
+        self.layoutGrid.addWidget(self.setFluidicGroup(), 1, 0, 1, 2)
+        self.layoutGrid.addWidget(self.setChartGroup(), 0, 2, 8, 8)
+        # self.layoutGrid.addWidget(self.setFilledGroup_1(), 2, 0, 5, 10)
 
     def setFilledGroup_1(self):
         self.filledBoxLayout_1.setStyleSheet(style.groupBoxFilled)
@@ -242,6 +259,18 @@ class ViewDataAcquisition(QWidget):
         self.fluidicBoxLayout.setLayout(self.fluidicLayout)
 
         return self.fluidicBoxLayout
+
+    def setChartGroup(self):
+        self.setChart()
+
+        self.chartLayout.addWidget(self.chartViewChannel_1)
+        self.chartLayout.addWidget(self.chartViewChannel_2)
+
+        self.chartBoxLayout.setStyleSheet(style.groupBoxGeneral)
+
+        self.chartBoxLayout.setLayout(self.chartLayout)
+
+        return self.chartBoxLayout
 
     """
     ********************************************************************************************************************
@@ -494,6 +523,43 @@ class ViewDataAcquisition(QWidget):
     """
     ********************************************************************************************************************
     *                                        End Impulsional B Control Functions                                       *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                                  Chart Functions                                                 *
+    ********************************************************************************************************************
+    """
+
+    def setChart(self):
+        titleChannel1 = 'CHANNEL 1'
+        titleChannel2 = 'CHANNEL 2'
+        nameXAxis = 'Time'
+        nameYAxis = 'Signal Amplitude'
+        xTickCount = 5
+        yTickCount = 6
+        xMinorTickCount = 4
+        yMinorTickCount = 1
+        xRange = [0, 100]
+        yRange = [0, 100]
+
+        self.myChartChannel1 = Chart(self.chartViewChannel_1, self.chartChannel_1, titleChannel1, nameXAxis, nameYAxis,
+                                     xTickCount, yTickCount, xMinorTickCount, yMinorTickCount, xRange, yRange)
+
+        self.myChartChannel2 = Chart(self.chartViewChannel_2, self.chartChannel_2, titleChannel2, nameXAxis, nameYAxis,
+                                     xTickCount, yTickCount, xMinorTickCount, yMinorTickCount, xRange, yRange)
+
+    def setDataChannel1(self, xData, yData):
+        self.myChartChannel1.setDataChart(xData, yData)
+
+
+    def setDataChannel2(self, xData, yData):
+        self.myChartChannel2.setDataChart(xData, yData)
+
+    """
+    ********************************************************************************************************************
+    *                                                End Chart Functions                                               *
     ********************************************************************************************************************
     """
 
