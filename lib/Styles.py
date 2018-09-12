@@ -265,7 +265,7 @@ buttonImpulsionalSmall = 'QPushButton {' \
                          'font-size: 12px;' \
                          'color: white;' \
                          'height: 20px;' \
-                         'width: 80px;' \
+                         'width: 60px;' \
                          '}' \
                          'QPushButton:hover {' \
                          'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
@@ -745,6 +745,6 @@ labelBtnInit = 'QLabel {' \
 
 labelBtnPeristaltic = 'QLabel {' \
                       'font: bold;' \
-                      'font-size: 10px;' \
+                      'font-size: 8px;' \
                       'color: black;' \
                       '}'

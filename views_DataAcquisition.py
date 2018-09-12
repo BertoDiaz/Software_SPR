@@ -69,9 +69,9 @@ class ViewDataAcquisition(QWidget):
         self.btnInject_B = QPushButton('INJECT')
         self.btnPurge_A = QPushButton('PURGE')
         self.btnPurge_B = QPushButton('PURGE')
-        self.btnBackPeristaltic = TriangleButton(50, self.back)
-        self.btnForwardPeristaltic = TriangleButton(50, self.forward)
-        self.btnStopPeristaltic = RectangleButton(50)
+        self.btnBackPeristaltic = TriangleButton(40, self.back)
+        self.btnForwardPeristaltic = TriangleButton(40, self.forward)
+        self.btnStopPeristaltic = RectangleButton(40)
         self.btnChart1000Channel1 = QPushButton('x1000')
         self.btnChart10000Channel1 = QPushButton('x10000')
         self.btnAutoscaleXChannel1 = QPushButton('Autoscale X')
@@ -664,10 +664,17 @@ class ViewDataAcquisition(QWidget):
 
     def setStyleSpinBox(self):
         self.edtDataSampling.setStyleSheet(Styles.spinBoxGeneral)
+
         self.edtExperimentTime.setStyleSheet(Styles.spinBoxGeneral)
+
         self.edtPeristaltic.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtPeristaltic.setFixedWidth(70)
+
         self.edtImpulsional_A.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtImpulsional_A.setFixedWidth(60)
+
         self.edtImpulsional_B.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtImpulsional_B.setFixedWidth(60)
 
         self.edtPeristaltic.setRange(0, 100)
         self.edtImpulsional_A.setRange(0, 100)
@@ -737,22 +744,25 @@ class ViewDataAcquisition(QWidget):
         self.lblLaser.setWordWrap(True)
         self.lblLaser.setAlignment(Qt.AlignCenter)
 
-        self.lblPeristaltic.setFixedWidth(100)
+        self.lblPeristaltic.setFixedWidth(70)
         self.lblPeristaltic.setAlignment(Qt.AlignBottom)
 
         self.lblBack.setStyleSheet(Styles.labelBtnPeristaltic)
+        self.lblBack.setFixedWidth(42)
         self.lblBack.setAlignment(Qt.AlignCenter)
 
         self.lblStop.setStyleSheet(Styles.labelBtnPeristaltic)
+        self.lblStop.setFixedWidth(42)
         self.lblStop.setAlignment(Qt.AlignCenter)
 
         self.lblForward.setStyleSheet(Styles.labelBtnPeristaltic)
+        self.lblForward.setFixedWidth(42)
         self.lblForward.setAlignment(Qt.AlignCenter)
 
-        self.lblImpulsional_A.setFixedWidth(100)
+        self.lblImpulsional_A.setFixedWidth(60)
         self.lblImpulsional_A.setAlignment(Qt.AlignBottom)
 
-        self.lblImpulsional_B.setFixedWidth(100)
+        self.lblImpulsional_B.setFixedWidth(60)
         self.lblImpulsional_B.setAlignment(Qt.AlignBottom)
 
     """
