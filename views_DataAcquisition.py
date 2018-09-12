@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox
 from PyQt5.QtCore import Qt
 from lib.LedIndicatorWidget import LedIndicator
@@ -33,8 +33,6 @@ class ViewDataAcquisition(QWidget):
         self.unitTime = ' s'
         self.forward = 'forward'
         self.back = 'back'
-        self.myChartChannel1 = None
-        self.myChartChannel2 = None
 
         self.timeoutMessage = {
             'Init Experiment': 'The device has not respond, try again.'
@@ -765,4 +763,3 @@ class ViewDataAcquisition(QWidget):
 
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)
-

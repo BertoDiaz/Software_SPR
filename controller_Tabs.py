@@ -725,7 +725,6 @@ class ControllerTabs:
             acquisitionInProcess = self.viewCurveSetup.getBtnAutoAcquisitionStatus()
 
         self.viewCurveSetup.setBtnAutoAcquisitionInProcess(acquisitionInProcess)
-        # self.viewCurveSetup.setGraphChannel1()
 
     def acquisitionDataReceived(self, data):
         if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
@@ -734,18 +733,19 @@ class ControllerTabs:
 
             self.values['Acquisition Channel 1'] = self.valuesPhotodiodes['Photodiode A'][self.values['Automatic']]
             self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
-            self.values['Automatic'] += 1
 
             self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
             self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
             self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
 
-            self.viewCurveSetup.updateData(self.baseX, self.values['Acquisition Channel 1'],
-                                           self.values['Acquisition Channel 2'])
+            self.viewCurveSetup.setDataChannel1(self.baseX + (self.values['Automatic'] * 0.08),
+                                                self.values['Acquisition Channel 1'])
+            self.viewCurveSetup.setDataChannel2(self.baseX + (self.values['Automatic'] * 0.08),
+                                                self.values['Acquisition Channel 2'])
 
-            self.baseX += 0.08
+            self.values['Automatic'] += 1
 
-            if self.values['Automatic'] >= 100:
+            if self.baseX + (self.values['Automatic'] * 0.08) > 62.00:
                 self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
                 self.btnAutoAcquisitionChanged()
 

@@ -18,8 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QGraphicsView
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox
 from PyQt5.QtCore import Qt, QLocale
-import pyqtgraph as pg
-import numpy as np
+from lib.Chart import Chart
 import styles as style
 
 
@@ -27,14 +26,6 @@ class ViewCurveSetup(QWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
-
-        self.graphChannel_1PlotItem = None
-        self.graphChannel_1Plot = None
-        self.graphChannel_2PlotItem = None
-        self.graphChannel_2Plot = None
-        self.xd = None
-        self.y1d = None
-        self.y2d = None
 
         self.timeoutMessage = {
             'Calibrate': 'The device has not been calibrated, try again.',
@@ -81,10 +72,8 @@ class ViewCurveSetup(QWidget):
 
         self.btnAutoAcquisition = QPushButton('Automatic')
 
-        self.graphChannel_1 = pg.PlotWidget(name='Channel 1')
-        self.graphChannel_2 = pg.PlotWidget(name='Channel 2')
-        self.graphicsViewChannel_1 = QGraphicsView(self)
-        self.graphicsViewChannel_2 = QGraphicsView(self)
+        self.myChartChannel1 = Chart('CHANNEL 1')
+        self.myChartChannel2 = Chart('CHANNEL 2')
 
         self.layoutGrid = QGridLayout(self)
 
@@ -102,30 +91,23 @@ class ViewCurveSetup(QWidget):
         self.acquisitionBoxLayout = QGroupBox('Acquisition Mode')
         self.autoACQBoxLayout = QGroupBox()
 
-        self.graphCurveBoxLayout = QGroupBox('Graphs')
-        self.graphCurveChannel1BoxLayout = QGroupBox('Channel 1')
-        self.graphCurveChannel2BoxLayout = QGroupBox('Channel 2')
+        self.chartBoxLayout = QGroupBox()
 
         self.calibrationLayout = QGridLayout(self)
         self.curveLayout = QGridLayout(self)
         self.acquisitionLayout = QGridLayout(self)
         self.autoACQLayout = QGridLayout(self)
-        self.graphCurveLayout = QGridLayout(self)
-        self.graphCurveChannel1Layout = QGridLayout(self)
-        self.graphCurveChannel2Layout = QGridLayout(self)
 
         self.gainLayout = QVBoxLayout(self)
         self.offsetLayout = QVBoxLayout(self)
         self.btnCalibrateLayout = QVBoxLayout(self)
         self.btnLaserLayout = QVBoxLayout(self)
+        self.chartLayout = QVBoxLayout(self)
 
         self.gainALayout = QHBoxLayout(self)
         self.gainBLayout = QHBoxLayout(self)
         self.offsetALayout = QHBoxLayout(self)
         self.offsetBLayout = QHBoxLayout(self)
-
-        self.graphChannel_1Layout = QHBoxLayout(self)
-        self.graphChannel_2Layout = QHBoxLayout(self)
 
         self.setStyleButtons()
         self.setStyleSpinBox()
@@ -263,32 +245,15 @@ class ViewCurveSetup(QWidget):
         return self.acquisitionBoxLayout
 
     def setGraphGroup(self):
-        self.setGraphChannel1()
-        self.setGraphChannel2()
+        self.setCharts()
 
-        self.graphChannel_1Layout.addWidget(self.graphChannel_1)
-        self.graphicsViewChannel_1.setLayout(self.graphChannel_1Layout)
+        self.chartLayout.addWidget(self.myChartChannel1)
+        self.chartLayout.addWidget(self.myChartChannel2)
 
-        self.graphCurveChannel1Layout.addWidget(self.graphicsViewChannel_1, 0, 0)
+        self.chartBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.chartBoxLayout.setLayout(self.chartLayout)
 
-        self.graphCurveChannel1BoxLayout.setStyleSheet(style.groupBoxGeneral)
-        self.graphCurveChannel1BoxLayout.setLayout(self.graphCurveChannel1Layout)
-
-        self.graphChannel_2Layout.addWidget(self.graphChannel_2)
-        self.graphicsViewChannel_2.setLayout(self.graphChannel_2Layout)
-
-        self.graphCurveChannel2Layout.addWidget(self.graphicsViewChannel_2, 0, 0)
-
-        self.graphCurveChannel2BoxLayout.setStyleSheet(style.groupBoxGeneral)
-        self.graphCurveChannel2BoxLayout.setLayout(self.graphCurveChannel2Layout)
-
-        self.graphCurveLayout.addWidget(self.graphCurveChannel1BoxLayout, 0, 0)
-        self.graphCurveLayout.addWidget(self.graphCurveChannel2BoxLayout, 1, 0)
-
-        self.graphCurveBoxLayout.setStyleSheet(style.groupBoxGeneral)
-        self.graphCurveBoxLayout.setLayout(self.graphCurveLayout)
-
-        return self.graphCurveBoxLayout
+        return self.chartBoxLayout
 
     """
     ********************************************************************************************************************
@@ -478,63 +443,30 @@ class ViewCurveSetup(QWidget):
 
     """
     ********************************************************************************************************************
-    *                                                 Graph Functions                                                  *
+    *                                                 Chart Functions                                                  *
     ********************************************************************************************************************
     """
 
-    def setGraphChannel1(self):
-        self.graphChannel_1PlotItem = self.graphChannel_1.plotItem
-        self.graphChannel_1Plot = self.graphChannel_1PlotItem.plot()
-        self.graphChannel_1Plot.setPen((200, 200, 100))
-        self.graphChannel_1Plot.setSymbolBrush((255, 0, 0))
-        self.graphChannel_1Plot.setSymbolPen('w')
-        self.graphChannel_1Plot.setSymbol('o')
-        self.graphChannel_1Plot.setSymbolSize(8)
-        self.graphChannel_1PlotItem.setLabel('left', 'Signal Amplitude')
-        self.graphChannel_1PlotItem.setLabel('bottom', 'Angle of Incidence')
-        self.graphChannel_1PlotItem.showGrid(x=True, y=True)
-        self.graphChannel_1.setXRange(58.00, 62.00, 0.01)
-        self.graphChannel_1.setYRange(0, 100)
+    def setCharts(self):
+        self.myChartChannel1.setAxisXName('Angle of Incidence')
+        self.myChartChannel1.setAxisYName('Signal Amplitude')
+        self.myChartChannel1.setRangeX([58.00, 62.00])
+        self.myChartChannel1.setAxisXTickCount(9)
 
-    def setGraphChannel2(self):
-        self.graphChannel_2PlotItem = self.graphChannel_2.plotItem
-        self.graphChannel_2Plot = self.graphChannel_2PlotItem.plot()
-        self.graphChannel_2Plot.setPen((200, 200, 100))
-        self.graphChannel_2Plot.setSymbolBrush((255, 0, 0))
-        self.graphChannel_2Plot.setSymbolPen('w')
-        self.graphChannel_2Plot.setSymbol('o')
-        self.graphChannel_2Plot.setSymbolSize(8)
-        self.graphChannel_2PlotItem.setLabel('left', 'Signal Amplitude')
-        self.graphChannel_2PlotItem.setLabel('bottom', 'Angle of Incidence')
-        self.graphChannel_2PlotItem.showGrid(x=True, y=True)
-        self.graphChannel_2.setXRange(58.00, 62.00, 0.01)
-        self.graphChannel_2.setYRange(0, 100)
+        self.myChartChannel2.setAxisXName('Angle of Incidence')
+        self.myChartChannel2.setAxisYName('Signal Amplitude')
+        self.myChartChannel2.setRangeX([58.00, 62.00])
+        self.myChartChannel2.setAxisXTickCount(9)
 
-    def updateData(self, valueX, valueY1, valueY2):
-        if valueX == 58.00:
-            self.xd = np.array([valueX])
-            self.y1d = np.array([valueY1])
-            self.y2d = np.array([valueY2])
+    def setDataChannel1(self, xData, yData):
+        self.myChartChannel1.setDataChart(xData, yData)
 
-        else:
-            self.xd = np.append(self.xd, valueX)
-            self.y1d = np.append(self.y1d, valueY1)
-            self.y2d = np.append(self.y2d, valueY2)
-
-        self.graphChannel_1Plot.setData(y=self.y1d, x=self.xd)
-        self.graphChannel_2Plot.setData(y=self.y2d, x=self.xd)
-
-    def calc_parabola_vertex(self, x1, y1, x2, y2, x3, y3):
-        denom = (x1 - x2) * (x1 - x3) * (x2 - x3)
-        A = (x3 * (y2 - y1) + x2 * (y1 - y3) + x1 * (y3 - y2)) / denom
-        B = (x3 * x3 * (y1 - y2) + x2 * x2 * (y3 - y1) + x1 * x1 * (y2 - y3)) / denom
-        C = (x2 * x3 * (x2 - x3) * y1 + x3 * x1 * (x3 - x1) * y2 + x1 * x2 * (x1 - x2) * y3) / denom
-
-        return A, B, C
+    def setDataChannel2(self, xData, yData):
+        self.myChartChannel2.setDataChart(xData, yData)
 
     """
     ********************************************************************************************************************
-    *                                               End Graph Functions                                                *
+    *                                               End Chart Functions                                                *
     ********************************************************************************************************************
     """
 
@@ -633,4 +565,3 @@ class ViewCurveSetup(QWidget):
     *                                              End Messages Functions                                              *
     ********************************************************************************************************************
     """
-

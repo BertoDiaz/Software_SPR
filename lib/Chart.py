@@ -106,3 +106,16 @@ class Chart(QChartView):
 
     def getRangeX(self):
         return self.xRange
+
+    def setAxisXName(self, name):
+        self.axisX.setTitleText(name)
+
+    def setAxisYName(self, name):
+        self.axisY.setTitleText(name)
+
+    def setAxisXTickCount(self, tick):
+        self.axisX.setTickCount(tick)
+
+    def setAxisYTickCount(self, tick):
+        self.axisY.setTickCount(tick)
+

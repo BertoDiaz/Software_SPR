@@ -40,25 +40,25 @@ class ViewSystemControl(QWidget):
 
         self.btnLaser = QPushButton('Laser OFF')
 
-        self.lblPeristaltic = QLabel("Flow Peristaltic")
+        self.lblPeristaltic = QLabel('Flow Peristaltic')
         self.edtPeristaltic = QSpinBox()
-        self.lblImpulsional_A = QLabel("Injection Impulsional A:")
+        self.lblImpulsional_A = QLabel('Injection Impulsional A:')
         self.edtImpulsional_A = QSpinBox()
-        self.lblImpulsional_B = QLabel("Injection Impulsional B:")
+        self.lblImpulsional_B = QLabel('Injection Impulsional B:')
         self.edtImpulsional_B = QSpinBox()
 
-        self.btnPeristaltic = QPushButton("START")
-        self.btnImpulsional_A = QPushButton("INJECT")
-        self.btnImpulsional_B = QPushButton("INJECT")
+        self.btnPeristaltic = QPushButton('START')
+        self.btnImpulsional_A = QPushButton('INJECT')
+        self.btnImpulsional_B = QPushButton('INJECT')
 
         self.layoutGrid = QGridLayout(self)
 
-        self.laserBoxLayout = QGroupBox("Laser Control")
-        self.dataBoxLayout = QGroupBox("Pumps control")
-        self.otherBoxLayout = QGroupBox("Other Layout")
-        self.peristalticBoxLayout = QGroupBox("Peristaltic Pump Control")
-        self.impulsionalABoxLayout = QGroupBox("Impulsional Pump A Control")
-        self.impulsionalBBoxLayout = QGroupBox("Impulsional Pump B Control")
+        self.laserBoxLayout = QGroupBox('Laser Control')
+        self.dataBoxLayout = QGroupBox('Pumps control')
+        self.otherBoxLayout = QGroupBox('Other Layout')
+        self.peristalticBoxLayout = QGroupBox('Peristaltic Pump Control')
+        self.impulsionalABoxLayout = QGroupBox('Impulsional Pump A Control')
+        self.impulsionalBBoxLayout = QGroupBox('Impulsional Pump B Control')
 
         self.dataLayout = QGridLayout(self)
         self.peristalticLayout = QGridLayout(self)
@@ -306,13 +306,13 @@ class ViewSystemControl(QWidget):
     """
 
     def setMessageCritical(self, typeMessage, message):
-        QMessageBox.critical(self, typeMessage, message)
+        QMessageBox.critical(self, typeMessage, message, QMessageBox.Ok, QMessageBox.Ok)
 
     def setMessageExistsFile(self):
-        loadFile = QMessageBox.question(self, "Question", "Load a configuration file?",
+        loadFile = QMessageBox.question(self, 'Question', 'Load a configuration file?',
                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if loadFile == QMessageBox.Yes:
-            fileName, _ = QFileDialog.getOpenFileName(self, "Open File", "/home", "*.cfg")
+            fileName, _ = QFileDialog.getOpenFileName(self, 'Open File', '/home', 'Config File(*.cfg)')
 
             return [True, fileName]
 
