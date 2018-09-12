@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from views_connect import View
-from SerialPort import SerialPort
+from lib.SerialPort import SerialPort
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer
 from time import sleep

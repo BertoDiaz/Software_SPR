@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QFileDialog
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QSpinBox
 from PyQt5.QtCore import Qt
-import styles as style
+from lib import Styles
 
 
 class ViewSystemControl(QWidget):
@@ -90,7 +90,7 @@ class ViewSystemControl(QWidget):
     def setLaserGroup(self):
         self.laserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
 
-        self.laserBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.laserBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.laserBoxLayout.setLayout(self.laserLayout)
 
         return self.laserBoxLayout
@@ -115,20 +115,20 @@ class ViewSystemControl(QWidget):
         self.impulsionalBLayout.addWidget(self.edtImpulsional_B, 1, 0)
         self.impulsionalBLayout.addWidget(self.btnImpulsional_B, 0, 1, 2, 1)
 
-        self.peristalticBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.peristalticBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.peristalticBoxLayout.setLayout(self.peristalticLayout)
 
-        self.impulsionalABoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.impulsionalABoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.impulsionalABoxLayout.setLayout(self.impulsionalALayout)
 
-        self.impulsionalBBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.impulsionalBBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.impulsionalBBoxLayout.setLayout(self.impulsionalBLayout)
 
         self.dataLayout.addWidget(self.peristalticBoxLayout, 0, 0)
         self.dataLayout.addWidget(self.impulsionalABoxLayout, 0, 1)
         self.dataLayout.addWidget(self.impulsionalBBoxLayout, 0, 2)
 
-        self.dataBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.dataBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.dataBoxLayout.setLayout(self.dataLayout)
 
         return self.dataBoxLayout
@@ -260,16 +260,16 @@ class ViewSystemControl(QWidget):
     """
 
     def setStyleButtons(self):
-        self.btnLaser.setStyleSheet(style.buttonLaserBig)
+        self.btnLaser.setStyleSheet(Styles.buttonLaserBig)
         self.btnLaser.setCheckable(True)
 
-        self.btnPeristaltic.setStyleSheet(style.buttonPeristaltic)
+        self.btnPeristaltic.setStyleSheet(Styles.buttonPeristaltic)
         self.btnPeristaltic.setCheckable(True)
 
-        self.btnImpulsional_A.setStyleSheet(style.buttonImpulsional)
+        self.btnImpulsional_A.setStyleSheet(Styles.buttonImpulsional)
         self.btnImpulsional_A.setCheckable(True)
 
-        self.btnImpulsional_B.setStyleSheet(style.buttonImpulsional)
+        self.btnImpulsional_B.setStyleSheet(Styles.buttonImpulsional)
         self.btnImpulsional_B.setCheckable(True)
 
     """
@@ -285,9 +285,9 @@ class ViewSystemControl(QWidget):
     """
 
     def setStyleSpinBox(self):
-        self.edtPeristaltic.setStyleSheet(style.spinBoxGeneral)
-        self.edtImpulsional_A.setStyleSheet(style.spinBoxGeneral)
-        self.edtImpulsional_B.setStyleSheet(style.spinBoxGeneral)
+        self.edtPeristaltic.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtImpulsional_A.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtImpulsional_B.setStyleSheet(Styles.spinBoxGeneral)
 
         self.edtPeristaltic.setRange(0, 100)
         self.edtImpulsional_A.setRange(0, 100)

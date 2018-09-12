@@ -15,11 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QGraphicsView
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox
 from PyQt5.QtCore import Qt, QLocale
 from lib.Chart import Chart
-import styles as style
+from lib import Styles
 
 
 class ViewCurveSetup(QWidget):
@@ -132,12 +132,12 @@ class ViewCurveSetup(QWidget):
         # self.layoutGrid.addWidget(self.setFilledGroup_1(), 3, 0, 5, 10)
 
     def setFilledGroup_1(self):
-        self.filledBoxLayout_1.setStyleSheet(style.groupBoxFilled)
+        self.filledBoxLayout_1.setStyleSheet(Styles.groupBoxFilled)
 
         return self.filledBoxLayout_1
 
     def setFilledGroup_2(self):
-        self.filledLayout_2.setStyleSheet(style.groupBoxFilled)
+        self.filledLayout_2.setStyleSheet(Styles.groupBoxFilled)
 
         return self.filledLayout_2
 
@@ -167,17 +167,17 @@ class ViewCurveSetup(QWidget):
         self.offsetLayout.addLayout(self.offsetALayout)
         self.offsetLayout.addLayout(self.offsetBLayout)
 
-        self.gainBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.gainBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.gainBoxLayout.setLayout(self.gainLayout)
 
-        self.offsetBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.offsetBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.offsetBoxLayout.setLayout(self.offsetLayout)
 
         self.calibrationLayout.addWidget(self.gainBoxLayout, 0, 0)
         self.calibrationLayout.addWidget(self.offsetBoxLayout, 1, 0)
         self.calibrationLayout.addWidget(self.btnCalibrate, 1, 1, 1, 1)
 
-        self.calibrationBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.calibrationBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.calibrationBoxLayout.setLayout(self.calibrationLayout)
 
         return self.calibrationBoxLayout
@@ -185,7 +185,7 @@ class ViewCurveSetup(QWidget):
     def setLaserGroup(self):
         self.btnLaserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
 
-        self.btnLaserBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.btnLaserBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.btnLaserBoxLayout.setLayout(self.btnLaserLayout)
 
         return self.btnLaserBoxLayout
@@ -211,7 +211,7 @@ class ViewCurveSetup(QWidget):
         self.curveLayout.addWidget(self.edtPointsCurve, 4, 1)
         self.curveLayout.addWidget(self.btnReset, 3, 2, 2, 1)
 
-        self.curveBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.curveBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.curveBoxLayout.setLayout(self.curveLayout)
 
         return self.curveBoxLayout
@@ -228,7 +228,7 @@ class ViewCurveSetup(QWidget):
         self.autoACQLayout.addWidget(self.edtAcquisition, 0, 1)
         self.autoACQLayout.addWidget(self.btnAutoAcquisition, 1, 0, 1, 3)
 
-        self.autoACQBoxLayout.setStyleSheet(style.groupBoxAutoAcquisition)
+        self.autoACQBoxLayout.setStyleSheet(Styles.groupBoxAutoAcquisition)
         self.autoACQBoxLayout.setLayout(self.autoACQLayout)
 
         self.acquisitionLayout.addWidget(self.autoACQBoxLayout, 0, 0, 4, 1)
@@ -239,7 +239,7 @@ class ViewCurveSetup(QWidget):
         self.acquisitionLayout.addWidget(self.lblACQChannel_2, 3, 1)
         self.acquisitionLayout.addWidget(self.edtACQChannel_2, 3, 2)
 
-        self.acquisitionBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.acquisitionBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.acquisitionBoxLayout.setLayout(self.acquisitionLayout)
 
         return self.acquisitionBoxLayout
@@ -250,7 +250,7 @@ class ViewCurveSetup(QWidget):
         self.chartLayout.addWidget(self.myChartChannel1)
         self.chartLayout.addWidget(self.myChartChannel2)
 
-        self.chartBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.chartBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.chartBoxLayout.setLayout(self.chartLayout)
 
         return self.chartBoxLayout
@@ -263,11 +263,11 @@ class ViewCurveSetup(QWidget):
 
     def setBtnCalibrateStatus(self, done):
         if done:
-            self.btnCalibrate.setStyleSheet(style.buttonCalibrateDone)
+            self.btnCalibrate.setStyleSheet(Styles.buttonCalibrateDone)
             self.btnCalibrate.setChecked(False)
 
         else:
-            self.btnCalibrate.setStyleSheet(style.buttonCalibrate)
+            self.btnCalibrate.setStyleSheet(Styles.buttonCalibrate)
             self.btnCalibrate.setChecked(False)
 
     def setBtnCalibrateDisable(self, disable):
@@ -399,10 +399,10 @@ class ViewCurveSetup(QWidget):
 
     def setBtnAutoAcquisitionInProcess(self, inProcess):
         if inProcess:
-            self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisitionInProcess)
+            self.btnAutoAcquisition.setStyleSheet(Styles.buttonAutoAcquisitionInProcess)
 
         else:
-            self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisition)
+            self.btnAutoAcquisition.setStyleSheet(Styles.buttonAutoAcquisition)
             self.setEdtDataSamplingDisable(False)
 
         self.setBtnAutoAcquisitionStatus(inProcess)
@@ -477,16 +477,16 @@ class ViewCurveSetup(QWidget):
     """
 
     def setStyleButtons(self):
-        self.btnLaser.setStyleSheet(style.buttonLaserSmall)
+        self.btnLaser.setStyleSheet(Styles.buttonLaserSmall)
         self.btnLaser.setCheckable(True)
 
-        self.btnCalibrate.setStyleSheet(style.buttonCalibrate)
+        self.btnCalibrate.setStyleSheet(Styles.buttonCalibrate)
         self.btnCalibrate.setCheckable(True)
 
-        self.btnReset.setStyleSheet(style.buttonReset)
+        self.btnReset.setStyleSheet(Styles.buttonReset)
         self.btnReset.setCheckable(True)
 
-        self.btnAutoAcquisition.setStyleSheet(style.buttonAutoAcquisition)
+        self.btnAutoAcquisition.setStyleSheet(Styles.buttonAutoAcquisition)
         self.btnAutoAcquisition.setCheckable(True)
 
     """
@@ -502,21 +502,21 @@ class ViewCurveSetup(QWidget):
     """
 
     def setStyleSpinBox(self):
-        self.edtGainA.setStyleSheet(style.spinBoxGeneral)
-        self.edtGainB.setStyleSheet(style.spinBoxGeneral)
-        self.edtOffsetA.setStyleSheet(style.spinBoxGeneral)
-        self.edtOffsetB.setStyleSheet(style.spinBoxGeneral)
-        self.edtInitialAngle.setStyleSheet(style.spinBoxGeneral)
-        self.edtAngleLongitude.setStyleSheet(style.spinBoxGeneral)
+        self.edtGainA.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtGainB.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtOffsetA.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtOffsetB.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtInitialAngle.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtAngleLongitude.setStyleSheet(Styles.spinBoxGeneral)
 
-        self.edtAngleResolution.setStyleSheet(style.doubleSpinBoxGeneral)
+        self.edtAngleResolution.setStyleSheet(Styles.doubleSpinBoxGeneral)
         """
         This method (QLocale) can change the format of the value, for example, if we have a float with a dot as
         separator with this method we can convert from dot to comma or vice versa.
         """
         self.edtAngleResolution.setLocale(QLocale('English'))
 
-        self.edtDataSampling.setStyleSheet(style.spinBoxGeneral)
+        self.edtDataSampling.setStyleSheet(Styles.spinBoxGeneral)
 
         self.edtGainA.setRange(0, 100)
         self.edtGainB.setRange(0, 100)
@@ -538,12 +538,12 @@ class ViewCurveSetup(QWidget):
     """
 
     def setStyleLineEdit(self):
-        self.edtFinalAngle.setStyleSheet(style.lineEditGeneral)
-        self.edtPointsCurve.setStyleSheet(style.lineEditGeneral)
+        self.edtFinalAngle.setStyleSheet(Styles.lineEditGeneral)
+        self.edtPointsCurve.setStyleSheet(Styles.lineEditGeneral)
 
-        self.edtAcquisition.setStyleSheet(style.lineEditGeneral)
-        self.edtACQChannel_1.setStyleSheet(style.lineEditGeneral)
-        self.edtACQChannel_2.setStyleSheet(style.lineEditGeneral)
+        self.edtAcquisition.setStyleSheet(Styles.lineEditGeneral)
+        self.edtACQChannel_1.setStyleSheet(Styles.lineEditGeneral)
+        self.edtACQChannel_2.setStyleSheet(Styles.lineEditGeneral)
 
     """
     ********************************************************************************************************************

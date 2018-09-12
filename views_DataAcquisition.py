@@ -22,7 +22,7 @@ from lib.LedIndicatorWidget import LedIndicator
 from lib.TriangleButton import TriangleButton
 from lib.RectangleButton import RectangleButton
 from lib.Chart import Chart
-import styles as style
+from lib import Styles
 
 
 class ViewDataAcquisition(QWidget):
@@ -140,12 +140,12 @@ class ViewDataAcquisition(QWidget):
         # self.layoutGrid.addWidget(self.setFilledGroup_1(), 2, 0, 5, 10)
 
     def setFilledGroup_1(self):
-        self.filledBoxLayout_1.setStyleSheet(style.groupBoxFilled)
+        self.filledBoxLayout_1.setStyleSheet(Styles.groupBoxFilled)
 
         return self.filledBoxLayout_1
 
     def setFilledGroup_2(self):
-        self.filledLayout_2.setStyleSheet(style.groupBoxFilled)
+        self.filledLayout_2.setStyleSheet(Styles.groupBoxFilled)
 
         return self.filledLayout_2
 
@@ -186,7 +186,7 @@ class ViewDataAcquisition(QWidget):
         self.timeLayout.addWidget(self.lblTime, 4, 2)
         self.timeLayout.addWidget(self.edtTime, 4, 3)
 
-        self.timeBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.timeBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.timeBoxLayout.setLayout(self.timeLayout)
 
         return self.timeBoxLayout
@@ -207,12 +207,12 @@ class ViewDataAcquisition(QWidget):
 
         self.peristalticLayout.setAlignment(Qt.AlignCenter)
 
-        self.peristalticBoxLayout.setStyleSheet(style.groupBoxGeneralWithoutBorder)
+        self.peristalticBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
         self.peristalticBoxLayout.setLayout(self.peristalticLayout)
 
         self.peristalticControlLayout.addWidget(self.peristalticBoxLayout, 2, 0, 1, 3)
 
-        self.peristalticControlBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.peristalticControlBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.peristalticControlBoxLayout.setLayout(self.peristalticControlLayout)
 
         self.injectControlLayout.addWidget(self.lblImpulsional_A, 0, 0)
@@ -224,13 +224,13 @@ class ViewDataAcquisition(QWidget):
         self.injectControlLayout.addWidget(self.btnPurge_A, 3, 0)
         self.injectControlLayout.addWidget(self.btnPurge_B, 3, 1)
 
-        self.injectControlBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.injectControlBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.injectControlBoxLayout.setLayout(self.injectControlLayout)
 
         self.fluidicLayout.addWidget(self.peristalticControlBoxLayout, 0, 0, 2, 1)
         self.fluidicLayout.addWidget(self.injectControlBoxLayout, 0, 1, 1, 1)
 
-        self.fluidicBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.fluidicBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.fluidicBoxLayout.setLayout(self.fluidicLayout)
 
         return self.fluidicBoxLayout
@@ -254,7 +254,7 @@ class ViewDataAcquisition(QWidget):
         self.chartLayout.addLayout(self.btnChartLayoutChannel2)
         self.chartLayout.addWidget(self.myChartChannel2)
 
-        self.chartBoxLayout.setStyleSheet(style.groupBoxGeneral)
+        self.chartBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
 
         self.chartBoxLayout.setLayout(self.chartLayout)
 
@@ -605,49 +605,49 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setStyleButtons(self):
-        self.btnInitExperiment.setStyleSheet(style.buttonInit)
+        self.btnInitExperiment.setStyleSheet(Styles.buttonInit)
         self.btnInitExperiment.setCheckable(True)
 
-        self.btnFreeRunning.setStyleSheet(style.buttonFreeRunning)
+        self.btnFreeRunning.setStyleSheet(Styles.buttonFreeRunning)
         self.btnFreeRunning.setCheckable(True)
 
-        self.btnPeristaltic.setStyleSheet(style.buttonPeristaltic)
+        self.btnPeristaltic.setStyleSheet(Styles.buttonPeristaltic)
         self.btnPeristaltic.setCheckable(True)
 
-        self.btnInject_A.setStyleSheet(style.buttonImpulsionalSmall)
+        self.btnInject_A.setStyleSheet(Styles.buttonImpulsionalSmall)
         self.btnInject_A.setCheckable(True)
 
-        self.btnInject_B.setStyleSheet(style.buttonImpulsionalSmall)
+        self.btnInject_B.setStyleSheet(Styles.buttonImpulsionalSmall)
         self.btnInject_B.setCheckable(True)
 
-        self.btnPurge_A.setStyleSheet(style.buttonImpulsionalSmall)
+        self.btnPurge_A.setStyleSheet(Styles.buttonImpulsionalSmall)
         self.btnPurge_A.setCheckable(True)
 
-        self.btnPurge_B.setStyleSheet(style.buttonImpulsionalSmall)
+        self.btnPurge_B.setStyleSheet(Styles.buttonImpulsionalSmall)
         self.btnPurge_B.setCheckable(True)
 
-        self.btnAutoscaleYChannel1.setStyleSheet(style.buttonChart)
+        self.btnAutoscaleYChannel1.setStyleSheet(Styles.buttonChart)
         self.btnAutoscaleYChannel1.setCheckable(True)
 
-        self.btnAutoscaleXChannel1.setStyleSheet(style.buttonChart)
+        self.btnAutoscaleXChannel1.setStyleSheet(Styles.buttonChart)
         self.btnAutoscaleXChannel1.setCheckable(True)
 
-        self.btnChart1000Channel1.setStyleSheet(style.buttonChart)
+        self.btnChart1000Channel1.setStyleSheet(Styles.buttonChart)
         self.btnChart1000Channel1.setCheckable(True)
 
-        self.btnChart10000Channel1.setStyleSheet(style.buttonChart)
+        self.btnChart10000Channel1.setStyleSheet(Styles.buttonChart)
         self.btnChart10000Channel1.setCheckable(True)
 
-        self.btnAutoscaleYChannel2.setStyleSheet(style.buttonChart)
+        self.btnAutoscaleYChannel2.setStyleSheet(Styles.buttonChart)
         self.btnAutoscaleYChannel2.setCheckable(True)
 
-        self.btnAutoscaleXChannel2.setStyleSheet(style.buttonChart)
+        self.btnAutoscaleXChannel2.setStyleSheet(Styles.buttonChart)
         self.btnAutoscaleXChannel2.setCheckable(True)
 
-        self.btnChart1000Channel2.setStyleSheet(style.buttonChart)
+        self.btnChart1000Channel2.setStyleSheet(Styles.buttonChart)
         self.btnChart1000Channel2.setCheckable(True)
 
-        self.btnChart10000Channel2.setStyleSheet(style.buttonChart)
+        self.btnChart10000Channel2.setStyleSheet(Styles.buttonChart)
         self.btnChart10000Channel2.setCheckable(True)
 
     """
@@ -663,11 +663,11 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setStyleSpinBox(self):
-        self.edtDataSampling.setStyleSheet(style.spinBoxGeneral)
-        self.edtExperimentTime.setStyleSheet(style.spinBoxGeneral)
-        self.edtPeristaltic.setStyleSheet(style.spinBoxGeneral)
-        self.edtImpulsional_A.setStyleSheet(style.spinBoxGeneral)
-        self.edtImpulsional_B.setStyleSheet(style.spinBoxGeneral)
+        self.edtDataSampling.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtExperimentTime.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtPeristaltic.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtImpulsional_A.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtImpulsional_B.setStyleSheet(Styles.spinBoxGeneral)
 
         self.edtPeristaltic.setRange(0, 100)
         self.edtImpulsional_A.setRange(0, 100)
@@ -692,15 +692,15 @@ class ViewDataAcquisition(QWidget):
         self.edtExperimentTime.setFixedWidth(75)
         self.edtExperimentTime.setAlignment(Qt.AlignRight)
 
-        self.edtChannel_1.setStyleSheet(style.lineEditGeneral)
+        self.edtChannel_1.setStyleSheet(Styles.lineEditGeneral)
         self.edtChannel_1.setAlignment(Qt.AlignRight)
         self.edtChannel_1.setFixedWidth(100)
 
-        self.edtChannel_2.setStyleSheet(style.lineEditGeneral)
+        self.edtChannel_2.setStyleSheet(Styles.lineEditGeneral)
         self.edtChannel_2.setAlignment(Qt.AlignRight)
         self.edtChannel_2.setFixedWidth(100)
 
-        self.edtTime.setStyleSheet(style.lineEditGeneral)
+        self.edtTime.setStyleSheet(Styles.lineEditGeneral)
         self.edtTime.setAlignment(Qt.AlignRight)
         self.edtTime.setFixedWidth(100)
 
@@ -717,7 +717,7 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setStyleLabels(self):
-        self.lblBtnInit.setStyleSheet(style.labelBtnInit)
+        self.lblBtnInit.setStyleSheet(Styles.labelBtnInit)
         self.lblBtnInit.setAlignment(Qt.AlignCenter)
         self.lblBtnInit.setWordWrap(True)
 
@@ -740,13 +740,13 @@ class ViewDataAcquisition(QWidget):
         self.lblPeristaltic.setFixedWidth(100)
         self.lblPeristaltic.setAlignment(Qt.AlignBottom)
 
-        self.lblBack.setStyleSheet(style.labelBtnPeristaltic)
+        self.lblBack.setStyleSheet(Styles.labelBtnPeristaltic)
         self.lblBack.setAlignment(Qt.AlignCenter)
 
-        self.lblStop.setStyleSheet(style.labelBtnPeristaltic)
+        self.lblStop.setStyleSheet(Styles.labelBtnPeristaltic)
         self.lblStop.setAlignment(Qt.AlignCenter)
 
-        self.lblForward.setStyleSheet(style.labelBtnPeristaltic)
+        self.lblForward.setStyleSheet(Styles.labelBtnPeristaltic)
         self.lblForward.setAlignment(Qt.AlignCenter)
 
         self.lblImpulsional_A.setFixedWidth(100)
