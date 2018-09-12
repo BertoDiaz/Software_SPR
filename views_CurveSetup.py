@@ -15,8 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel
-from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QDesktopWidget, QHBoxLayout
+from PyQt5.QtWidgets import QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox, QFileDialog
 from PyQt5.QtCore import Qt, QLocale
 from lib.Chart import Chart
 from lib import Styles
@@ -72,6 +72,10 @@ class ViewCurveSetup(QWidget):
 
         self.btnAutoAcquisition = QPushButton('Automatic')
 
+        self.edtSaveFile = QLineEdit()
+
+        self.btnSaveFile = QPushButton('SAVE FILE')
+
         self.myChartChannel1 = Chart('CHANNEL 1')
         self.myChartChannel2 = Chart('CHANNEL 2')
 
@@ -85,13 +89,15 @@ class ViewCurveSetup(QWidget):
 
         self.curveBoxLayout = QGroupBox('Curve Performance')
 
-        self.filledBoxLayout_1 = QGroupBox()
-        self.filledLayout_2 = QGroupBox()
-
         self.acquisitionBoxLayout = QGroupBox('Acquisition Mode')
         self.autoACQBoxLayout = QGroupBox()
 
+        self.saveFileBoxLayout = QGroupBox('Save File')
+
         self.chartBoxLayout = QGroupBox()
+
+        self.filledBoxLayout_1 = QGroupBox()
+        self.filledLayout_2 = QGroupBox()
 
         self.calibrationLayout = QGridLayout(self)
         self.curveLayout = QGridLayout(self)
@@ -102,6 +108,7 @@ class ViewCurveSetup(QWidget):
         self.offsetLayout = QVBoxLayout(self)
         self.btnCalibrateLayout = QVBoxLayout(self)
         self.btnLaserLayout = QVBoxLayout(self)
+        self.saveFileLayout = QVBoxLayout(self)
         self.chartLayout = QVBoxLayout(self)
 
         self.gainALayout = QHBoxLayout(self)
@@ -128,7 +135,8 @@ class ViewCurveSetup(QWidget):
         self.layoutGrid.addWidget(self.setLaserGroup(), 0, 1, 1, 1)
         self.layoutGrid.addWidget(self.setCurveGroup(), 1, 0, 1, 2)
         self.layoutGrid.addWidget(self.setAcquisitionGroup(), 2, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setGraphGroup(), 0, 2, 6, 8)
+        self.layoutGrid.addWidget(self.setSaveFileGroup(), 3, 0, 1, 2)
+        self.layoutGrid.addWidget(self.setChartGroup(), 0, 2, 5, 8)
         # self.layoutGrid.addWidget(self.setFilledGroup_1(), 3, 0, 5, 10)
 
     def setFilledGroup_1(self):
@@ -244,7 +252,16 @@ class ViewCurveSetup(QWidget):
 
         return self.acquisitionBoxLayout
 
-    def setGraphGroup(self):
+    def setSaveFileGroup(self):
+        self.saveFileLayout.addWidget(self.edtSaveFile)
+        self.saveFileLayout.addWidget(self.btnSaveFile)
+
+        self.saveFileBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+        self.saveFileBoxLayout.setLayout(self.saveFileLayout)
+
+        return self.saveFileBoxLayout
+
+    def setChartGroup(self):
         self.setCharts()
 
         self.chartLayout.addWidget(self.myChartChannel1)
@@ -443,6 +460,21 @@ class ViewCurveSetup(QWidget):
 
     """
     ********************************************************************************************************************
+    *                                               Save File Functions                                                *
+    ********************************************************************************************************************
+    """
+
+    def getEdtSaveFileText(self):
+        return self.edtSaveFile.text()
+
+    """
+    ********************************************************************************************************************
+    *                                             End Save File Functions                                              *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
     *                                                 Chart Functions                                                  *
     ********************************************************************************************************************
     """
@@ -488,6 +520,8 @@ class ViewCurveSetup(QWidget):
 
         self.btnAutoAcquisition.setStyleSheet(Styles.buttonAutoAcquisition)
         self.btnAutoAcquisition.setCheckable(True)
+
+        self.btnSaveFile.setStyleSheet(Styles.buttonSaveFile)
 
     """
     ********************************************************************************************************************
@@ -539,11 +573,16 @@ class ViewCurveSetup(QWidget):
 
     def setStyleLineEdit(self):
         self.edtFinalAngle.setStyleSheet(Styles.lineEditGeneral)
+
         self.edtPointsCurve.setStyleSheet(Styles.lineEditGeneral)
 
         self.edtAcquisition.setStyleSheet(Styles.lineEditGeneral)
+
         self.edtACQChannel_1.setStyleSheet(Styles.lineEditGeneral)
+
         self.edtACQChannel_2.setStyleSheet(Styles.lineEditGeneral)
+
+        self.edtSaveFile.setStyleSheet(Styles.lineEditGeneral)
 
     """
     ********************************************************************************************************************
@@ -559,6 +598,11 @@ class ViewCurveSetup(QWidget):
 
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)
+
+    def setDialogSaveFile(self, myNameFile):
+        fileName, _ = QFileDialog.getSaveFileName(self, 'Save File', '/home/Documents/' + myNameFile, '*.DAT')
+
+        return fileName
 
     """
     ********************************************************************************************************************

@@ -74,7 +74,7 @@ class Chart(QChartView):
         self.axisX.setTitleText('Time')
         self.axisY.setTitleText('Signal Amplitude')
 
-        self.axisX.setTickCount(5)
+        self.axisX.setTickCount(11)
         self.axisY.setTickCount(6)
         self.axisX.setRange(self.xRange[0], self.xRange[1])
         self.axisY.setRange(self.yRange[0], self.yRange[1])

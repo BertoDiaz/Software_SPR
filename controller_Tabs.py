@@ -90,7 +90,8 @@ class ControllerTabs:
         }
         self.valuesPhotodiodes = {
             'Photodiode A': [],
-            'Photodiode B': []
+            'Photodiode B': [],
+            'Time': []
         }
 
         self.valuesExperiment = {
@@ -190,6 +191,8 @@ class ControllerTabs:
             self.viewCurveSetup.btnReset.clicked.connect(self.btnResetChanged)
 
             self.viewCurveSetup.btnAutoAcquisition.clicked.connect(self.btnAutoAcquisitionChanged)
+
+            self.viewCurveSetup.btnSaveFile.clicked.connect(self.btnSaveFileChanged)
 
             self.viewCurveSetup.edtGainA.valueChanged.connect(self.edtCalibrateChanged)
             self.viewCurveSetup.edtGainB.valueChanged.connect(self.edtCalibrateChanged)
@@ -689,6 +692,7 @@ class ControllerTabs:
 
                 self.valuesPhotodiodes['Photodiode A'] = []
                 self.valuesPhotodiodes['Photodiode B'] = []
+                self.valuesPhotodiodes['Time'] = []
 
                 self.values['Acquisition Channel 1'] = 0
                 self.values['Acquisition Channel 2'] = 0
@@ -730,6 +734,7 @@ class ControllerTabs:
         if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
             self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
             self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
+            self.valuesPhotodiodes['Time'].append(self.values['Automatic'])
 
             self.values['Acquisition Channel 1'] = self.valuesPhotodiodes['Photodiode A'][self.values['Automatic']]
             self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
@@ -752,6 +757,45 @@ class ControllerTabs:
     """
     ********************************************************************************************************************
     *                                         End Acquisition Mode Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                                Save File Functions                                               *
+    ********************************************************************************************************************
+    """
+
+    def btnSaveFileChanged(self):
+        myNameFile = self.viewCurveSetup.getEdtSaveFileText()
+
+        fileName = self.viewCurveSetup.setDialogSaveFile(myNameFile)
+
+        myData = []
+
+        if fileName != '':
+            myData.append(['TIME\tCHANNEL 1\tCHANNEL 2\n'])
+
+            for i in range(0, len(self.valuesPhotodiodes['Photodiode A'])):
+                myData.append([str(self.valuesPhotodiodes['Time'][i]) + '\t' +
+                               str(self.valuesPhotodiodes['Photodiode A'][i]) + '\t' +
+                               str(self.valuesPhotodiodes['Photodiode B'][i]) + '\n'])
+
+            myFile = open(fileName, 'w')
+
+            with myFile:
+                for data in myData:
+                    myFile.writelines(data)
+
+            # self.view.setMessageSaveSuccess()
+            # self.fileLoaded = False
+
+        else:
+            pass
+
+    """
+    ********************************************************************************************************************
+    *                                              End Save File Functions                                             *
     ********************************************************************************************************************
     """
 
