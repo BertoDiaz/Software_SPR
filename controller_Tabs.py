@@ -42,6 +42,10 @@ class ControllerTabs:
         self.bufferWaitACK = Queue()
         self.btnTimeout = False
         self.baseX = 58.00
+        self.axisYMaxChannel1 = 0
+        self.axisYMinChannel1 = 0
+        self.axisYMaxChannel2 = 0
+        self.axisYMinChannel2 = 0
 
         self.btnChecked = {
             'Laser': False,
@@ -217,6 +221,14 @@ class ControllerTabs:
             self.viewDataAcquisition.btnStopPeristaltic.clicked.connect(btnStopPeristaltic)
             btnForwardPeristaltic = partial(self.btnBSFPeristalticChanged, who=self.forwardPeristaltic)
             self.viewDataAcquisition.btnForwardPeristaltic.clicked.connect(btnForwardPeristaltic)
+            self.viewDataAcquisition.btnAutoscaleYChannel1.clicked.connect(self.btnAutoscaleYChannel1Changed)
+            self.viewDataAcquisition.btnAutoscaleXChannel1.clicked.connect(self.btnAutoscaleXChannel1Changed)
+            self.viewDataAcquisition.btnChart1000Channel1.clicked.connect(self.btnChart1000Channel1Changed)
+            self.viewDataAcquisition.btnChart10000Channel1.clicked.connect(self.btnChart10000Channel1Changed)
+            self.viewDataAcquisition.btnAutoscaleYChannel2.clicked.connect(self.btnAutoscaleYChannel2Changed)
+            self.viewDataAcquisition.btnAutoscaleXChannel2.clicked.connect(self.btnAutoscaleXChannel2Changed)
+            self.viewDataAcquisition.btnChart1000Channel2.clicked.connect(self.btnChart1000Channel2Changed)
+            self.viewDataAcquisition.btnChart10000Channel2.clicked.connect(self.btnChart10000Channel2Changed)
 
             edtPeristalticParameters = partial(self.edtPeristalticChanged, who=self.viewDataAcquisition)
             self.viewDataAcquisition.edtPeristaltic.valueChanged.connect(edtPeristalticParameters)
@@ -759,6 +771,12 @@ class ControllerTabs:
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     """
 
+    """
+    ********************************************************************************************************************
+    *                                           Init Experiment Functions                                              *
+    ********************************************************************************************************************
+    """
+
     def btnInitExperimentChanged(self):
         laserSwitchOFF = False
 
@@ -823,6 +841,238 @@ class ControllerTabs:
             self.viewDataAcquisition.setDataChannel2(self.values['Time'], self.values['Channel 2'])
 
             self.values['Time'] += 1
+
+            if self.viewDataAcquisition.getBtnAutoscaleYChannel1Status():
+                if self.values['Channel 1'] > self.axisYMaxChannel1:
+                    self.axisYMaxChannel1 = self.values['Channel 1']
+
+                if self.values['Channel 1'] < self.axisYMinChannel1:
+                    self.axisYMinChannel1 = self.values['Channel 1']
+
+                self.viewDataAcquisition.setRangeYChannel1([self.axisYMinChannel1, self.axisYMaxChannel1])
+
+            if self.viewDataAcquisition.getBtnAutoscaleYChannel2Status():
+                if self.values['Channel 2'] > self.axisYMaxChannel2:
+                    self.axisYMaxChannel2 = self.values['Channel 2']
+
+                if self.values['Channel 2'] < self.axisYMinChannel2:
+                    self.axisYMinChannel2 = self.values['Channel 2']
+
+                self.viewDataAcquisition.setRangeYChannel2([self.axisYMinChannel2, self.axisYMaxChannel2])
+
+    """
+    ********************************************************************************************************************
+    *                                         End Init Experiment Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                           Chart Experiment Functions                                             *
+    ********************************************************************************************************************
+    """
+
+    def btnAutoscaleYChannel1Changed(self):
+        if self.viewDataAcquisition.getBtnAutoscaleYChannel1Status():
+
+            if len(self.valuesExperiment['Channel 1']) > 100:
+                initChannel1 = len(self.valuesExperiment['Channel 1']) - 100
+
+            else:
+                initChannel1 = 0
+
+            if len(self.valuesExperiment['Channel 1']) > 0:
+                self.axisYMinChannel1 = self.valuesExperiment['Channel 1'][initChannel1]
+                self.axisYMaxChannel1 = self.valuesExperiment['Channel 1'][initChannel1]
+
+                for i in range(initChannel1, len(self.valuesExperiment['Channel 1'])):
+
+                    if self.valuesExperiment['Channel 1'][i] > self.axisYMaxChannel1:
+                        self.axisYMaxChannel1 = self.valuesExperiment['Channel 1'][i]
+
+                    if self.valuesExperiment['Channel 1'][i] < self.axisYMinChannel1:
+                        self.axisYMinChannel1 = self.valuesExperiment['Channel 1'][i]
+
+            else:
+                self.axisYMinChannel1 = 0
+                self.axisYMaxChannel1 = 0
+
+            autoscale = True
+
+        else:
+            self.axisYMinChannel1 = 0
+            self.axisYMaxChannel1 = 100
+
+            autoscale = False
+
+        self.viewDataAcquisition.setRangeYChannel1([self.axisYMinChannel1, self.axisYMaxChannel1], autoscale)
+
+    def btnAutoscaleXChannel1Changed(self):
+        if self.viewDataAcquisition.getBtnAutoscaleXChannel1Status():
+
+            self.viewDataAcquisition.setBtnChart1000Channel1Status(False)
+            self.viewDataAcquisition.setBtnChart10000Channel1Status(False)
+
+            rangeXChannel1 = self.viewDataAcquisition.getRangeXChannel1()
+            rangeXChannel1[0] = 0
+
+            if self.values['Time'] is not 0:
+                rangeXChannel1[1] = self.values['Time']
+
+            else:
+                rangeXChannel1[1] = 100
+
+            self.viewDataAcquisition.setRangeXChannel1(rangeXChannel1)
+
+    def btnChart1000Channel1Changed(self):
+        if self.viewDataAcquisition.getBtnChart1000Channel1Status():
+
+            self.viewDataAcquisition.setBtnAutoscaleXChannel1Status(False)
+            self.viewDataAcquisition.setBtnChart10000Channel1Status(False)
+
+            rangeXChannel1 = self.viewDataAcquisition.getRangeXChannel1()
+
+            if self.values['Time'] > 1000:
+                rangeXChannel1[0] = self.values['Time'] - 1000
+
+            else:
+                rangeXChannel1[1] = 1000
+
+            self.viewDataAcquisition.setRangeXChannel1(rangeXChannel1)
+
+        else:
+            if not self.viewDataAcquisition.getBtnAutoscaleYChannel1Status()\
+                    and not self.viewDataAcquisition.getBtnChart10000Channel1Status():
+
+                self.viewDataAcquisition.setBtnAutoscaleXChannel1Status(True)
+                self.btnAutoscaleXChannel1Changed()
+
+    def btnChart10000Channel1Changed(self):
+        if self.viewDataAcquisition.getBtnChart10000Channel1Status():
+
+            self.viewDataAcquisition.setBtnAutoscaleXChannel1Status(False)
+            self.viewDataAcquisition.setBtnChart1000Channel1Status(False)
+
+            rangeXChannel1 = self.viewDataAcquisition.getRangeXChannel1()
+
+            if rangeXChannel1[1] > 10000:
+                rangeXChannel1[0] = rangeXChannel1[1] - 10000
+
+            else:
+                rangeXChannel1[1] = 10000
+
+            self.viewDataAcquisition.setRangeXChannel1(rangeXChannel1)
+
+        else:
+            if not self.viewDataAcquisition.getBtnAutoscaleYChannel1Status()\
+                    and not self.viewDataAcquisition.getBtnChart1000Channel1Status():
+
+                self.viewDataAcquisition.setBtnAutoscaleXChannel1Status(True)
+                self.btnAutoscaleXChannel1Changed()
+
+    def btnAutoscaleYChannel2Changed(self):
+        if self.viewDataAcquisition.getBtnAutoscaleYChannel2Status():
+
+            if len(self.valuesExperiment['Channel 2']) > 100:
+                initChannel2 = len(self.valuesExperiment['Channel 2']) - 100
+
+            else:
+                initChannel2 = 0
+
+            if len(self.valuesExperiment['Channel 2']) > 0:
+                self.axisYMinChannel2 = self.valuesExperiment['Channel 2'][initChannel2]
+                self.axisYMaxChannel2 = self.valuesExperiment['Channel 2'][initChannel2]
+
+                for i in range(initChannel2, len(self.valuesExperiment['Channel 2'])):
+
+                    if self.valuesExperiment['Channel 2'][i] > self.axisYMaxChannel2:
+                        self.axisYMaxChannel2 = self.valuesExperiment['Channel 2'][i]
+
+                    if self.valuesExperiment['Channel 2'][i] < self.axisYMinChannel2:
+                        self.axisYMinChannel2 = self.valuesExperiment['Channel 2'][i]
+
+            else:
+                self.axisYMinChannel2 = 0
+                self.axisYMaxChannel2 = 0
+
+            autoscale = True
+
+        else:
+            self.axisYMinChannel2 = 0
+            self.axisYMaxChannel2 = 100
+
+            autoscale = False
+
+        self.viewDataAcquisition.setRangeYChannel2([self.axisYMinChannel2, self.axisYMaxChannel2], autoscale)
+
+    def btnAutoscaleXChannel2Changed(self):
+        if self.viewDataAcquisition.getBtnAutoscaleXChannel2Status():
+
+            self.viewDataAcquisition.setBtnChart1000Channel2Status(False)
+            self.viewDataAcquisition.setBtnChart10000Channel2Status(False)
+
+            rangeXChannel2 = self.viewDataAcquisition.getRangeXChannel2()
+            rangeXChannel2[0] = 0
+
+            if self.values['Time'] is not 0:
+                rangeXChannel2[1] = self.values['Time']
+
+            else:
+                rangeXChannel2[1] = 100
+
+            self.viewDataAcquisition.setRangeXChannel2(rangeXChannel2)
+
+    def btnChart1000Channel2Changed(self):
+        if self.viewDataAcquisition.getBtnChart1000Channel2Status():
+
+            self.viewDataAcquisition.setBtnAutoscaleXChannel2Status(False)
+            self.viewDataAcquisition.setBtnChart10000Channel2Status(False)
+
+            rangeXChannel2 = self.viewDataAcquisition.getRangeXChannel2()
+
+            if self.values['Time'] > 1000:
+                rangeXChannel2[0] = self.values['Time'] - 1000
+
+            else:
+                rangeXChannel2[1] = 1000
+
+            self.viewDataAcquisition.setRangeXChannel2(rangeXChannel2)
+
+        else:
+            if not self.viewDataAcquisition.getBtnAutoscaleYChannel2Status()\
+                    and not self.viewDataAcquisition.getBtnChart10000Channel2Status():
+
+                self.viewDataAcquisition.setBtnAutoscaleXChannel2Status(True)
+                self.btnAutoscaleXChannel2Changed()
+
+    def btnChart10000Channel2Changed(self):
+        if self.viewDataAcquisition.getBtnChart10000Channel2Status():
+
+            self.viewDataAcquisition.setBtnAutoscaleXChannel2Status(False)
+            self.viewDataAcquisition.setBtnChart1000Channel2Status(False)
+
+            rangeXChannel2 = self.viewDataAcquisition.getRangeXChannel2()
+
+            if rangeXChannel2[1] > 10000:
+                rangeXChannel2[0] = rangeXChannel2[1] - 10000
+
+            else:
+                rangeXChannel2[1] = 10000
+
+            self.viewDataAcquisition.setRangeXChannel2(rangeXChannel2)
+
+        else:
+            if not self.viewDataAcquisition.getBtnAutoscaleYChannel2Status()\
+                    and not self.viewDataAcquisition.getBtnChart1000Channel2Status():
+
+                self.viewDataAcquisition.setBtnAutoscaleXChannel2Status(True)
+                self.btnAutoscaleXChannel2Changed()
+
+    """
+    ********************************************************************************************************************
+    *                                         End Chart Experiment Functions                                           *
+    ********************************************************************************************************************
+    """
 
     """
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
