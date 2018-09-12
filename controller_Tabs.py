@@ -849,7 +849,9 @@ class ControllerTabs:
                 if self.values['Channel 1'] < self.axisYMinChannel1:
                     self.axisYMinChannel1 = self.values['Channel 1']
 
-                self.viewDataAcquisition.setRangeYChannel1([self.axisYMinChannel1, self.axisYMaxChannel1])
+                autoscale = True
+
+                self.viewDataAcquisition.setRangeYChannel1([self.axisYMinChannel1, self.axisYMaxChannel1], autoscale)
 
             if self.viewDataAcquisition.getBtnAutoscaleYChannel2Status():
                 if self.values['Channel 2'] > self.axisYMaxChannel2:
@@ -858,7 +860,9 @@ class ControllerTabs:
                 if self.values['Channel 2'] < self.axisYMinChannel2:
                     self.axisYMinChannel2 = self.values['Channel 2']
 
-                self.viewDataAcquisition.setRangeYChannel2([self.axisYMinChannel2, self.axisYMaxChannel2])
+                autoscale = True
+
+                self.viewDataAcquisition.setRangeYChannel2([self.axisYMinChannel2, self.axisYMaxChannel2], autoscale)
 
     """
     ********************************************************************************************************************
