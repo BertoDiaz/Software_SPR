@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QFileDialog
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QSpinBox
 from PyQt5.QtCore import Qt
+from lib import Strings
 from lib import Styles
 
 
@@ -26,39 +27,27 @@ class ViewSystemControl(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.timeoutMessage = {
-            'Laser': 'The laser was not switch ON/OFF, try again.',
-            'Peristaltic': 'The peristaltic did not respond, try again.',
-            'Impulsional A': 'The impulsional A pump did not respond, try again.',
-            'Impulsional B': 'The impulsional B pump did not respond, try again.'
-        }
+        self.btnLaser = QPushButton(Strings.laserOFF)
 
-        self.notCeroMessage = {
-            'Impulsional A': 'The value of the impulsional A cannot be 0.',
-            'Impulsional B': 'The value of the impulsional B cannot be 0.'
-        }
-
-        self.btnLaser = QPushButton('Laser OFF')
-
-        self.lblPeristaltic = QLabel('Flow Peristaltic')
+        self.lblPeristaltic = QLabel(Strings.flowPeristaltic)
         self.edtPeristaltic = QSpinBox()
-        self.lblImpulsional_A = QLabel('Injection Impulsional A:')
+        self.lblImpulsional_A = QLabel(Strings.injectionImpulsionalA)
         self.edtImpulsional_A = QSpinBox()
-        self.lblImpulsional_B = QLabel('Injection Impulsional B:')
+        self.lblImpulsional_B = QLabel(Strings.injectionImpulsionalB)
         self.edtImpulsional_B = QSpinBox()
 
-        self.btnPeristaltic = QPushButton('START')
-        self.btnImpulsional_A = QPushButton('INJECT')
-        self.btnImpulsional_B = QPushButton('INJECT')
+        self.btnPeristaltic = QPushButton(Strings.start)
+        self.btnImpulsional_A = QPushButton(Strings.inject)
+        self.btnImpulsional_B = QPushButton(Strings.inject)
 
         self.layoutGrid = QGridLayout(self)
 
-        self.laserBoxLayout = QGroupBox('Laser Control')
-        self.dataBoxLayout = QGroupBox('Pumps control')
-        self.otherBoxLayout = QGroupBox('Other Layout')
-        self.peristalticBoxLayout = QGroupBox('Peristaltic Pump Control')
-        self.impulsionalABoxLayout = QGroupBox('Impulsional Pump A Control')
-        self.impulsionalBBoxLayout = QGroupBox('Impulsional Pump B Control')
+        self.laserBoxLayout = QGroupBox(Strings.laserControl)
+        self.dataBoxLayout = QGroupBox(Strings.pumpsControl)
+        self.otherBoxLayout = QGroupBox(Strings.otherLayout)
+        self.peristalticBoxLayout = QGroupBox(Strings.peristalticPumpControl)
+        self.impulsionalABoxLayout = QGroupBox(Strings.impulsionalPumpAControl)
+        self.impulsionalBBoxLayout = QGroupBox(Strings.impulsionalPumpBControl)
 
         self.dataLayout = QGridLayout(self)
         self.peristalticLayout = QGridLayout(self)
@@ -74,7 +63,7 @@ class ViewSystemControl(QWidget):
 
         self.resize(1200, 800)
         self.centerWindowOnScreen()
-        self.setWindowTitle('SPR v2')
+        self.setWindowTitle(Strings.sprV2)
 
     def centerWindowOnScreen(self):
         windowGeometry = self.frameGeometry()
@@ -146,10 +135,10 @@ class ViewSystemControl(QWidget):
 
     def setBtnLaserStatus(self, status):
         if status:
-            text = 'Laser ON'
+            text = Strings.laserON
 
         else:
-            text = 'Laser OFF'
+            text = Strings.laserOFF
 
         self.btnLaser.setText(text)
         self.btnLaser.setChecked(status)
@@ -171,10 +160,10 @@ class ViewSystemControl(QWidget):
 
     def setBtnPeristalticStatus(self, status):
         if status:
-            text = 'STOP'
+            text = Strings.stop
 
         else:
-            text = 'START'
+            text = Strings.start
 
         self.btnPeristaltic.setText(text)
         self.btnPeristaltic.setChecked(status)
@@ -305,11 +294,11 @@ class ViewSystemControl(QWidget):
     ********************************************************************************************************************
     """
 
-    def setMessageCritical(self, typeMessage, message):
-        QMessageBox.critical(self, typeMessage, message, QMessageBox.Ok, QMessageBox.Ok)
+    def setMessageCritical(self, message):
+        QMessageBox.critical(self, 'Error', message, QMessageBox.Ok, QMessageBox.Ok)
 
     def setMessageExistsFile(self):
-        loadFile = QMessageBox.question(self, 'Question', 'Load a configuration file?',
+        loadFile = QMessageBox.question(self, 'Question', Strings.messageLoadConfigurationFile,
                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if loadFile == QMessageBox.Yes:
             fileName, _ = QFileDialog.getOpenFileName(self, 'Open File', '/home', 'Config File(*.cfg)')

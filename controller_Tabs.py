@@ -21,6 +21,7 @@ from lib.Queue import Queue
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer
 from functools import partial
+from lib import Strings
 import datetime
 import sys
 import csv
@@ -30,9 +31,6 @@ class ControllerTabs:
     def __init__(self):
         self.serialPort = None
         self.dataInit = {}
-        self.ackCommand = '@'
-        self.acquisitionCommand = '&'
-        self.experimentCommand = '|'
         self.laserON = 1
         self.laserOFF = 0
         self.peristalticON = 1
@@ -48,8 +46,8 @@ class ControllerTabs:
         self.axisYMinChannel1 = 0
         self.axisYMaxChannel2 = 0
         self.axisYMinChannel2 = 0
-        self.myFileNameCalibration = datetime.datetime.now().strftime("%d-%m-%Y") + "_calibration.DAT"
-        self.myFileNameMeasure = datetime.datetime.now().strftime("%d-%m-%Y") + "_measure.DAT"
+        self.myFileNameCalibration = datetime.datetime.now().strftime('%d-%m-%Y') + '_calibration.DAT'
+        self.myFileNameMeasure = datetime.datetime.now().strftime('%d-%m-%Y') + '_measure.DAT'
         self.myFileCalibration = None
         self.myFileMeasure = None
         self.fileNameCalibration = None
@@ -92,6 +90,7 @@ class ControllerTabs:
             'Data Sampling': 2,
             'Acquisition Channel 1': 0,
             'Acquisition Channel 2': 0,
+            'Angle': 0,
             'Channel 1': 0.000,
             'Channel 2': 0.000,
             'Time': 0
@@ -141,18 +140,18 @@ class ControllerTabs:
             self.serialPort = controllerConnect.serialPort
             self.dataInit = controllerConnect.dataInit
 
-            self.values['Peristaltic'] = self.dataInit["PER1"]
-            self.values['Impulsional A'] = self.dataInit["Impul1"]
-            self.values['Impulsional B'] = self.dataInit["Impul2"]
+            self.values['Peristaltic'] = self.dataInit['PER1']
+            self.values['Impulsional A'] = self.dataInit['Impul1']
+            self.values['Impulsional B'] = self.dataInit['Impul2']
 
             self.viewSystemControl.setEdtPeristalticValue(self.values['Peristaltic'])
             self.viewSystemControl.setEdtImpulsionalAValue(self.values['Impulsional A'])
             self.viewSystemControl.setEdtImpulsionalBValue(self.values['Impulsional B'])
 
-            self.values['Gain A'] = self.dataInit["Gain1"]
-            self.values['Gain B'] = self.dataInit["Gain2"]
-            self.values['Offset A'] = self.dataInit["Offset1"]
-            self.values['Offset B'] = self.dataInit["Offset2"]
+            self.values['Gain A'] = self.dataInit['Gain1']
+            self.values['Gain B'] = self.dataInit['Gain2']
+            self.values['Offset A'] = self.dataInit['Offset1']
+            self.values['Offset B'] = self.dataInit['Offset2']
 
             self.viewCurveSetup.setEdtGainAValue(self.values['Gain A'])
             self.viewCurveSetup.setEdtGainBValue(self.values['Gain B'])
@@ -282,7 +281,7 @@ class ControllerTabs:
         self.serialPort.send_Laser(toSend)
         self.bufferWaitACK.append(self.laserCommandReceived)
 
-        messageTimeout = partial(self.setTimeout, messageTimeout=self.viewSystemControl.timeoutMessage['Laser'],
+        messageTimeout = partial(self.setTimeout, messageTimeout=Strings.messageTimeoutLaser,
                                  functionTimeout=self.laserCommandReceived)
         self.tmrTimeout.timeout.connect(messageTimeout)
         self.tmrTimeout.start(self.msTimeout)
@@ -334,8 +333,7 @@ class ControllerTabs:
             self.serialPort.send_Control_Peristaltic(toSend)
             self.bufferWaitACK.append(self.peristalticCommandReceived)
 
-            functionTimeout = partial(self.setTimeout,
-                                      messageTimeout=self.viewSystemControl.timeoutMessage['Peristaltic'],
+            functionTimeout = partial(self.setTimeout, messageTimeout=Strings.messageTimeoutPeristaltic,
                                       functionTimeout=self.peristalticCommandReceived)
             self.tmrTimeout.timeout.connect(functionTimeout)
             self.tmrTimeout.start(self.msTimeout)
@@ -360,7 +358,7 @@ class ControllerTabs:
         peristalticCommand = partial(self.peristalticCommandReceived, who=who)
         self.bufferWaitACK.append(peristalticCommand)
 
-        functionTimeout = partial(self.setTimeout, messageTimeout=self.viewSystemControl.timeoutMessage['Peristaltic'],
+        functionTimeout = partial(self.setTimeout, messageTimeout=Strings.messageTimeoutPeristaltic,
                                   functionTimeout=peristalticCommand)
         self.tmrTimeout.timeout.connect(functionTimeout)
         self.tmrTimeout.start(self.msTimeout)
@@ -389,7 +387,7 @@ class ControllerTabs:
             self.bufferWaitACK.append(peristalticCommand)
 
             functionTimeout = partial(self.setTimeout,
-                                      messageTimeout=self.viewSystemControl.timeoutMessage['Peristaltic'],
+                                      messageTimeout=Strings.messageTimeoutPeristaltic,
                                       functionTimeout=peristalticCommand)
             self.tmrTimeout.timeout.connect(functionTimeout)
             self.tmrTimeout.start(self.msTimeout)
@@ -438,15 +436,14 @@ class ControllerTabs:
                 self.bufferWaitACK.append(self.impulsionalACommandReceived)
 
                 functionTimeout = partial(self.setTimeout,
-                                          messageTimeout=self.viewSystemControl.timeoutMessage['Impulsional A'],
+                                          messageTimeout=Strings.messageTimeoutImpulsionalA,
                                           functionTimeout=self.impulsionalACommandReceived)
                 self.tmrTimeout.timeout.connect(functionTimeout)
                 self.tmrTimeout.start(self.msTimeout)
 
             else:
                 self.changeImpulsionalAStatus(False)
-                self.viewSystemControl.setMessageCritical("Error",
-                                                          self.viewSystemControl.notCeroMessage['Impulsional A'])
+                self.viewSystemControl.setMessageCritical(Strings.messageNotCeroImpulsionalA)
 
     def impulsionalACommandReceived(self):
         if self.btnTimeout:
@@ -472,7 +469,7 @@ class ControllerTabs:
             self.bufferWaitACK.append(self.injectACommandReceived)
 
             functionTimeout = partial(self.setTimeout,
-                                      messageTimeout=self.viewSystemControl.timeoutMessage['Impulsional A'],
+                                      messageTimeout=Strings.messageTimeoutImpulsionalA,
                                       functionTimeout=self.injectACommandReceived)
             self.tmrTimeout.timeout.connect(functionTimeout)
             self.tmrTimeout.start(self.msTimeout)
@@ -504,15 +501,14 @@ class ControllerTabs:
                 self.bufferWaitACK.append(self.impulsionalBCommandReceived)
 
                 functionTimeout = partial(self.setTimeout,
-                                          messageTimeout=self.viewSystemControl.timeoutMessage['Impulsional B'],
+                                          messageTimeout=Strings.messageTimeoutImpulsionalB,
                                           functionTimeout=self.impulsionalBCommandReceived)
                 self.tmrTimeout.timeout.connect(functionTimeout)
                 self.tmrTimeout.start(self.msTimeout)
 
             else:
                 self.changeImpulsionalBStatus(False)
-                self.viewSystemControl.setMessageCritical("Error",
-                                                          self.viewSystemControl.notCeroMessage['Impulsional B'])
+                self.viewSystemControl.setMessageCritical(Strings.messageNotCeroImpulsionalB)
 
     def impulsionalBCommandReceived(self):
         if self.btnTimeout:
@@ -538,7 +534,7 @@ class ControllerTabs:
             self.bufferWaitACK.append(self.injectBCommandReceived)
 
             functionTimeout = partial(self.setTimeout,
-                                      messageTimeout=self.viewSystemControl.timeoutMessage['Impulsional B'],
+                                      messageTimeout=Strings.messageTimeoutImpulsionalB,
                                       functionTimeout=self.injectBCommandReceived)
             self.tmrTimeout.timeout.connect(functionTimeout)
             self.tmrTimeout.start(self.msTimeout)
@@ -727,7 +723,7 @@ class ControllerTabs:
 
         if laserSwitchOFF:
             self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
-            self.viewCurveSetup.setMessageCritical('Error', 'It is necessary the laser is switch ON.')
+            self.viewCurveSetup.setMessageCritical(Strings.messageNecessaryLaserON)
 
         else:
             self.bufferWaitACK.append(self.acquisitionCommandReceived)
@@ -758,19 +754,18 @@ class ControllerTabs:
 
             self.values['Acquisition Channel 1'] = self.valuesPhotodiodes['Photodiode A'][self.values['Automatic']]
             self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
+            self.values['Angle'] = self.valuesPhotodiodes['Angle'][self.values['Automatic']]
 
             self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
             self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
             self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
 
-            self.viewCurveSetup.setDataChannel1(self.baseX + (self.values['Automatic'] * 0.2),
-                                                self.values['Acquisition Channel 1'])
-            self.viewCurveSetup.setDataChannel2(self.baseX + (self.values['Automatic'] * 0.2),
-                                                self.values['Acquisition Channel 2'])
+            self.viewCurveSetup.setDataChannel1(self.values['Angle'], self.values['Acquisition Channel 1'])
+            self.viewCurveSetup.setDataChannel2(self.values['Angle'], self.values['Acquisition Channel 2'])
 
             self.values['Automatic'] += 1
 
-            if self.baseX + (self.values['Automatic'] * 0.2) > 62.00:
+            if self.values['Angle'] > 62.00:
                 self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
                 self.btnAutoAcquisitionChanged()
 
@@ -788,9 +783,9 @@ class ControllerTabs:
 
     def autoSaveFileCalibration(self):
         if self.fileNameCalibration is not None:
-            self.myFileCalibration = open(self.fileNameCalibration, 'w')
+            self.myFileCalibration = open(self.fileNameCalibration, Strings.write)
 
-            myData = [['ANGLE', 'CHANNEL 1', 'CHANNEL 2']]
+            myData = [[Strings.angle, Strings.channel1, Strings.channel2]]
 
             for i in range(0, len(self.valuesPhotodiodes['Photodiode A'])):
                 myData.append([self.valuesPhotodiodes['Angle'][i], self.valuesPhotodiodes['Photodiode A'][i],
@@ -801,7 +796,7 @@ class ControllerTabs:
                 writer.writerows(myData)
 
         else:
-            if self.viewCurveSetup.setMessageQuestion('Do you want to save the data?'):
+            if self.viewCurveSetup.setMessageQuestion(Strings.messageSaveData):
                 self.btnSaveFileCalibrationChanged()
 
             else:
@@ -814,11 +809,11 @@ class ControllerTabs:
             self.fileNameCalibration = self.viewCurveSetup.setDialogSaveFile(self.myFileNameCalibration)
 
             if self.fileNameCalibration != '':
-                self.myFileCalibration = open(self.fileNameCalibration, 'w')
+                self.myFileCalibration = open(self.fileNameCalibration, Strings.write)
 
                 if len(self.valuesPhotodiodes['Photodiode A']) > 0:
 
-                    myData = [['ANGLE', 'CHANNEL 1', 'CHANNEL 2']]
+                    myData = [[Strings.angle, Strings.channel1, Strings.channel2]]
 
                     for i in range(0, len(self.valuesPhotodiodes['Photodiode A'])):
                         myData.append([self.valuesPhotodiodes['Angle'][i], self.valuesPhotodiodes['Photodiode A'][i],
@@ -895,11 +890,11 @@ class ControllerTabs:
 
         if laserSwitchOFF:
             self.viewDataAcquisition.setBtnInitExperimentStatus(False)
-            self.viewDataAcquisition.setMessageCritical('Error', 'It is necessary the laser is switch ON.')
+            self.viewDataAcquisition.setMessageCritical(Strings.messageNecessaryLaserON)
 
         elif peristalticSwitchOFF:
             self.viewDataAcquisition.setBtnInitExperimentStatus(False)
-            self.viewDataAcquisition.setMessageCritical('Error', 'It is necessary the peristaltic is switch ON.')
+            self.viewDataAcquisition.setMessageCritical(Strings.messageNecessaryPeristalticON)
 
         else:
 
@@ -965,10 +960,10 @@ class ControllerTabs:
                 self.viewDataAcquisition.setRangeYChannel2([self.axisYMinChannel2, self.axisYMaxChannel2], autoscale)
 
             if not self.viewDataAcquisition.getLedLaserStatus():
-                self.viewDataAcquisition.setMessageCritical('Error', 'It is necessary the laser is switch ON.')
+                self.viewDataAcquisition.setMessageCritical(Strings.messageNecessaryLaserON)
 
             if not self.viewDataAcquisition.getBtnPeristalticStatus():
-                self.viewDataAcquisition.setMessageCritical('Error', 'It is necessary the peristaltic is switch ON.')
+                self.viewDataAcquisition.setMessageCritical(Strings.messageNecessaryPeristalticON)
 
     """
     ********************************************************************************************************************
@@ -984,9 +979,9 @@ class ControllerTabs:
 
     def autoSaveFileMeasure(self):
         if self.fileNameMeasure is not None:
-            self.myFileMeasure = open(self.fileNameMeasure, 'w')
+            self.myFileMeasure = open(self.fileNameMeasure, Strings.write)
 
-            myData = [['TIME', 'CHANNEL 1', 'CHANNEL 2']]
+            myData = [[Strings.time, Strings.channel1, Strings.channel2]]
 
             for i in range(0, len(self.valuesExperiment['Channel 1'])):
                 myData.append([self.valuesExperiment['Time'][i], self.valuesExperiment['Channel 1'][i],
@@ -997,7 +992,7 @@ class ControllerTabs:
                 writer.writerows(myData)
 
         else:
-            if self.viewDataAcquisition.setMessageQuestion('Do you want to save the data?'):
+            if self.viewDataAcquisition.setMessageQuestion(Strings.messageSaveData):
                 self.btnSaveFileMeasureChanged()
 
             else:
@@ -1010,11 +1005,11 @@ class ControllerTabs:
         self.fileNameMeasure = self.viewDataAcquisition.setDialogSaveFile(self.myFileNameMeasure)
 
         if self.fileNameMeasure != '':
-            self.myFileMeasure = open(self.fileNameMeasure, 'w')
+            self.myFileMeasure = open(self.fileNameMeasure, Strings.write)
 
             if len(self.valuesExperiment['Channel 1']) > 0:
 
-                myData = [['TIME', 'CHANNEL 1', 'CHANNEL 2']]
+                myData = [[Strings.time, Strings.channel1, Strings.channel2]]
 
                 for i in range(0, len(self.valuesExperiment['Channel 1'])):
                     myData.append([self.valuesExperiment['Time'][i], self.valuesExperiment['Channel 1'][i],
@@ -1257,7 +1252,7 @@ class ControllerTabs:
 
     def commandReceived(self, data):
         for value in data:
-            if value == self.ackCommand:
+            if value == Strings.ackCommand:
                 valueACK = self.bufferWaitACK.pop()
 
                 if valueACK != -1:
@@ -1266,15 +1261,15 @@ class ControllerTabs:
                     valueACK()
 
             else:
-                if value == self.acquisitionCommand:
+                if value == Strings.acquisitionCommand:
                     self.acquisitionDataReceived(data)
 
-                elif value == self.experimentCommand:
+                elif value == Strings.experimentCommand:
                     self.experimentDataReceived(data)
 
     def setTimeout(self, messageTimeout, functionTimeout):
         self.btnTimeout = True
-        self.viewSystemControl.setMessageCritical('Error', messageTimeout)
+        self.viewSystemControl.setMessageCritical(messageTimeout)
         functionTimeout()
 
         self.tmrTimeout.stop()

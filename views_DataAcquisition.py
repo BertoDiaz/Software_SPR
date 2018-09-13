@@ -821,8 +821,8 @@ class ViewDataAcquisition(QWidget):
     ********************************************************************************************************************
     """
 
-    def setMessageCritical(self, typeMessage, message):
-        QMessageBox.critical(self, typeMessage, message)
+    def setMessageCritical(self, message):
+        QMessageBox.critical(self, 'Error', message)
 
     def setMessageQuestion(self, message):
         saveFile = QMessageBox.question(self, 'Question', message, QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
