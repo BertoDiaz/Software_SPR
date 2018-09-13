@@ -603,7 +603,7 @@ class ControllerTabs:
         self.serialPort.send_Gain_Offset(toSend)
         self.bufferWaitACK.append(self.calibrateCommandReceived)
 
-        functionTimeout = partial(self.setTimeout, messageTimeout=self.viewCurveSetup.timeoutMessage['Calibrate'],
+        functionTimeout = partial(self.setTimeout, messageTimeout=Strings.messageTimeoutCalibrate,
                                   functionTimeout=self.calibrateCommandReceived)
         self.tmrTimeout.timeout.connect(functionTimeout)
         self.tmrTimeout.start(self.msTimeout)
@@ -728,7 +728,7 @@ class ControllerTabs:
         else:
             self.bufferWaitACK.append(self.acquisitionCommandReceived)
 
-            functionTimeout = partial(self.setTimeout, messageTimeout=self.viewCurveSetup.timeoutMessage['Automatic'],
+            functionTimeout = partial(self.setTimeout, messageTimeout=Strings.messageTimeoutAutomatic,
                                       functionTimeout=self.acquisitionCommandReceived)
             self.tmrTimeout.timeout.connect(functionTimeout)
             self.tmrTimeout.start(self.msTimeout)

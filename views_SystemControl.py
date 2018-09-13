@@ -295,13 +295,13 @@ class ViewSystemControl(QWidget):
     """
 
     def setMessageCritical(self, message):
-        QMessageBox.critical(self, 'Error', message, QMessageBox.Ok, QMessageBox.Ok)
+        QMessageBox.critical(self, Strings.error, message, QMessageBox.Ok, QMessageBox.Ok)
 
     def setMessageExistsFile(self):
-        loadFile = QMessageBox.question(self, 'Question', Strings.messageLoadConfigurationFile,
+        loadFile = QMessageBox.question(self, Strings.question, Strings.messageLoadConfigurationFile,
                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if loadFile == QMessageBox.Yes:
-            fileName, _ = QFileDialog.getOpenFileName(self, 'Open File', '/home', 'Config File(*.cfg)')
+            fileName, _ = QFileDialog.getOpenFileName(self, Strings.openFile, '/home', 'Config File(*.cfg)')
 
             return [True, fileName]
 

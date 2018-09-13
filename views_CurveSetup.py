@@ -19,6 +19,7 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLab
 from PyQt5.QtWidgets import QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox, QFileDialog
 from PyQt5.QtCore import Qt, QLocale
 from lib.Chart import Chart
+from lib import Strings
 from lib import Styles
 
 
@@ -27,26 +28,21 @@ class ViewCurveSetup(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.timeoutMessage = {
-            'Calibrate': 'The device has not been calibrated, try again.',
-            'Automatic': 'The device has not respond, try again.'
-        }
-
-        self.lblGainA = QLabel('Gain A:')
+        self.lblGainA = QLabel(Strings.gainA)
         self.edtGainA = QSpinBox()
-        self.lblGainB = QLabel('Gain B:')
+        self.lblGainB = QLabel(Strings.gainB)
         self.edtGainB = QSpinBox()
-        self.lblOffsetA = QLabel('Offset A:')
+        self.lblOffsetA = QLabel(Strings.offsetA)
         self.edtOffsetA = QSpinBox()
-        self.lblOffsetB = QLabel('Offset B:')
+        self.lblOffsetB = QLabel(Strings.offsetB)
         self.edtOffsetB = QSpinBox()
 
-        self.btnCalibrate = QPushButton('Calibrate')
-        self.btnLaser = QPushButton('Laser OFF')
+        self.btnCalibrate = QPushButton(Strings.calibrate)
+        self.btnLaser = QPushButton(Strings.laserOFF)
 
-        self.lblInitialAngle = QLabel('Initial Angle:')
+        self.lblInitialAngle = QLabel(Strings.initialAngle)
         self.edtInitialAngle = QSpinBox()
-        self.lblAngleLongitude = QLabel('Angle Longitude:')
+        self.lblAngleLongitude = QLabel(Strings.angleLongitude)
         self.edtAngleLongitude = QSpinBox()
         self.lblAngleResolution = QLabel('Angle Resolution:')
         self.edtAngleResolution = QDoubleSpinBox()
