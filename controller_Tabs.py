@@ -48,9 +48,12 @@ class ControllerTabs:
         self.axisYMinChannel1 = 0
         self.axisYMaxChannel2 = 0
         self.axisYMinChannel2 = 0
-        self.myFileName = datetime.datetime.now().strftime("%d-%m-%Y") + "_calibration.DAT"
-        self.myFile = None
-        self.fileName = None
+        self.myFileNameCalibration = datetime.datetime.now().strftime("%d-%m-%Y") + "_calibration.DAT"
+        self.myFileNameMeasure = datetime.datetime.now().strftime("%d-%m-%Y") + "_measure.DAT"
+        self.myFileCalibration = None
+        self.myFileMeasure = None
+        self.fileNameCalibration = None
+        self.fileNameMeasure = None
 
         self.btnChecked = {
             'Laser': False,
@@ -96,12 +99,13 @@ class ControllerTabs:
         self.valuesPhotodiodes = {
             'Photodiode A': [],
             'Photodiode B': [],
-            'Time': []
+            'Angle': []
         }
 
         self.valuesExperiment = {
             'Channel 1': [],
-            'Channel 2': []
+            'Channel 2': [],
+            'Time': []
         }
 
         self.tmrBtnImpulsional_A = QTimer()
@@ -166,11 +170,13 @@ class ControllerTabs:
             self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
             self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
 
-            self.viewCurveSetup.setEdtSaveFileText(self.myFileName)
+            self.viewCurveSetup.setEdtSaveFileText(self.myFileNameCalibration)
 
             self.viewDataAcquisition.setEdtChannel1Text(self.values['Channel 1'])
             self.viewDataAcquisition.setEdtChannel2Text(self.values['Channel 2'])
             self.viewDataAcquisition.setEdtTimeText(self.values['Time'])
+
+            self.viewDataAcquisition.setEdtSaveFileText(self.myFileNameMeasure)
 
             """-------------------------------------- System Control Connects ---------------------------------------"""
 
@@ -199,7 +205,7 @@ class ControllerTabs:
 
             self.viewCurveSetup.btnAutoAcquisition.clicked.connect(self.btnAutoAcquisitionChanged)
 
-            self.viewCurveSetup.btnSaveFile.clicked.connect(self.btnSaveFileChanged)
+            self.viewCurveSetup.btnSaveFile.clicked.connect(self.btnSaveFileCalibrationChanged)
 
             self.viewCurveSetup.edtGainA.valueChanged.connect(self.edtCalibrateChanged)
             self.viewCurveSetup.edtGainB.valueChanged.connect(self.edtCalibrateChanged)
@@ -231,6 +237,7 @@ class ControllerTabs:
             self.viewDataAcquisition.btnStopPeristaltic.clicked.connect(btnStopPeristaltic)
             btnForwardPeristaltic = partial(self.btnBSFPeristalticChanged, who=self.forwardPeristaltic)
             self.viewDataAcquisition.btnForwardPeristaltic.clicked.connect(btnForwardPeristaltic)
+            self.viewDataAcquisition.btnSaveFile.clicked.connect(self.btnSaveFileMeasureChanged)
             self.viewDataAcquisition.btnAutoscaleYChannel1.clicked.connect(self.btnAutoscaleYChannel1Changed)
             self.viewDataAcquisition.btnAutoscaleXChannel1.clicked.connect(self.btnAutoscaleXChannel1Changed)
             self.viewDataAcquisition.btnChart1000Channel1.clicked.connect(self.btnChart1000Channel1Changed)
@@ -739,7 +746,7 @@ class ControllerTabs:
             acquisitionInProcess = self.viewCurveSetup.getBtnAutoAcquisitionStatus()
 
             if not acquisitionInProcess:
-                self.autoSaveFile()
+                self.autoSaveFileCalibration()
 
         self.viewCurveSetup.setBtnAutoAcquisitionInProcess(acquisitionInProcess)
 
@@ -747,7 +754,7 @@ class ControllerTabs:
         if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
             self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
             self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
-            self.valuesPhotodiodes['Time'].append(self.values['Automatic'])
+            self.valuesPhotodiodes['Angle'].append(self.baseX + (self.values['Automatic'] * 0.2))
 
             self.values['Acquisition Channel 1'] = self.valuesPhotodiodes['Photodiode A'][self.values['Automatic']]
             self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
@@ -756,14 +763,14 @@ class ControllerTabs:
             self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
             self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
 
-            self.viewCurveSetup.setDataChannel1(self.baseX + (self.values['Automatic'] * 0.08),
+            self.viewCurveSetup.setDataChannel1(self.baseX + (self.values['Automatic'] * 0.2),
                                                 self.values['Acquisition Channel 1'])
-            self.viewCurveSetup.setDataChannel2(self.baseX + (self.values['Automatic'] * 0.08),
+            self.viewCurveSetup.setDataChannel2(self.baseX + (self.values['Automatic'] * 0.2),
                                                 self.values['Acquisition Channel 2'])
 
             self.values['Automatic'] += 1
 
-            if self.baseX + (self.values['Automatic'] * 0.08) > 62.00:
+            if self.baseX + (self.values['Automatic'] * 0.2) > 62.00:
                 self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
                 self.btnAutoAcquisitionChanged()
 
@@ -779,51 +786,50 @@ class ControllerTabs:
     ********************************************************************************************************************
     """
 
-    def autoSaveFile(self):
-        if self.fileName is not None:
-            self.myFile = open(self.fileName, 'w')
+    def autoSaveFileCalibration(self):
+        if self.fileNameCalibration is not None:
+            self.myFileCalibration = open(self.fileNameCalibration, 'w')
 
-            myData = [['TIME', 'CHANNEL 1', 'CHANNEL 2']]
+            myData = [['ANGLE', 'CHANNEL 1', 'CHANNEL 2']]
 
             for i in range(0, len(self.valuesPhotodiodes['Photodiode A'])):
-                myData.append([self.valuesPhotodiodes['Time'][i], self.valuesPhotodiodes['Photodiode A'][i],
+                myData.append([self.valuesPhotodiodes['Angle'][i], self.valuesPhotodiodes['Photodiode A'][i],
                                self.valuesPhotodiodes['Photodiode B'][i]])
 
-            with self.myFile:
-                writer = csv.writer(self.myFile, delimiter='\t')
+            with self.myFileCalibration:
+                writer = csv.writer(self.myFileCalibration, delimiter='\t')
                 writer.writerows(myData)
 
         else:
             if self.viewCurveSetup.setMessageQuestion('Do you want to save the data?'):
-                self.btnSaveFileChanged()
+                self.btnSaveFileCalibrationChanged()
 
             else:
                 pass
 
-    def btnSaveFileChanged(self):
+    def btnSaveFileCalibrationChanged(self):
 
-            self.myFileName = self.viewCurveSetup.getEdtSaveFileText()
+            self.myFileNameCalibration = self.viewCurveSetup.getEdtSaveFileText()
 
-            self.fileName = self.viewCurveSetup.setDialogSaveFile(self.myFileName)
+            self.fileNameCalibration = self.viewCurveSetup.setDialogSaveFile(self.myFileNameCalibration)
 
-            if self.fileName != '':
-                self.myFile = open(self.fileName, 'w')
+            if self.fileNameCalibration != '':
+                self.myFileCalibration = open(self.fileNameCalibration, 'w')
 
                 if len(self.valuesPhotodiodes['Photodiode A']) > 0:
 
-                    myData = [['TIME', 'CHANNEL 1', 'CHANNEL 2']]
+                    myData = [['ANGLE', 'CHANNEL 1', 'CHANNEL 2']]
 
                     for i in range(0, len(self.valuesPhotodiodes['Photodiode A'])):
-                        myData.append([self.valuesPhotodiodes['Time'][i], self.valuesPhotodiodes['Photodiode A'][i],
+                        myData.append([self.valuesPhotodiodes['Angle'][i], self.valuesPhotodiodes['Photodiode A'][i],
                                        self.valuesPhotodiodes['Photodiode B'][i]])
 
-                    with self.myFile:
-                        writer = csv.writer(self.myFile, delimiter='\t')
+                    with self.myFileCalibration:
+                        writer = csv.writer(self.myFileCalibration, delimiter='\t')
                         writer.writerows(myData)
 
             else:
                 pass
-
 
     """
     ********************************************************************************************************************
@@ -912,12 +918,17 @@ class ControllerTabs:
             self.btnTimeout = False
 
         else:
+
+            if not self.viewDataAcquisition.getBtnInitExperimentStatus():
+                self.autoSaveFileMeasure()
+
             self.viewDataAcquisition.setBtnInitExperimentStatus(self.viewDataAcquisition.getBtnInitExperimentStatus())
 
     def experimentDataReceived(self, data):
         if self.viewDataAcquisition.getBtnInitExperimentStatus():
             self.valuesExperiment['Channel 1'].append(float(data[1] + data[2]))
             self.valuesExperiment['Channel 2'].append(float(data[3] + data[4]))
+            self.valuesExperiment['Time'].append(self.values['Time'])
 
             self.values['Channel 1'] = self.valuesExperiment['Channel 1'][self.values['Time']]
             self.values['Channel 2'] = self.valuesExperiment['Channel 2'][self.values['Time']]
@@ -962,6 +973,63 @@ class ControllerTabs:
     """
     ********************************************************************************************************************
     *                                         End Init Experiment Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                                Save File Functions                                               *
+    ********************************************************************************************************************
+    """
+
+    def autoSaveFileMeasure(self):
+        if self.fileNameMeasure is not None:
+            self.myFileMeasure = open(self.fileNameMeasure, 'w')
+
+            myData = [['TIME', 'CHANNEL 1', 'CHANNEL 2']]
+
+            for i in range(0, len(self.valuesExperiment['Channel 1'])):
+                myData.append([self.valuesExperiment['Time'][i], self.valuesExperiment['Channel 1'][i],
+                               self.valuesExperiment['Channel 2'][i]])
+
+            with self.myFileMeasure:
+                writer = csv.writer(self.myFileMeasure, delimiter='\t')
+                writer.writerows(myData)
+
+        else:
+            if self.viewDataAcquisition.setMessageQuestion('Do you want to save the data?'):
+                self.btnSaveFileMeasureChanged()
+
+            else:
+                pass
+
+    def btnSaveFileMeasureChanged(self):
+
+        self.myFileNameMeasure = self.viewDataAcquisition.getEdtSaveFileText()
+
+        self.fileNameMeasure = self.viewDataAcquisition.setDialogSaveFile(self.myFileNameMeasure)
+
+        if self.fileNameMeasure != '':
+            self.myFileMeasure = open(self.fileNameMeasure, 'w')
+
+            if len(self.valuesExperiment['Channel 1']) > 0:
+
+                myData = [['TIME', 'CHANNEL 1', 'CHANNEL 2']]
+
+                for i in range(0, len(self.valuesExperiment['Channel 1'])):
+                    myData.append([self.valuesExperiment['Time'][i], self.valuesExperiment['Channel 1'][i],
+                                   self.valuesExperiment['Channel 2'][i]])
+
+                with self.myFileMeasure:
+                    writer = csv.writer(self.myFileMeasure, delimiter='\t')
+                    writer.writerows(myData)
+
+        else:
+            pass
+
+    """
+    ********************************************************************************************************************
+    *                                              End Save File Functions                                             *
     ********************************************************************************************************************
     """
 

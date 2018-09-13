@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel
+from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QFileDialog
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox
 from PyQt5.QtCore import Qt
 from lib.LedIndicatorWidget import LedIndicator
@@ -83,6 +83,10 @@ class ViewDataAcquisition(QWidget):
 
         self.ledLaser = LedIndicator(self)
 
+        self.edtSaveFile = QLineEdit()
+
+        self.btnSaveFile = QPushButton('SAVE FILE')
+
         self.myChartChannel1 = Chart('CHANNEL 1')
         self.myChartChannel2 = Chart('CHANNEL 2')
 
@@ -97,6 +101,7 @@ class ViewDataAcquisition(QWidget):
         self.peristalticControlBoxLayout = QGroupBox('Peristaltic Pump Control')
         self.injectControlBoxLayout = QGroupBox('Injection Pump Control')
         self.peristalticBoxLayout = QGroupBox()
+        self.saveFileBoxLayout = QGroupBox('Save File')
         self.chartBoxLayout = QGroupBox()
 
         self.filledBoxLayout_1 = QGroupBox()
@@ -113,6 +118,7 @@ class ViewDataAcquisition(QWidget):
         self.peristalticLayout = QGridLayout(self)
 
         self.btnInitLayout = QVBoxLayout(self)
+        self.saveFileLayout = QVBoxLayout(self)
         self.chartLayout = QVBoxLayout(self)
 
         self.btnChartLayoutChannel1 = QHBoxLayout(self)
@@ -136,7 +142,8 @@ class ViewDataAcquisition(QWidget):
     def mainWindow(self):
         self.layoutGrid.addWidget(self.setTimeGroup(), 0, 0, 1, 2)
         self.layoutGrid.addWidget(self.setFluidicGroup(), 1, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setChartGroup(), 0, 2, 8, 8)
+        self.layoutGrid.addWidget(self.setSaveFileGroup(), 2, 0, 1, 2)
+        self.layoutGrid.addWidget(self.setChartGroup(), 0, 2, 7, 8)
         # self.layoutGrid.addWidget(self.setFilledGroup_1(), 2, 0, 5, 10)
 
     def setFilledGroup_1(self):
@@ -234,6 +241,15 @@ class ViewDataAcquisition(QWidget):
         self.fluidicBoxLayout.setLayout(self.fluidicLayout)
 
         return self.fluidicBoxLayout
+
+    def setSaveFileGroup(self):
+        self.saveFileLayout.addWidget(self.edtSaveFile)
+        self.saveFileLayout.addWidget(self.btnSaveFile)
+
+        self.saveFileBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+        self.saveFileBoxLayout.setLayout(self.saveFileLayout)
+
+        return self.saveFileBoxLayout
 
     def setChartGroup(self):
         self.btnChartLayoutChannel1.setAlignment(Qt.AlignRight)
@@ -516,6 +532,24 @@ class ViewDataAcquisition(QWidget):
 
     """
     ********************************************************************************************************************
+    *                                               Save File Functions                                                *
+    ********************************************************************************************************************
+    """
+
+    def setEdtSaveFileText(self, text):
+        self.edtSaveFile.setText(text)
+
+    def getEdtSaveFileText(self):
+        return self.edtSaveFile.text()
+
+    """
+    ********************************************************************************************************************
+    *                                             End Save File Functions                                              *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
     *                                                  Chart Functions                                                 *
     ********************************************************************************************************************
     """
@@ -632,6 +666,8 @@ class ViewDataAcquisition(QWidget):
         self.btnPurge_B.setStyleSheet(Styles.buttonImpulsionalSmall)
         self.btnPurge_B.setCheckable(True)
 
+        self.btnSaveFile.setStyleSheet(Styles.buttonSaveFile)
+
         self.btnAutoscaleYChannel1.setStyleSheet(Styles.buttonChart)
         self.btnAutoscaleYChannel1.setCheckable(True)
 
@@ -717,6 +753,8 @@ class ViewDataAcquisition(QWidget):
         self.edtTime.setAlignment(Qt.AlignRight)
         self.edtTime.setFixedWidth(100)
 
+        self.edtSaveFile.setStyleSheet(Styles.lineEditGeneral)
+
     """
     ********************************************************************************************************************
     *                                          End Line Edits Styles Functions                                         *
@@ -777,5 +815,31 @@ class ViewDataAcquisition(QWidget):
     ********************************************************************************************************************
     """
 
+    """
+    ********************************************************************************************************************
+    *                                                Messages Functions                                                *
+    ********************************************************************************************************************
+    """
+
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)
+
+    def setMessageQuestion(self, message):
+        saveFile = QMessageBox.question(self, 'Question', message, QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+
+        if saveFile == QMessageBox.Yes:
+            return True
+
+        else:
+            return False
+
+    def setDialogSaveFile(self, myNameFile):
+        fileName, _ = QFileDialog.getSaveFileName(self, 'Save File', '/home/Documents/' + myNameFile, '*.DAT')
+
+        return fileName
+
+    """
+    ********************************************************************************************************************
+    *                                              End Messages Functions                                              *
+    ********************************************************************************************************************
+    """
