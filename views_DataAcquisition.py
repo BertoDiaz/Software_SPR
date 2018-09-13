@@ -544,6 +544,12 @@ class ViewDataAcquisition(QWidget):
     def getRangeXChannel2(self):
         return self.myChartChannel2.getRangeX()
 
+    def initSerieChannel1(self):
+        self.myChartChannel1.initSerie()
+
+    def initSerieChannel2(self):
+        self.myChartChannel2.initSerie()
+
     def setBtnAutoscaleYChannel1Status(self, status):
         self.btnAutoscaleYChannel1.setChecked(status)
 

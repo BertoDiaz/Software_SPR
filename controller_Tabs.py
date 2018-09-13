@@ -855,22 +855,31 @@ class ControllerTabs:
 
     def btnInitExperimentChanged(self):
         laserSwitchOFF = False
+        peristalticSwitchOFF = False
 
         if self.viewDataAcquisition.getBtnInitExperimentStatus():
 
             if self.viewDataAcquisition.getLedLaserStatus():
-                self.serialPort.send_Init_Experiment()
 
-                self.valuesExperiment['Channel 1'] = []
-                self.valuesExperiment['Channel 2'] = []
+                if self.viewDataAcquisition.getBtnPeristalticStatus():
+                    self.serialPort.send_Init_Experiment()
 
-                self.values['Channel 1'] = 0.0
-                self.values['Channel 2'] = 0.0
-                self.values['Time'] = 0
+                    self.viewDataAcquisition.initSerieChannel1()
+                    self.viewDataAcquisition.initSerieChannel2()
 
-                self.viewDataAcquisition.setEdtChannel1Text(self.values['Channel 1'])
-                self.viewDataAcquisition.setEdtChannel2Text(self.values['Channel 2'])
-                self.viewDataAcquisition.setEdtTimeText(self.values['Time'])
+                    self.valuesExperiment['Channel 1'] = []
+                    self.valuesExperiment['Channel 2'] = []
+
+                    self.values['Channel 1'] = 0.0
+                    self.values['Channel 2'] = 0.0
+                    self.values['Time'] = 0
+
+                    self.viewDataAcquisition.setEdtChannel1Text(self.values['Channel 1'])
+                    self.viewDataAcquisition.setEdtChannel2Text(self.values['Channel 2'])
+                    self.viewDataAcquisition.setEdtTimeText(self.values['Time'])
+
+                else:
+                    peristalticSwitchOFF = True
 
             else:
                 laserSwitchOFF = True
@@ -881,6 +890,10 @@ class ControllerTabs:
         if laserSwitchOFF:
             self.viewDataAcquisition.setBtnInitExperimentStatus(False)
             self.viewDataAcquisition.setMessageCritical('Error', 'It is necessary the laser is switch ON.')
+
+        elif peristalticSwitchOFF:
+            self.viewDataAcquisition.setBtnInitExperimentStatus(False)
+            self.viewDataAcquisition.setMessageCritical('Error', 'It is necessary the peristaltic is switch ON.')
 
         else:
 
@@ -939,6 +952,12 @@ class ControllerTabs:
                 autoscale = True
 
                 self.viewDataAcquisition.setRangeYChannel2([self.axisYMinChannel2, self.axisYMaxChannel2], autoscale)
+
+            if not self.viewDataAcquisition.getLedLaserStatus():
+                self.viewDataAcquisition.setMessageCritical('Error', 'It is necessary the laser is switch ON.')
+
+            if not self.viewDataAcquisition.getBtnPeristalticStatus():
+                self.viewDataAcquisition.setMessageCritical('Error', 'It is necessary the peristaltic is switch ON.')
 
     """
     ********************************************************************************************************************
