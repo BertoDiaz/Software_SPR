@@ -464,6 +464,9 @@ class ViewCurveSetup(QWidget):
     ********************************************************************************************************************
     """
 
+    def setEdtSaveFileText(self, text):
+        self.edtSaveFile.setText(text)
+
     def getEdtSaveFileText(self):
         return self.edtSaveFile.text()
 
@@ -495,6 +498,12 @@ class ViewCurveSetup(QWidget):
 
     def setDataChannel2(self, xData, yData):
         self.myChartChannel2.setDataChart(xData, yData)
+
+    def initSerieChannel1(self):
+        self.myChartChannel1.initSerie()
+
+    def initSerieChannel2(self):
+        self.myChartChannel2.initSerie()
 
     """
     ********************************************************************************************************************
@@ -598,6 +607,15 @@ class ViewCurveSetup(QWidget):
 
     def setMessageCritical(self, typeMessage, message):
         QMessageBox.critical(self, typeMessage, message)
+
+    def setMessageQuestion(self, message):
+        saveFile = QMessageBox.question(self, 'Question', message, QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+
+        if saveFile == QMessageBox.Yes:
+            return True
+
+        else:
+            return False
 
     def setDialogSaveFile(self, myNameFile):
         fileName, _ = QFileDialog.getSaveFileName(self, 'Save File', '/home/Documents/' + myNameFile, '*.DAT')

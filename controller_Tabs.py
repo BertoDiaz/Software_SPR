@@ -21,7 +21,9 @@ from lib.Queue import Queue
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer
 from functools import partial
+import datetime
 import sys
+import csv
 
 
 class ControllerTabs:
@@ -46,6 +48,9 @@ class ControllerTabs:
         self.axisYMinChannel1 = 0
         self.axisYMaxChannel2 = 0
         self.axisYMinChannel2 = 0
+        self.myFileName = datetime.datetime.now().strftime("%d-%m-%Y") + "_calibration.DAT"
+        self.myFile = None
+        self.fileName = None
 
         self.btnChecked = {
             'Laser': False,
@@ -160,6 +165,8 @@ class ControllerTabs:
             self.viewCurveSetup.setEdtDataSamplingValue(self.values['Data Sampling'])
             self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
             self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
+
+            self.viewCurveSetup.setEdtSaveFileText(self.myFileName)
 
             self.viewDataAcquisition.setEdtChannel1Text(self.values['Channel 1'])
             self.viewDataAcquisition.setEdtChannel2Text(self.values['Channel 2'])
@@ -690,6 +697,9 @@ class ControllerTabs:
 
                 self.serialPort.send_Auto_Acquisition(toSend)
 
+                self.viewCurveSetup.initSerieChannel1()
+                self.viewCurveSetup.initSerieChannel2()
+
                 self.valuesPhotodiodes['Photodiode A'] = []
                 self.valuesPhotodiodes['Photodiode B'] = []
                 self.valuesPhotodiodes['Time'] = []
@@ -727,6 +737,9 @@ class ControllerTabs:
 
         else:
             acquisitionInProcess = self.viewCurveSetup.getBtnAutoAcquisitionStatus()
+
+            if not acquisitionInProcess:
+                self.autoSaveFile()
 
         self.viewCurveSetup.setBtnAutoAcquisitionInProcess(acquisitionInProcess)
 
@@ -766,32 +779,51 @@ class ControllerTabs:
     ********************************************************************************************************************
     """
 
-    def btnSaveFileChanged(self):
-        myNameFile = self.viewCurveSetup.getEdtSaveFileText()
+    def autoSaveFile(self):
+        if self.fileName is not None:
+            self.myFile = open(self.fileName, 'w')
 
-        fileName = self.viewCurveSetup.setDialogSaveFile(myNameFile)
-
-        myData = []
-
-        if fileName != '':
-            myData.append(['TIME\tCHANNEL 1\tCHANNEL 2\n'])
+            myData = [['TIME', 'CHANNEL 1', 'CHANNEL 2']]
 
             for i in range(0, len(self.valuesPhotodiodes['Photodiode A'])):
-                myData.append([str(self.valuesPhotodiodes['Time'][i]) + '\t' +
-                               str(self.valuesPhotodiodes['Photodiode A'][i]) + '\t' +
-                               str(self.valuesPhotodiodes['Photodiode B'][i]) + '\n'])
+                myData.append([self.valuesPhotodiodes['Time'][i], self.valuesPhotodiodes['Photodiode A'][i],
+                               self.valuesPhotodiodes['Photodiode B'][i]])
 
-            myFile = open(fileName, 'w')
-
-            with myFile:
-                for data in myData:
-                    myFile.writelines(data)
-
-            # self.view.setMessageSaveSuccess()
-            # self.fileLoaded = False
+            with self.myFile:
+                writer = csv.writer(self.myFile, delimiter='\t')
+                writer.writerows(myData)
 
         else:
-            pass
+            if self.viewCurveSetup.setMessageQuestion('Do you want to save the data?'):
+                self.btnSaveFileChanged()
+
+            else:
+                pass
+
+    def btnSaveFileChanged(self):
+
+            self.myFileName = self.viewCurveSetup.getEdtSaveFileText()
+
+            self.fileName = self.viewCurveSetup.setDialogSaveFile(self.myFileName)
+
+            if self.fileName != '':
+                self.myFile = open(self.fileName, 'w')
+
+                if len(self.valuesPhotodiodes['Photodiode A']) > 0:
+
+                    myData = [['TIME', 'CHANNEL 1', 'CHANNEL 2']]
+
+                    for i in range(0, len(self.valuesPhotodiodes['Photodiode A'])):
+                        myData.append([self.valuesPhotodiodes['Time'][i], self.valuesPhotodiodes['Photodiode A'][i],
+                                       self.valuesPhotodiodes['Photodiode B'][i]])
+
+                    with self.myFile:
+                        writer = csv.writer(self.myFile, delimiter='\t')
+                        writer.writerows(myData)
+
+            else:
+                pass
+
 
     """
     ********************************************************************************************************************

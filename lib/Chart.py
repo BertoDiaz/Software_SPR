@@ -23,9 +23,9 @@ from PyQt5.QtCore import Qt
 class Chart(QChartView):
 
     def __init__(self, title):
-        chart = QChart()
+        self.chart = QChart()
 
-        QChartView.__init__(self, chart)
+        QChartView.__init__(self, self.chart)
 
         self.axisX = QValueAxis()
         self.axisY = QValueAxis()
@@ -34,11 +34,11 @@ class Chart(QChartView):
         self.yRange = [0, 100]
 
         self.setRenderHint(QPainter.Antialiasing)
-        chart.setTitle(title)
-        chart.setTitleBrush(Qt.white)
-        chart.setAnimationOptions(QChart.NoAnimation)
-        chart.legend().setVisible(False)
-        chart.setBackgroundBrush(Qt.black)
+        self.chart.setTitle(title)
+        self.chart.setTitleBrush(Qt.white)
+        self.chart.setAnimationOptions(QChart.NoAnimation)
+        self.chart.legend().setVisible(False)
+        self.chart.setBackgroundBrush(Qt.black)
 
         self.curve = QLineSeries()
         pen = self.curve.pen()
@@ -47,7 +47,7 @@ class Chart(QChartView):
         pen.setWidthF(2)
         self.curve.setPen(pen)
 
-        chart.addSeries(self.curve)
+        self.chart.addSeries(self.curve)
 
         penAxisGrid = QPen(QColor('#F2F2F2'))
         penAxisGrid.setWidthF(0.5)
@@ -79,8 +79,8 @@ class Chart(QChartView):
         self.axisX.setRange(self.xRange[0], self.xRange[1])
         self.axisY.setRange(self.yRange[0], self.yRange[1])
 
-        chart.setAxisX(self.axisX, self.curve)
-        chart.setAxisY(self.axisY, self.curve)
+        self.chart.setAxisX(self.axisX, self.curve)
+        self.chart.setAxisY(self.axisY, self.curve)
 
     def setDataChart(self, xData, yData):
         if xData > self.xRange[1]:
@@ -119,3 +119,5 @@ class Chart(QChartView):
     def setAxisYTickCount(self, tick):
         self.axisY.setTickCount(tick)
 
+    def initSerie(self):
+        self.curve.clear()
