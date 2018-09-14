@@ -901,7 +901,7 @@ class ControllerTabs:
             self.bufferWaitACK.append(self.initExperimentCommandReceived)
 
             functionTimeout = partial(self.setTimeout,
-                                      messageTimeout=self.viewDataAcquisition.timeoutMessage['Init Experiment'],
+                                      messageTimeout=Strings.messageTimeoutInitExperiment,
                                       functionTimeout=self.initExperimentCommandReceived)
             self.tmrTimeout.timeout.connect(functionTimeout)
             self.tmrTimeout.start(self.msTimeout)

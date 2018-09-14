@@ -22,6 +22,7 @@ from lib.LedIndicatorWidget import LedIndicator
 from lib.TriangleButton import TriangleButton
 from lib.RectangleButton import RectangleButton
 from lib.Chart import Chart
+from lib import Strings
 from lib import Styles
 
 
@@ -29,14 +30,6 @@ class ViewDataAcquisition(QWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
-
-        self.unitTime = ' s'
-        self.forward = 'forward'
-        self.back = 'back'
-
-        self.timeoutMessage = {
-            'Init Experiment': 'The device has not respond, try again.'
-        }
 
         self.lblDataSampling = QLabel('Data Sampling:')
         self.edtDataSampling = QSpinBox()
@@ -69,8 +62,8 @@ class ViewDataAcquisition(QWidget):
         self.btnInject_B = QPushButton('INJECT')
         self.btnPurge_A = QPushButton('PURGE')
         self.btnPurge_B = QPushButton('PURGE')
-        self.btnBackPeristaltic = TriangleButton(40, self.back)
-        self.btnForwardPeristaltic = TriangleButton(40, self.forward)
+        self.btnBackPeristaltic = TriangleButton(40, Strings.back)
+        self.btnForwardPeristaltic = TriangleButton(40, Strings.forward)
         self.btnStopPeristaltic = RectangleButton(40)
         self.btnChart1000Channel1 = QPushButton('x1000')
         self.btnChart10000Channel1 = QPushButton('x10000')
@@ -343,7 +336,7 @@ class ViewDataAcquisition(QWidget):
         return float(self.edtChannel_2.text())
 
     def setEdtTimeText(self, text):
-        self.edtTime.setText(str(text) + self.unitTime)
+        self.edtTime.setText(str(text) + Strings.unitTime)
 
     def getEdtTimeText(self):
         text = self.edtTime.text().replace(' s', '')
