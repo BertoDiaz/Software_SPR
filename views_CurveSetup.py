@@ -44,51 +44,51 @@ class ViewCurveSetup(QWidget):
         self.edtInitialAngle = QSpinBox()
         self.lblAngleLongitude = QLabel(Strings.angleLongitude)
         self.edtAngleLongitude = QSpinBox()
-        self.lblAngleResolution = QLabel('Angle Resolution:')
+        self.lblAngleResolution = QLabel(Strings.angleResolution)
         self.edtAngleResolution = QDoubleSpinBox()
-        self.lblFinalAngle = QLabel('Final Angle:')
+        self.lblFinalAngle = QLabel(Strings.finalAngle)
         self.edtFinalAngle = QLineEdit()
         self.edtFinalAngle.setReadOnly(True)
-        self.lblPointsCurve = QLabel('Points of Curve:')
+        self.lblPointsCurve = QLabel(Strings.pointsOfCurve)
         self.edtPointsCurve = QLineEdit()
         self.edtPointsCurve.setReadOnly(True)
 
-        self.btnReset = QPushButton('Reset')
+        self.btnReset = QPushButton(Strings.reset)
 
         self.edtAcquisition = QLineEdit()
         self.edtAcquisition.setReadOnly(True)
-        self.lblDataSampling = QLabel('Data Sampling (seconds):')
+        self.lblDataSampling = QLabel(Strings.dataSampling)
         self.edtDataSampling = QSpinBox()
-        self.lblACQChannel_1 = QLabel('Channel 1:')
+        self.lblACQChannel_1 = QLabel(Strings.channel1dots)
         self.edtACQChannel_1 = QLineEdit()
         self.edtACQChannel_1.setReadOnly(True)
-        self.lblACQChannel_2 = QLabel('Channel 2:')
+        self.lblACQChannel_2 = QLabel(Strings.channel2dots)
         self.edtACQChannel_2 = QLineEdit()
         self.edtACQChannel_2.setReadOnly(True)
 
-        self.btnAutoAcquisition = QPushButton('Automatic')
+        self.btnAutoAcquisition = QPushButton(Strings.automatic)
 
         self.edtSaveFile = QLineEdit()
 
-        self.btnSaveFile = QPushButton('SAVE FILE')
+        self.btnSaveFile = QPushButton(Strings.saveFileUC)
 
-        self.myChartChannel1 = Chart('CHANNEL 1')
-        self.myChartChannel2 = Chart('CHANNEL 2')
+        self.myChartChannel1 = Chart(Strings.channel1)
+        self.myChartChannel2 = Chart(Strings.channel2)
 
         self.layoutGrid = QGridLayout(self)
 
-        self.calibrationBoxLayout = QGroupBox('Calibration Parameters')
+        self.calibrationBoxLayout = QGroupBox(Strings.calibrationParameters)
         self.gainBoxLayout = QGroupBox()
         self.offsetBoxLayout = QGroupBox()
         self.btnCalibrateBoxLayout = QGroupBox()
         self.btnLaserBoxLayout = QGroupBox()
 
-        self.curveBoxLayout = QGroupBox('Curve Performance')
+        self.curveBoxLayout = QGroupBox(Strings.curvePerformance)
 
-        self.acquisitionBoxLayout = QGroupBox('Acquisition Mode')
+        self.acquisitionBoxLayout = QGroupBox(Strings.acquisitionMode)
         self.autoACQBoxLayout = QGroupBox()
 
-        self.saveFileBoxLayout = QGroupBox('Save File')
+        self.saveFileBoxLayout = QGroupBox(Strings.saveFileLC)
 
         self.chartBoxLayout = QGroupBox()
 
@@ -118,7 +118,7 @@ class ViewCurveSetup(QWidget):
 
         self.resize(1200, 800)
         self.centerWindowOnScreen()
-        self.setWindowTitle('SPR v2')
+        self.setWindowTitle(Strings.sprV2)
 
     def centerWindowOnScreen(self):
         windowGeometry = self.frameGeometry()
@@ -324,10 +324,10 @@ class ViewCurveSetup(QWidget):
 
     def setBtnLaserStatus(self, status):
         if status:
-            text = 'Laser ON'
+            text = Strings.laserON
 
         else:
-            text = 'Laser OFF'
+            text = Strings.laserOFF
 
         self.btnLaser.setText(text)
         self.btnLaser.setChecked(status)
@@ -479,13 +479,13 @@ class ViewCurveSetup(QWidget):
     """
 
     def setCharts(self):
-        self.myChartChannel1.setAxisXName('Angle of Incidence')
-        self.myChartChannel1.setAxisYName('Signal Amplitude')
+        self.myChartChannel1.setAxisXName(Strings.angleOfIncidence)
+        self.myChartChannel1.setAxisYName(Strings.signalAmplitude)
         self.myChartChannel1.setRangeX([58.00, 62.00])
         self.myChartChannel1.setAxisXTickCount(9)
 
-        self.myChartChannel2.setAxisXName('Angle of Incidence')
-        self.myChartChannel2.setAxisYName('Signal Amplitude')
+        self.myChartChannel2.setAxisXName(Strings.angleOfIncidence)
+        self.myChartChannel2.setAxisYName(Strings.signalAmplitude)
         self.myChartChannel2.setRangeX([58.00, 62.00])
         self.myChartChannel2.setAxisXTickCount(9)
 
@@ -553,7 +553,7 @@ class ViewCurveSetup(QWidget):
         This method (QLocale) can change the format of the value, for example, if we have a float with a dot as
         separator with this method we can convert from dot to comma or vice versa.
         """
-        self.edtAngleResolution.setLocale(QLocale('English'))
+        self.edtAngleResolution.setLocale(QLocale(Strings.formatEnglish))
 
         self.edtDataSampling.setStyleSheet(Styles.spinBoxGeneral)
 
@@ -602,10 +602,11 @@ class ViewCurveSetup(QWidget):
     """
 
     def setMessageCritical(self, message):
-        QMessageBox.critical(self, 'Error', message)
+        QMessageBox.critical(self, Strings.error, message)
 
     def setMessageQuestion(self, message):
-        saveFile = QMessageBox.question(self, 'Question', message, QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+        saveFile = QMessageBox.question(self, Strings.question, message, QMessageBox.Yes | QMessageBox.No,
+                                        QMessageBox.Yes)
 
         if saveFile == QMessageBox.Yes:
             return True
@@ -614,7 +615,7 @@ class ViewCurveSetup(QWidget):
             return False
 
     def setDialogSaveFile(self, myNameFile):
-        fileName, _ = QFileDialog.getSaveFileName(self, 'Save File', '/home/Documents/' + myNameFile, '*.DAT')
+        fileName, _ = QFileDialog.getSaveFileName(self, Strings.saveFileLC, '/home/Documents/' + myNameFile, '*.DAT')
 
         return fileName
 
