@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QDesktopWidget, QHBoxLayout
 from PyQt5.QtWidgets import QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox, QFileDialog
 from PyQt5.QtCore import Qt, QLocale
+from PyQt5.QtGui import QPixmap
 from lib.Chart import Chart
 from lib import Strings
 from lib import Styles
@@ -28,6 +29,9 @@ class ViewCurveSetup(QWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
+
+        self.lblImageLogo = QLabel(self)
+        self.imageLogo = QPixmap('image/Nanob2a_Logo_Completo.png')
 
         self.lblGainA = QLabel(Strings.gainA)
         self.edtGainA = QSpinBox()
@@ -91,6 +95,8 @@ class ViewCurveSetup(QWidget):
 
         self.saveFileBoxLayout = QGroupBox(Strings.saveFileLC)
 
+        self.imageBoxLayout = QGroupBox()
+
         self.chartBoxLayout = QGroupBox()
 
         self.filledBoxLayout_1 = QGroupBox()
@@ -106,6 +112,7 @@ class ViewCurveSetup(QWidget):
         self.btnCalibrateLayout = QVBoxLayout(self)
         self.btnLaserLayout = QVBoxLayout(self)
         self.saveFileLayout = QVBoxLayout(self)
+        self.imageLayout = QVBoxLayout(self)
         self.chartLayout = QVBoxLayout(self)
 
         self.gainALayout = QHBoxLayout(self)
@@ -133,6 +140,7 @@ class ViewCurveSetup(QWidget):
         self.layoutGrid.addWidget(self.setCurveGroup(), 1, 0, 1, 2)
         self.layoutGrid.addWidget(self.setAcquisitionGroup(), 2, 0, 1, 2)
         self.layoutGrid.addWidget(self.setSaveFileGroup(), 3, 0, 1, 2)
+        self.layoutGrid.addWidget(self.setImageGroup(), 4, 0, 1, 2)
         self.layoutGrid.addWidget(self.setChartGroup(), 0, 2, 5, 8)
         # self.layoutGrid.addWidget(self.setFilledGroup_1(), 3, 0, 5, 10)
 
@@ -257,6 +265,19 @@ class ViewCurveSetup(QWidget):
         self.saveFileBoxLayout.setLayout(self.saveFileLayout)
 
         return self.saveFileBoxLayout
+
+    def setImageGroup(self):
+        imageLogo_2 = self.imageLogo.scaledToHeight(50)
+        self.lblImageLogo.setPixmap(imageLogo_2)
+
+        self.imageLayout.setAlignment(Qt.AlignCenter)
+
+        self.imageLayout.addWidget(self.lblImageLogo)
+
+        self.imageBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
+        self.imageBoxLayout.setLayout(self.imageLayout)
+
+        return self.imageBoxLayout
 
     def setChartGroup(self):
         self.setCharts()

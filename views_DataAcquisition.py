@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QFileDialog
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
 from lib.LedIndicatorWidget import LedIndicator
 from lib.TriangleButton import TriangleButton
 from lib.RectangleButton import RectangleButton
@@ -31,6 +32,9 @@ class ViewDataAcquisition(QWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
+
+        self.lblImageLogo = QLabel(self)
+        self.imageLogo = QPixmap('image/Nanob2a_Logo_Completo.png')
 
         self.lblDataSampling = QLabel(Strings.dataSampling)
         self.edtDataSampling = QSpinBox()
@@ -96,6 +100,7 @@ class ViewDataAcquisition(QWidget):
         self.injectControlBoxLayout = QGroupBox(Strings.injectionPumpControl)
         self.peristalticBoxLayout = QGroupBox()
         self.saveFileBoxLayout = QGroupBox(Strings.saveFileLC)
+        self.imageBoxLayout = QGroupBox()
         self.chartBoxLayout = QGroupBox()
 
         self.filledBoxLayout_1 = QGroupBox()
@@ -113,6 +118,7 @@ class ViewDataAcquisition(QWidget):
 
         self.btnInitLayout = QVBoxLayout(self)
         self.saveFileLayout = QVBoxLayout(self)
+        self.imageLayout = QVBoxLayout(self)
         self.chartLayout = QVBoxLayout(self)
 
         self.btnChartLayoutChannel1 = QHBoxLayout(self)
@@ -137,7 +143,8 @@ class ViewDataAcquisition(QWidget):
         self.layoutGrid.addWidget(self.setTimeGroup(), 0, 0, 1, 2)
         self.layoutGrid.addWidget(self.setFluidicGroup(), 1, 0, 1, 2)
         self.layoutGrid.addWidget(self.setSaveFileGroup(), 2, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setChartGroup(), 0, 2, 7, 8)
+        self.layoutGrid.addWidget(self.setImageGroup(), 3, 0, 1, 2)
+        self.layoutGrid.addWidget(self.setChartGroup(), 0, 2, 4, 8)
         # self.layoutGrid.addWidget(self.setFilledGroup_1(), 2, 0, 5, 10)
 
     def setFilledGroup_1(self):
@@ -208,7 +215,7 @@ class ViewDataAcquisition(QWidget):
 
         self.peristalticLayout.setAlignment(Qt.AlignCenter)
 
-        self.peristalticBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
+        self.peristalticBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.peristalticBoxLayout.setLayout(self.peristalticLayout)
 
         self.peristalticControlLayout.addWidget(self.peristalticBoxLayout, 2, 0, 1, 3)
@@ -244,6 +251,19 @@ class ViewDataAcquisition(QWidget):
         self.saveFileBoxLayout.setLayout(self.saveFileLayout)
 
         return self.saveFileBoxLayout
+
+    def setImageGroup(self):
+        imageLogo_2 = self.imageLogo.scaledToHeight(50)
+        self.lblImageLogo.setPixmap(imageLogo_2)
+
+        self.imageLayout.setAlignment(Qt.AlignCenter)
+
+        self.imageLayout.addWidget(self.lblImageLogo)
+
+        self.imageBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
+        self.imageBoxLayout.setLayout(self.imageLayout)
+
+        return self.imageBoxLayout
 
     def setChartGroup(self):
         self.btnChartLayoutChannel1.setAlignment(Qt.AlignRight)

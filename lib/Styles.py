@@ -27,6 +27,7 @@ buttonLaserBig = 'QPushButton {' \
                  'font-size: 20px;' \
                  'color: white;' \
                  'height: 100px;' \
+                 'width: 130px;' \
                  'margin-top: 8px;' \
                  '}' \
                  'QPushButton:hover {' \
@@ -750,7 +751,7 @@ groupBoxGeneral = 'QGroupBox {' \
                   '}'
 
 groupBoxGeneralWithoutBorder = 'QGroupBox {' \
-                               'border: 2px outset #948682;' \
+                               'border: 0px outset #948682;' \
                                'border-radius: 5px;' \
                                'margin-top: 7px;' \
                                '}' \

@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QFileDialog
 from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QSpinBox
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
 from lib import Strings
 from lib import Styles
 import getpass
@@ -27,6 +28,9 @@ class ViewSystemControl(QWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
+
+        self.lblImageLogo = QLabel(self)
+        self.imageLogo = QPixmap('image/Nanob2a_Logo_Mitad.png')
 
         self.btnLaser = QPushButton(Strings.laserOFF)
 
@@ -73,9 +77,10 @@ class ViewSystemControl(QWidget):
         self.move(windowGeometry.topLeft())
 
     def mainWindow(self):
-        self.layoutGrid.addWidget(self.setLaserGroup(), 0, 0)
-        self.layoutGrid.addWidget(self.setDataGroup(), 0, 1, 1, 3)
-        self.layoutGrid.addWidget(self.setOtherGroup(), 1, 0, 5, 6)
+        self.layoutGrid.addWidget(self.setLaserGroup(), 0, 0, 1, 2)
+        self.layoutGrid.addWidget(self.setDataGroup(), 0, 2, 1, 3)
+        self.layoutGrid.addWidget(self.setImageGroup(), 0, 7, 1, 1)
+        self.layoutGrid.addWidget(self.setOtherGroup(), 1, 0, 9, 10)
 
     def setLaserGroup(self):
         self.laserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
@@ -122,6 +127,12 @@ class ViewSystemControl(QWidget):
         self.dataBoxLayout.setLayout(self.dataLayout)
 
         return self.dataBoxLayout
+
+    def setImageGroup(self):
+        imageLogo_2 = self.imageLogo.scaledToHeight(100)
+        self.lblImageLogo.setPixmap(imageLogo_2)
+
+        return self.lblImageLogo
 
     def setOtherGroup(self):
         self.otherBoxLayout.setLayout(self.otherLayout)
