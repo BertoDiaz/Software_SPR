@@ -89,7 +89,7 @@ class ViewSystemControl(QWidget):
         widthWindow = QDesktopWidget().availableGeometry().width()
         heightWindow = QDesktopWidget().availableGeometry().height()
 
-        widthApp = widthWindow * 0.8
+        widthApp = widthWindow * 0.7
         heightApp = heightWindow * 0.8
 
         return widthApp, heightApp
