@@ -20,12 +20,12 @@ from lib.SerialPort import SerialPort
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer
 from time import sleep
+from lib import Strings
 import codecs
 
 
 class ControllerConnect:
     def __init__(self):
-        self.portCOM = "COM1"
         self.numberOfItem = 0
         self.ports = []
         self.bufferReceive = ""
@@ -52,7 +52,7 @@ class ControllerConnect:
             'PER2': 0,
             'PURG1': 0,
             'PURG2': 0,
-            'N_SERIE_SPR': "None"
+            'N_SERIE_SPR': 'None'
         }
 
         self.serialPort = SerialPort()
@@ -145,7 +145,7 @@ class ControllerConnect:
             self.timer_send_I_am_alive.start(1000)
 
         else:
-            self.view.setMessageCritical("Error", "Port cannot be opened")
+            self.view.setMessageCritical(Strings.error, Strings.messagePortNotOpen)
 
     def close_port(self):
         self.view.btnOpen.setDisabled(False)
@@ -165,7 +165,7 @@ class ControllerConnect:
         self.bufferReceive = self.serialPort.receive_port()
 
     def receive_I_am_alive(self):
-        while self.bufferReceive != "@":
+        while self.bufferReceive != Strings.ackCommand:
             self.bufferReceive = self.serialPort.receive_port()
 
         self.timer_send_I_am_alive.stop()
@@ -225,7 +225,7 @@ class ControllerConnect:
         found = False
 
         for port in self.ports:
-            if port['port'] == self.portCOM:
+            if port['port'] == Strings.portCOM:
                 port_found.append(True)
                 port_found.append(i)
                 found = True
@@ -312,25 +312,11 @@ class ControllerConnect:
 
             return True
 
-            # self.sendValuesLoaded()
-
         else:
             if loadFile[1] is None:
                 pass
 
             return False
-
-    # def sendValuesLoaded(self):
-    #
-    #     toSend = [
-    #         self.serialPort.commands["GainOffset"],
-    #         '{:02x}'.format(self.dataInit['Gain1']),
-    #         '{:02x}'.format(self.dataInit['Offset1']),
-    #         '{:02x}'.format(self.dataInit['Gain2']),
-    #         '{:02x}'.format(self.dataInit['Offset2'])
-    #     ]
-    #
-    #     self.serialPort.write_port_list(toSend)
 
     def exit_btn(self):
         if self.view.setMessageExit():

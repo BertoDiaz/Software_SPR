@@ -15,10 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
+from PyQt5.QtWidgets import QPushButton, QVBoxLayout, QComboBox, QMessageBox, QProgressBar, QLabel, QFileDialog
 from PyQt5.QtWidgets import QDesktopWidget, QDialog
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
+from lib import Strings
 
 
 class View(QDialog):
@@ -33,13 +34,13 @@ class View(QDialog):
         self.progressBar.setAlignment(Qt.AlignCenter)
         self.progressBar.setValue(0)
 
-        self.btnOpen = QPushButton('Connect')
-        self.btnClose = QPushButton('Disconnect')
+        self.btnOpen = QPushButton(Strings.connect)
+        self.btnClose = QPushButton(Strings.disconnect)
         self.btnClose.setDisabled(True)
-        self.btnExit = QPushButton('Exit')
+        self.btnExit = QPushButton(Strings.exitLC)
         self.combo = QComboBox()
 
-        self.textConnected = QLabel("Port Connected")
+        self.textConnected = QLabel(Strings.portConnected)
         self.textConnected.setAlignment(Qt.AlignCenter)
         self.textConnected.setFont(QFont("Times", 8, QFont.Bold))
 
@@ -49,7 +50,7 @@ class View(QDialog):
 
         self.resize(300, 200)
         self.centerWindowOnScreen()
-        self.setWindowTitle('SPR v2')
+        self.setWindowTitle(Strings.sprV2)
 
     def centerWindowOnScreen(self):
         windowGeometry = self.frameGeometry()
@@ -73,12 +74,12 @@ class View(QDialog):
             self.combo.deleteLater()
 
         if connected:
-            self.textConnected.setText("Port Connected")
+            self.textConnected.setText(Strings.portConnected)
             self.textConnected.setStyleSheet('color: green')
             self.layout.addWidget(self.textConnected)
 
         else:
-            self.textConnected.setText("Port do not found, please choose an available port.")
+            self.textConnected.setText(Strings.messagePortNotFound)
             self.textConnected.setStyleSheet('color: red')
             self.layout.addWidget(self.textConnected)
             self.layout.addWidget(self.btnOpen)
@@ -87,10 +88,10 @@ class View(QDialog):
             self.layout.addWidget(self.combo)
 
     def setPorts(self, ports):
-        self.combo.addItem("PORTS")
+        self.combo.addItem(Strings.portsUC)
 
         for port in ports:
-            self.combo.addItem(port["port"])
+            self.combo.addItem(port['port'])
 
     def setPortFound(self, numberOfIndex):
         self.btnClose.setDisabled(False)
@@ -102,10 +103,10 @@ class View(QDialog):
         QMessageBox.critical(self, typeMessage, message)
 
     def setMessageExistsFile(self):
-        loadFile = QMessageBox.question(self, "Question", "Load a configuration file?",
+        loadFile = QMessageBox.question(self, Strings.question, Strings.messageLoadConfigurationFile,
                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if loadFile == QMessageBox.Yes:
-            fileName, _ = QFileDialog.getOpenFileName(self, "Open File", "/home", "*.cfg")
+            fileName, _ = QFileDialog.getOpenFileName(self, Strings.openFile, '/home', '*.cfg')
 
             if fileName:
                 return [True, fileName]
@@ -114,11 +115,11 @@ class View(QDialog):
                 return [False, None]
 
         else:
-            return [False, 'No']
+            return [False, Strings.no]
 
     def setMessageExit(self):
-        exitApp = QMessageBox.question(self, "Question", "Are you sure you want to quit?",
-                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        exitApp = QMessageBox.question(self, Strings.question, Strings.messageExit, QMessageBox.Yes | QMessageBox.No,
+                                       QMessageBox.No)
 
         if exitApp == QMessageBox.Yes:
             return True

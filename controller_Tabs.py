@@ -785,7 +785,7 @@ class ControllerTabs:
         if self.fileNameCalibration is not None:
             self.myFileCalibration = open(self.fileNameCalibration, Strings.write)
 
-            myData = [[Strings.angle, Strings.channel1, Strings.channel2]]
+            myData = [[Strings.angle, Strings.channel1UC, Strings.channel2UC]]
 
             for i in range(0, len(self.valuesPhotodiodes['Photodiode A'])):
                 myData.append([self.valuesPhotodiodes['Angle'][i], self.valuesPhotodiodes['Photodiode A'][i],
@@ -813,7 +813,7 @@ class ControllerTabs:
 
                 if len(self.valuesPhotodiodes['Photodiode A']) > 0:
 
-                    myData = [[Strings.angle, Strings.channel1, Strings.channel2]]
+                    myData = [[Strings.angle, Strings.channel1UC, Strings.channel2UC]]
 
                     for i in range(0, len(self.valuesPhotodiodes['Photodiode A'])):
                         myData.append([self.valuesPhotodiodes['Angle'][i], self.valuesPhotodiodes['Photodiode A'][i],
@@ -981,7 +981,7 @@ class ControllerTabs:
         if self.fileNameMeasure is not None:
             self.myFileMeasure = open(self.fileNameMeasure, Strings.write)
 
-            myData = [[Strings.time, Strings.channel1, Strings.channel2]]
+            myData = [[Strings.timeUC, Strings.channel1UC, Strings.channel2UC]]
 
             for i in range(0, len(self.valuesExperiment['Channel 1'])):
                 myData.append([self.valuesExperiment['Time'][i], self.valuesExperiment['Channel 1'][i],
@@ -1009,7 +1009,7 @@ class ControllerTabs:
 
             if len(self.valuesExperiment['Channel 1']) > 0:
 
-                myData = [[Strings.time, Strings.channel1, Strings.channel2]]
+                myData = [[Strings.timeUC, Strings.channel1UC, Strings.channel2UC]]
 
                 for i in range(0, len(self.valuesExperiment['Channel 1'])):
                     myData.append([self.valuesExperiment['Time'][i], self.valuesExperiment['Channel 1'][i],

@@ -57,7 +57,7 @@ class ViewCurveSetup(QWidget):
 
         self.edtAcquisition = QLineEdit()
         self.edtAcquisition.setReadOnly(True)
-        self.lblDataSampling = QLabel(Strings.dataSampling)
+        self.lblDataSampling = QLabel(Strings.dataSamplingSeconds)
         self.edtDataSampling = QSpinBox()
         self.lblACQChannel_1 = QLabel(Strings.channel1dots)
         self.edtACQChannel_1 = QLineEdit()
@@ -72,8 +72,8 @@ class ViewCurveSetup(QWidget):
 
         self.btnSaveFile = QPushButton(Strings.saveFileUC)
 
-        self.myChartChannel1 = Chart(Strings.channel1)
-        self.myChartChannel2 = Chart(Strings.channel2)
+        self.myChartChannel1 = Chart(Strings.channel1UC)
+        self.myChartChannel2 = Chart(Strings.channel2UC)
 
         self.layoutGrid = QGridLayout(self)
 

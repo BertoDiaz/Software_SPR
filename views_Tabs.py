@@ -20,6 +20,7 @@ from PyQt5.QtWidgets import QDesktopWidget, QTabWidget
 from views_SystemControl import ViewSystemControl
 from views_CurveSetup import ViewCurveSetup
 from views_DataAcquisition import ViewDataAcquisition
+from lib import Strings
 
 
 class ViewTabs(QWidget):
@@ -29,20 +30,20 @@ class ViewTabs(QWidget):
 
         self.layout = QVBoxLayout(self)
 
-        self.btnExit = QPushButton('Exit')
+        self.btnExit = QPushButton(Strings.exitLC)
 
         self.tabs = QTabWidget(self)
         self.tab_SystemControl = ViewSystemControl(None)
         self.tab_CurveSetup = ViewCurveSetup(None)
         self.tab_DataAcquisition = ViewDataAcquisition(None)
 
-        self.tabs.addTab(self.tab_SystemControl, "System Control")
-        self.tabs.addTab(self.tab_CurveSetup, "SPR Curve Setup")
-        self.tabs.addTab(self.tab_DataAcquisition, "Data Acquisition")
+        self.tabs.addTab(self.tab_SystemControl, Strings.systemControl)
+        self.tabs.addTab(self.tab_CurveSetup, Strings.sprCurveSetup)
+        self.tabs.addTab(self.tab_DataAcquisition, Strings.dataAcquisition)
 
         self.resize(1200, 800)
         self.centerWindowOnScreen()
-        self.setWindowTitle('SPR v2')
+        self.setWindowTitle(Strings.sprV2)
 
     def centerWindowOnScreen(self):
         windowGeometry = self.frameGeometry()
@@ -55,8 +56,8 @@ class ViewTabs(QWidget):
         self.layout.addWidget(self.btnExit)
 
     def setMessageExit(self):
-        exitApp = QMessageBox.question(self, "Question", "Are you sure you want to quit?",
-                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        exitApp = QMessageBox.question(self, Strings.question, Strings.messageExit, QMessageBox.Yes | QMessageBox.No,
+                                       QMessageBox.No)
 
         if exitApp == QMessageBox.Yes:
             return True

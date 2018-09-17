@@ -31,70 +31,70 @@ class ViewDataAcquisition(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.lblDataSampling = QLabel('Data Sampling:')
+        self.lblDataSampling = QLabel(Strings.dataSampling)
         self.edtDataSampling = QSpinBox()
-        self.lblExperimentTime = QLabel('Experiment Time:')
+        self.lblExperimentTime = QLabel(Strings.experimentTime)
         self.edtExperimentTime = QSpinBox()
-        self.lblLaser = QLabel('Status Laser')
-        self.lblChannel_1 = QLabel('Channel 1')
+        self.lblLaser = QLabel(Strings.statusLaser)
+        self.lblChannel_1 = QLabel(Strings.channel1LC)
         self.edtChannel_1 = QLineEdit()
-        self.lblChannel_2 = QLabel('Channel 2')
+        self.lblChannel_2 = QLabel(Strings.channel2LC)
         self.edtChannel_2 = QLineEdit()
-        self.lblTime = QLabel('Time')
+        self.lblTime = QLabel(Strings.timeLC)
         self.edtTime = QLineEdit()
-        self.lblBtnInit = QLabel('Start Experiment')
+        self.lblBtnInit = QLabel(Strings.startExperiment)
 
-        self.lblPeristaltic = QLabel('Flow Peristaltic')
+        self.lblPeristaltic = QLabel(Strings.flowPeristaltic)
         self.edtPeristaltic = QSpinBox()
-        self.lblImpulsional_A = QLabel('Injection A:')
+        self.lblImpulsional_A = QLabel(Strings.injectionA)
         self.edtImpulsional_A = QSpinBox()
-        self.lblImpulsional_B = QLabel('Injection B:')
+        self.lblImpulsional_B = QLabel(Strings.injectionB)
         self.edtImpulsional_B = QSpinBox()
-        self.lblBack = QLabel('BACK')
-        self.lblForward = QLabel('FORWARD')
-        self.lblStop = QLabel('STOP')
+        self.lblBack = QLabel(Strings.backUC)
+        self.lblForward = QLabel(Strings.forwardUC)
+        self.lblStop = QLabel(Strings.stop)
 
         self.btnInitExperiment = QPushButton()
-        self.btnFreeRunning = QPushButton('Free Running')
+        self.btnFreeRunning = QPushButton(Strings.freeRunning)
 
-        self.btnPeristaltic = QPushButton('START')
-        self.btnInject_A = QPushButton('INJECT')
-        self.btnInject_B = QPushButton('INJECT')
-        self.btnPurge_A = QPushButton('PURGE')
-        self.btnPurge_B = QPushButton('PURGE')
-        self.btnBackPeristaltic = TriangleButton(40, Strings.back)
-        self.btnForwardPeristaltic = TriangleButton(40, Strings.forward)
+        self.btnPeristaltic = QPushButton(Strings.start)
+        self.btnInject_A = QPushButton(Strings.inject)
+        self.btnInject_B = QPushButton(Strings.inject)
+        self.btnPurge_A = QPushButton(Strings.purge)
+        self.btnPurge_B = QPushButton(Strings.purge)
+        self.btnBackPeristaltic = TriangleButton(40, Strings.backLC)
+        self.btnForwardPeristaltic = TriangleButton(40, Strings.forwardLC)
         self.btnStopPeristaltic = RectangleButton(40)
-        self.btnChart1000Channel1 = QPushButton('x1000')
-        self.btnChart10000Channel1 = QPushButton('x10000')
-        self.btnAutoscaleXChannel1 = QPushButton('Autoscale X')
-        self.btnAutoscaleYChannel1 = QPushButton('Autoscale Y')
-        self.btnChart1000Channel2 = QPushButton('x1000')
-        self.btnChart10000Channel2 = QPushButton('x10000')
-        self.btnAutoscaleXChannel2 = QPushButton('Autoscale X')
-        self.btnAutoscaleYChannel2 = QPushButton('Autoscale Y')
+        self.btnChart1000Channel1 = QPushButton(Strings.x1000)
+        self.btnChart10000Channel1 = QPushButton(Strings.x10000)
+        self.btnAutoscaleXChannel1 = QPushButton(Strings.autoscaleX)
+        self.btnAutoscaleYChannel1 = QPushButton(Strings.autoscaleY)
+        self.btnChart1000Channel2 = QPushButton(Strings.x1000)
+        self.btnChart10000Channel2 = QPushButton(Strings.x10000)
+        self.btnAutoscaleXChannel2 = QPushButton(Strings.autoscaleX)
+        self.btnAutoscaleYChannel2 = QPushButton(Strings.autoscaleY)
 
         self.ledLaser = LedIndicator(self)
 
         self.edtSaveFile = QLineEdit()
 
-        self.btnSaveFile = QPushButton('SAVE FILE')
+        self.btnSaveFile = QPushButton(Strings.saveFileUC)
 
-        self.myChartChannel1 = Chart('CHANNEL 1')
-        self.myChartChannel2 = Chart('CHANNEL 2')
+        self.myChartChannel1 = Chart(Strings.channel1UC)
+        self.myChartChannel2 = Chart(Strings.channel2UC)
 
         self.layoutGrid = QGridLayout(self)
 
-        self.timeBoxLayout = QGroupBox('Time Parameters')
+        self.timeBoxLayout = QGroupBox(Strings.timeParameters)
         self.dataSamplingBoxLayout = QGroupBox()
         self.experimentTimeBoxLayout = QGroupBox()
         self.statusLaserBoxLayout = QGroupBox()
 
-        self.fluidicBoxLayout = QGroupBox('Fluidic Parameters')
-        self.peristalticControlBoxLayout = QGroupBox('Peristaltic Pump Control')
-        self.injectControlBoxLayout = QGroupBox('Injection Pump Control')
+        self.fluidicBoxLayout = QGroupBox(Strings.fluidicParameters)
+        self.peristalticControlBoxLayout = QGroupBox(Strings.peristalticPumpControl)
+        self.injectControlBoxLayout = QGroupBox(Strings.injectionPumpControl)
         self.peristalticBoxLayout = QGroupBox()
-        self.saveFileBoxLayout = QGroupBox('Save File')
+        self.saveFileBoxLayout = QGroupBox(Strings.saveFileLC)
         self.chartBoxLayout = QGroupBox()
 
         self.filledBoxLayout_1 = QGroupBox()
@@ -124,7 +124,7 @@ class ViewDataAcquisition(QWidget):
 
         self.resize(1200, 800)
         self.centerWindowOnScreen()
-        self.setWindowTitle('SPR v2')
+        self.setWindowTitle(Strings.sprV2)
 
     def centerWindowOnScreen(self):
         windowGeometry = self.frameGeometry()
@@ -277,10 +277,10 @@ class ViewDataAcquisition(QWidget):
 
     def setBtnInitExperimentStatus(self, status):
         if status:
-            text = 'Stop Experiment'
+            text = Strings.stopExperiment
 
         else:
-            text = 'Start Experiment'
+            text = Strings.startExperiment
 
         self.lblBtnInit.setText(text)
         self.btnInitExperiment.setChecked(status)
@@ -339,7 +339,7 @@ class ViewDataAcquisition(QWidget):
         self.edtTime.setText(str(text) + Strings.unitTime)
 
     def getEdtTimeText(self):
-        text = self.edtTime.text().replace(' s', '')
+        text = self.edtTime.text().replace(Strings.unitTime, '')
         return int(text)
 
     """
@@ -356,10 +356,10 @@ class ViewDataAcquisition(QWidget):
 
     def setBtnPeristalticStatus(self, status):
         if status:
-            text = 'STOP'
+            text = Strings.stop
 
         else:
-            text = 'START'
+            text = Strings.start
 
         self.btnPeristaltic.setText(text)
         self.btnPeristaltic.setChecked(status)
@@ -815,10 +815,11 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setMessageCritical(self, message):
-        QMessageBox.critical(self, 'Error', message)
+        QMessageBox.critical(self, Strings.error, message)
 
     def setMessageQuestion(self, message):
-        saveFile = QMessageBox.question(self, 'Question', message, QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+        saveFile = QMessageBox.question(self, Strings.question, message, QMessageBox.Yes | QMessageBox.No,
+                                        QMessageBox.Yes)
 
         if saveFile == QMessageBox.Yes:
             return True
@@ -827,7 +828,7 @@ class ViewDataAcquisition(QWidget):
             return False
 
     def setDialogSaveFile(self, myNameFile):
-        fileName, _ = QFileDialog.getSaveFileName(self, 'Save File', '/home/Documents/' + myNameFile, '*.DAT')
+        fileName, _ = QFileDialog.getSaveFileName(self, Strings.saveFileLC, '/home/Documents/' + myNameFile, '*.DAT')
 
         return fileName
 
