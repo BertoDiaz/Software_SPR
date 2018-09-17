@@ -20,6 +20,7 @@ from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox,
 from PyQt5.QtCore import Qt
 from lib import Strings
 from lib import Styles
+import getpass
 
 
 class ViewSystemControl(QWidget):
@@ -301,7 +302,8 @@ class ViewSystemControl(QWidget):
         loadFile = QMessageBox.question(self, Strings.question, Strings.messageLoadConfigurationFile,
                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if loadFile == QMessageBox.Yes:
-            fileName, _ = QFileDialog.getOpenFileName(self, Strings.openFile, '/home', 'Config File(*.cfg)')
+            fileName, _ = QFileDialog.getOpenFileName(self, Strings.openFile, 'C:/Users/' + getpass.getuser() +
+                                                      '/Documents/', 'Config File(*.cfg)')
 
             return [True, fileName]
 

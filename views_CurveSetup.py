@@ -21,6 +21,7 @@ from PyQt5.QtCore import Qt, QLocale
 from lib.Chart import Chart
 from lib import Strings
 from lib import Styles
+import getpass
 
 
 class ViewCurveSetup(QWidget):
@@ -615,7 +616,8 @@ class ViewCurveSetup(QWidget):
             return False
 
     def setDialogSaveFile(self, myNameFile):
-        fileName, _ = QFileDialog.getSaveFileName(self, Strings.saveFileLC, '/home/Documents/' + myNameFile, '*.DAT')
+        fileName, _ = QFileDialog.getSaveFileName(self, Strings.saveFileLC, 'C:/Users/' + getpass.getuser() +
+                                                  '/Documents/' + myNameFile, '*.DAT')
 
         return fileName
 

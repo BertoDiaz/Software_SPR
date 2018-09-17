@@ -24,6 +24,7 @@ from lib.RectangleButton import RectangleButton
 from lib.Chart import Chart
 from lib import Strings
 from lib import Styles
+import getpass
 
 
 class ViewDataAcquisition(QWidget):
@@ -828,7 +829,8 @@ class ViewDataAcquisition(QWidget):
             return False
 
     def setDialogSaveFile(self, myNameFile):
-        fileName, _ = QFileDialog.getSaveFileName(self, Strings.saveFileLC, '/home/Documents/' + myNameFile, '*.DAT')
+        fileName, _ = QFileDialog.getSaveFileName(self, Strings.saveFileLC, 'C:/Users/' + getpass.getuser() +
+                                                  '/Documents/' + myNameFile, '*.DAT')
 
         return fileName
 
