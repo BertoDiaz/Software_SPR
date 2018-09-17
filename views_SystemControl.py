@@ -30,7 +30,7 @@ class ViewSystemControl(QWidget):
         super().__init__(parent)
 
         self.lblImageLogo = QLabel(self)
-        self.imageLogo = QPixmap('image/Nanob2a_Logo_Mitad.png')
+        self.imageLogo = QPixmap('image/Nanob2a_Logo_Half.png')
 
         self.lblImageSPRDevice = QLabel(self)
         self.imageSPRDevice = QPixmap('image/SPR_Device_v2.png')

@@ -34,7 +34,7 @@ class ViewDataAcquisition(QWidget):
         super().__init__(parent)
 
         self.lblImageLogo = QLabel(self)
-        self.imageLogo = QPixmap('image/Nanob2a_Logo_Completo.png')
+        self.imageLogo = QPixmap('image/Nanob2a_Logo_Full.png')
 
         self.lblDataSampling = QLabel(Strings.dataSampling)
         self.edtDataSampling = QSpinBox()
