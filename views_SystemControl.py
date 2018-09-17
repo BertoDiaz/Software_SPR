@@ -32,6 +32,9 @@ class ViewSystemControl(QWidget):
         self.lblImageLogo = QLabel(self)
         self.imageLogo = QPixmap('image/Nanob2a_Logo_Mitad.png')
 
+        self.lblImageSPRDevice = QLabel(self)
+        self.imageSPRDevice = QPixmap('image/SPR_Device_v2.png')
+
         self.btnLaser = QPushButton(Strings.laserOFF)
 
         self.lblPeristaltic = QLabel(Strings.flowPeristaltic)
@@ -50,6 +53,7 @@ class ViewSystemControl(QWidget):
         self.laserBoxLayout = QGroupBox(Strings.laserControl)
         self.dataBoxLayout = QGroupBox(Strings.pumpsControl)
         self.otherBoxLayout = QGroupBox(Strings.otherLayout)
+        self.imageBoxLayout = QGroupBox()
         self.peristalticBoxLayout = QGroupBox(Strings.peristalticPumpControl)
         self.impulsionalABoxLayout = QGroupBox(Strings.impulsionalPumpAControl)
         self.impulsionalBBoxLayout = QGroupBox(Strings.impulsionalPumpBControl)
@@ -60,6 +64,7 @@ class ViewSystemControl(QWidget):
         self.impulsionalBLayout = QGridLayout(self)
 
         self.laserLayout = QVBoxLayout(self)
+        self.imageLayout = QVBoxLayout(self)
 
         self.otherLayout = QHBoxLayout(self)
 
@@ -80,7 +85,8 @@ class ViewSystemControl(QWidget):
         self.layoutGrid.addWidget(self.setLaserGroup(), 0, 0, 1, 2)
         self.layoutGrid.addWidget(self.setDataGroup(), 0, 2, 1, 3)
         self.layoutGrid.addWidget(self.setImageGroup(), 0, 7, 1, 1)
-        self.layoutGrid.addWidget(self.setOtherGroup(), 1, 0, 9, 10)
+        self.layoutGrid.addWidget(self.setImageDeviceGroup(), 1, 0, 9, 10)
+        # self.layoutGrid.addWidget(self.setOtherGroup(), 1, 0, 9, 10)
 
     def setLaserGroup(self):
         self.laserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
@@ -133,6 +139,19 @@ class ViewSystemControl(QWidget):
         self.lblImageLogo.setPixmap(imageLogo_2)
 
         return self.lblImageLogo
+
+    def setImageDeviceGroup(self):
+        imageLogo_2 = self.imageSPRDevice.scaledToHeight(500)
+        self.lblImageSPRDevice.setPixmap(imageLogo_2)
+
+        self.imageLayout.setAlignment(Qt.AlignCenter)
+
+        self.imageLayout.addWidget(self.lblImageSPRDevice)
+
+        self.imageBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
+        self.imageBoxLayout.setLayout(self.imageLayout)
+
+        return self.imageBoxLayout
 
     def setOtherGroup(self):
         self.otherBoxLayout.setLayout(self.otherLayout)
