@@ -71,15 +71,28 @@ class ViewSystemControl(QWidget):
         self.setStyleSpinBox()
         self.setStyleButtons()
 
-        self.resize(1200, 800)
+        width, height = self.calculateSizeWindow()
+
+        self.resize(width, height)
         self.centerWindowOnScreen()
         self.setWindowTitle(Strings.sprV2)
 
     def centerWindowOnScreen(self):
         windowGeometry = self.frameGeometry()
         desktopWidget = QDesktopWidget().availableGeometry().center()
+        print(QDesktopWidget().availableGeometry().width())
         windowGeometry.moveCenter(desktopWidget)
         self.move(windowGeometry.topLeft())
+
+    @staticmethod
+    def calculateSizeWindow():
+        widthWindow = QDesktopWidget().availableGeometry().width()
+        heightWindow = QDesktopWidget().availableGeometry().height()
+
+        widthApp = widthWindow * 0.8
+        heightApp = heightWindow * 0.8
+
+        return widthApp, heightApp
 
     def mainWindow(self):
         self.layoutGrid.addWidget(self.setLaserGroup(), 0, 0, 1, 2)
