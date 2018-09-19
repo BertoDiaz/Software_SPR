@@ -28,10 +28,15 @@ class ViewTabs(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.layout = QVBoxLayout(self)
-
+        """---------------------------------------------- QPushButtons ----------------------------------------------"""
         self.btnExit = QPushButton(Strings.exitLC)
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """---------------------------------------------- QVBoxLayout -----------------------------------------------"""
+        self.layout = QVBoxLayout(self)
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """----------------------------------------------- QTabWidget -----------------------------------------------"""
         self.tabs = QTabWidget(self)
         self.tab_SystemControl = ViewSystemControl(None)
         self.tab_CurveSetup = ViewCurveSetup(None)
@@ -40,6 +45,7 @@ class ViewTabs(QWidget):
         self.tabs.addTab(self.tab_SystemControl, Strings.systemControl)
         self.tabs.addTab(self.tab_CurveSetup, Strings.sprCurveSetup)
         self.tabs.addTab(self.tab_DataAcquisition, Strings.dataAcquisition)
+        """----------------------------------------------------------------------------------------------------------"""
 
         width, height = self.calculateSizeWindow()
 

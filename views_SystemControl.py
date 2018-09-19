@@ -29,80 +29,68 @@ class ViewSystemControl(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.lblImageLogo = QLabel(self)
-        self.imageLogo = QPixmap(Strings.imageLogoHalf)
-
-        self.lblImageSPRDevice = QLabel(self)
-        self.imageSPRDevice = QPixmap(Strings.imageSPRDevice)
-
+        """---------------------------------------------- QPushButtons ----------------------------------------------"""
         self.btnLaser = QPushButton(Strings.laserOFF)
-
-        self.lblPeristaltic = QLabel(Strings.flowPeristaltic)
-        self.edtPeristaltic = QSpinBox()
-        self.lblImpulsional_A = QLabel(Strings.injectionImpulsionalA)
-        self.edtImpulsional_A = QSpinBox()
-        self.lblImpulsional_B = QLabel(Strings.injectionImpulsionalB)
-        self.edtImpulsional_B = QSpinBox()
-
         self.btnPeristaltic = QPushButton(Strings.start)
         self.btnImpulsional_A = QPushButton(Strings.inject)
         self.btnImpulsional_B = QPushButton(Strings.inject)
+        """----------------------------------------------------------------------------------------------------------"""
 
-        self.layoutGrid = QGridLayout(self)
+        """------------------------------------------------ QLabels -------------------------------------------------"""
+        self.lblPeristaltic = QLabel(Strings.flowPeristaltic)
+        self.lblImpulsional_A = QLabel(Strings.injectionImpulsionalA)
+        self.lblImpulsional_B = QLabel(Strings.injectionImpulsionalB)
+        self.lblImageLogo = QLabel(self)
+        self.lblImageSPRDevice = QLabel(self)
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """------------------------------------------------ QSpinBox ------------------------------------------------"""
+        self.edtPeristaltic = QSpinBox()
+        self.edtImpulsional_A = QSpinBox()
+        self.edtImpulsional_B = QSpinBox()
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """------------------------------------------------ QPixmap -------------------------------------------------"""
+        self.imageLogo = QPixmap(Strings.imageLogoHalf)
+        self.imageSPRDevice = QPixmap(Strings.imageSPRDevice)
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """---------------------------------------------- QGroupBoxes -----------------------------------------------"""
         self.laserBoxLayout = QGroupBox(Strings.laserControl)
         self.dataBoxLayout = QGroupBox(Strings.pumpsControl)
-        self.otherBoxLayout = QGroupBox(Strings.otherLayout)
         self.imageBoxLayout = QGroupBox()
         self.peristalticBoxLayout = QGroupBox(Strings.peristalticPumpControl)
         self.impulsionalABoxLayout = QGroupBox(Strings.impulsionalPumpAControl)
         self.impulsionalBBoxLayout = QGroupBox(Strings.impulsionalPumpBControl)
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """---------------------------------------------- QGridLayouts ----------------------------------------------"""
+        self.layoutGrid = QGridLayout(self)
         self.dataLayout = QGridLayout(self)
         self.peristalticLayout = QGridLayout(self)
         self.impulsionalALayout = QGridLayout(self)
         self.impulsionalBLayout = QGridLayout(self)
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """---------------------------------------------- QVBoxLayouts ----------------------------------------------"""
         self.laserLayout = QVBoxLayout(self)
         self.imageLayout = QVBoxLayout(self)
+        """----------------------------------------------------------------------------------------------------------"""
 
-        self.otherLayout = QHBoxLayout(self)
-
+        """--------------------------------------------- Style Functions --------------------------------------------"""
         self.setStyleButtons()
         self.setStyleLabels()
         self.setStyleSpinBox()
         self.setStylePixmap()
         self.setStyleGroupBox()
         self.setStyleLayouts()
-
-        width, height = self.calculateSizeWindow()
-
-        self.resize(width, height)
-        self.centerWindowOnScreen()
-        self.setWindowTitle(Strings.sprV2)
-
-    def centerWindowOnScreen(self):
-        windowGeometry = self.frameGeometry()
-        desktopWidget = QDesktopWidget().availableGeometry().center()
-        windowGeometry.moveCenter(desktopWidget)
-        self.move(windowGeometry.topLeft())
-
-    @staticmethod
-    def calculateSizeWindow():
-        widthWindow = QDesktopWidget().availableGeometry().width()
-        heightWindow = QDesktopWidget().availableGeometry().height()
-
-        widthApp = widthWindow * 0.7
-        heightApp = heightWindow * 0.8
-
-        return widthApp, heightApp
+        """----------------------------------------------------------------------------------------------------------"""
 
     def mainWindow(self):
         self.layoutGrid.addWidget(self.setLaserGroup(), 0, 0, 1, 2)
         self.layoutGrid.addWidget(self.setDataGroup(), 0, 2, 1, 3)
         self.layoutGrid.addWidget(self.setImageGroup(), 0, 7, 1, 1)
         self.layoutGrid.addWidget(self.setImageDeviceGroup(), 1, 0, 9, 10)
-        # self.layoutGrid.addWidget(self.setOtherGroup(), 1, 0, 9, 10)
 
     def setLaserGroup(self):
         self.laserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
@@ -151,11 +139,6 @@ class ViewSystemControl(QWidget):
         self.imageBoxLayout.setLayout(self.imageLayout)
 
         return self.imageBoxLayout
-
-    def setOtherGroup(self):
-        self.otherBoxLayout.setLayout(self.otherLayout)
-
-        return self.otherBoxLayout
 
     """
     ********************************************************************************************************************

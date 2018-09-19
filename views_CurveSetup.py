@@ -30,75 +30,85 @@ class ViewCurveSetup(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.lblImageLogo = QLabel(self)
-        self.imageLogo = QPixmap(Strings.imageLogoFull)
-
-        self.lblGainA = QLabel(Strings.gainA)
-        self.edtGainA = QSpinBox()
-        self.lblGainB = QLabel(Strings.gainB)
-        self.edtGainB = QSpinBox()
-        self.lblOffsetA = QLabel(Strings.offsetA)
-        self.edtOffsetA = QSpinBox()
-        self.lblOffsetB = QLabel(Strings.offsetB)
-        self.edtOffsetB = QSpinBox()
-
+        """---------------------------------------------- QPushButtons ----------------------------------------------"""
         self.btnCalibrate = QPushButton(Strings.calibrate)
         self.btnLaser = QPushButton(Strings.laserOFF)
-
-        self.lblInitialAngle = QLabel(Strings.initialAngle)
-        self.edtInitialAngle = QSpinBox()
-        self.lblAngleLongitude = QLabel(Strings.angleLongitude)
-        self.edtAngleLongitude = QSpinBox()
-        self.lblAngleResolution = QLabel(Strings.angleResolution)
-        self.edtAngleResolution = QDoubleSpinBox()
-        self.lblFinalAngle = QLabel(Strings.finalAngle)
-        self.edtFinalAngle = QLineEdit()
-        self.lblPointsCurve = QLabel(Strings.pointsOfCurve)
-        self.edtPointsCurve = QLineEdit()
-
         self.btnReset = QPushButton(Strings.reset)
-
-        self.edtAcquisition = QLineEdit()
-        self.lblDataSampling = QLabel(Strings.dataSamplingSeconds)
-        self.edtDataSampling = QSpinBox()
-        self.lblACQChannel_1 = QLabel(Strings.channel1dots)
-        self.edtACQChannel_1 = QLineEdit()
-        self.lblACQChannel_2 = QLabel(Strings.channel2dots)
-        self.edtACQChannel_2 = QLineEdit()
-
         self.btnAutoAcquisition = QPushButton(Strings.automatic)
-
-        self.edtSaveFile = QLineEdit()
-
         self.btnSaveFile = QPushButton(Strings.saveFileUC)
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """------------------------------------------------ QLabels -------------------------------------------------"""
+        self.lblImageLogo = QLabel(self)
+        self.lblGainA = QLabel(Strings.gainA)
+        self.lblGainB = QLabel(Strings.gainB)
+        self.lblOffsetA = QLabel(Strings.offsetA)
+        self.lblOffsetB = QLabel(Strings.offsetB)
+        self.lblInitialAngle = QLabel(Strings.initialAngle)
+        self.lblAngleLongitude = QLabel(Strings.angleLongitude)
+        self.lblAngleResolution = QLabel(Strings.angleResolution)
+        self.lblFinalAngle = QLabel(Strings.finalAngle)
+        self.lblPointsCurve = QLabel(Strings.pointsOfCurve)
+        self.lblDataSampling = QLabel(Strings.dataSamplingSeconds)
+        self.lblACQChannel_1 = QLabel(Strings.channel1dots)
+        self.lblACQChannel_2 = QLabel(Strings.channel2dots)
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """------------------------------------------------ QLineEdit -----------------------------------------------"""
+        self.edtFinalAngle = QLineEdit()
+        self.edtPointsCurve = QLineEdit()
+        self.edtAcquisition = QLineEdit()
+        self.edtACQChannel_1 = QLineEdit()
+        self.edtACQChannel_2 = QLineEdit()
+        self.edtSaveFile = QLineEdit()
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """------------------------------------------------ QSpinBox ------------------------------------------------"""
+        self.edtGainA = QSpinBox()
+        self.edtGainB = QSpinBox()
+        self.edtOffsetA = QSpinBox()
+        self.edtOffsetB = QSpinBox()
+        self.edtInitialAngle = QSpinBox()
+        self.edtAngleLongitude = QSpinBox()
+        self.edtDataSampling = QSpinBox()
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """--------------------------------------------- QDoubleSpinBox ---------------------------------------------"""
+        self.edtAngleResolution = QDoubleSpinBox()
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """------------------------------------------------ QPixmap -------------------------------------------------"""
+        self.imageLogo = QPixmap(Strings.imageLogoFull)
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """------------------------------------------------- Charts -------------------------------------------------"""
         self.myChartChannel1 = Chart(Strings.channel1UC)
         self.myChartChannel2 = Chart(Strings.channel2UC)
+        """----------------------------------------------------------------------------------------------------------"""
 
-        self.layoutGrid = QGridLayout(self)
-
+        """---------------------------------------------- QGroupBoxes -----------------------------------------------"""
         self.calibrationBoxLayout = QGroupBox(Strings.calibrationParameters)
         self.gainBoxLayout = QGroupBox()
         self.offsetBoxLayout = QGroupBox()
         self.btnCalibrateBoxLayout = QGroupBox()
         self.btnLaserBoxLayout = QGroupBox()
-
         self.curveBoxLayout = QGroupBox(Strings.curvePerformance)
-
         self.acquisitionBoxLayout = QGroupBox(Strings.acquisitionMode)
         self.autoACQBoxLayout = QGroupBox()
-
         self.saveFileBoxLayout = QGroupBox(Strings.saveFileLC)
-
         self.imageBoxLayout = QGroupBox()
-
         self.chartBoxLayout = QGroupBox()
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """---------------------------------------------- QGridLayouts ----------------------------------------------"""
+        self.layoutGrid = QGridLayout(self)
         self.calibrationLayout = QGridLayout(self)
         self.curveLayout = QGridLayout(self)
         self.acquisitionLayout = QGridLayout(self)
         self.autoACQLayout = QGridLayout(self)
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """---------------------------------------------- QVBoxLayouts ----------------------------------------------"""
         self.gainLayout = QVBoxLayout(self)
         self.offsetLayout = QVBoxLayout(self)
         self.btnCalibrateLayout = QVBoxLayout(self)
@@ -106,12 +116,16 @@ class ViewCurveSetup(QWidget):
         self.saveFileLayout = QVBoxLayout(self)
         self.imageLayout = QVBoxLayout(self)
         self.chartLayout = QVBoxLayout(self)
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """---------------------------------------------- QHBoxLayouts ----------------------------------------------"""
         self.gainALayout = QHBoxLayout(self)
         self.gainBLayout = QHBoxLayout(self)
         self.offsetALayout = QHBoxLayout(self)
         self.offsetBLayout = QHBoxLayout(self)
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """--------------------------------------------- Style Functions --------------------------------------------"""
         self.setStyleButtons()
         self.setStyleSpinBox()
         self.setStyleLineEdit()
@@ -119,16 +133,7 @@ class ViewCurveSetup(QWidget):
         self.setStylePixmap()
         self.setStyleGroupBox()
         self.setStyleLayouts()
-
-        self.resize(1200, 800)
-        self.centerWindowOnScreen()
-        self.setWindowTitle(Strings.sprV2)
-
-    def centerWindowOnScreen(self):
-        windowGeometry = self.frameGeometry()
-        desktopWidget = QDesktopWidget().availableGeometry().center()
-        windowGeometry.moveCenter(desktopWidget)
-        self.move(windowGeometry.topLeft())
+        """----------------------------------------------------------------------------------------------------------"""
 
     def mainWindow(self):
         self.layoutGrid.addWidget(self.setCalibrationGroup(), 0, 0, 1, 1)

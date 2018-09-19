@@ -33,35 +33,9 @@ class ViewDataAcquisition(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.lblImageLogo = QLabel(self)
-        self.imageLogo = QPixmap(Strings.imageLogoFull)
-
-        self.lblDataSampling = QLabel(Strings.dataSampling)
-        self.edtDataSampling = QSpinBox()
-        self.lblExperimentTime = QLabel(Strings.experimentTime)
-        self.edtExperimentTime = QSpinBox()
-        self.lblLaser = QLabel(Strings.statusLaser)
-        self.lblChannel_1 = QLabel(Strings.channel1LC)
-        self.edtChannel_1 = QLineEdit()
-        self.lblChannel_2 = QLabel(Strings.channel2LC)
-        self.edtChannel_2 = QLineEdit()
-        self.lblTime = QLabel(Strings.timeLC)
-        self.edtTime = QLineEdit()
-        self.lblBtnInit = QLabel(Strings.startExperiment)
-
-        self.lblPeristaltic = QLabel(Strings.flowPeristaltic)
-        self.edtPeristaltic = QSpinBox()
-        self.lblImpulsional_A = QLabel(Strings.injectionA)
-        self.edtImpulsional_A = QSpinBox()
-        self.lblImpulsional_B = QLabel(Strings.injectionB)
-        self.edtImpulsional_B = QSpinBox()
-        self.lblBack = QLabel(Strings.backUC)
-        self.lblForward = QLabel(Strings.forwardUC)
-        self.lblStop = QLabel(Strings.stop)
-
+        """---------------------------------------------- QPushButtons ----------------------------------------------"""
         self.btnInitExperiment = QPushButton()
         self.btnFreeRunning = QPushButton(Strings.freeRunning)
-
         self.btnPeristaltic = QPushButton(Strings.start)
         self.btnInject_A = QPushButton(Strings.inject)
         self.btnInject_B = QPushButton(Strings.inject)
@@ -78,23 +52,59 @@ class ViewDataAcquisition(QWidget):
         self.btnChart10000Channel2 = QPushButton(Strings.x10000)
         self.btnAutoscaleXChannel2 = QPushButton(Strings.autoscaleX)
         self.btnAutoscaleYChannel2 = QPushButton(Strings.autoscaleY)
-
-        self.ledLaser = LedIndicator(self)
-
-        self.edtSaveFile = QLineEdit()
-
         self.btnSaveFile = QPushButton(Strings.saveFileUC)
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """--------------------------------------------- Led Indicator ----------------------------------------------"""
+        self.ledLaser = LedIndicator(self)
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """------------------------------------------------ QLabels -------------------------------------------------"""
+        self.lblImageLogo = QLabel(self)
+        self.lblDataSampling = QLabel(Strings.dataSampling)
+        self.lblExperimentTime = QLabel(Strings.experimentTime)
+        self.lblLaser = QLabel(Strings.statusLaser)
+        self.lblChannel_1 = QLabel(Strings.channel1LC)
+        self.lblChannel_2 = QLabel(Strings.channel2LC)
+        self.lblTime = QLabel(Strings.timeLC)
+        self.lblBtnInit = QLabel(Strings.startExperiment)
+        self.lblPeristaltic = QLabel(Strings.flowPeristaltic)
+        self.lblImpulsional_A = QLabel(Strings.injectionA)
+        self.lblImpulsional_B = QLabel(Strings.injectionB)
+        self.lblBack = QLabel(Strings.backUC)
+        self.lblForward = QLabel(Strings.forwardUC)
+        self.lblStop = QLabel(Strings.stop)
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """------------------------------------------------ QLineEdit -----------------------------------------------"""
+        self.edtChannel_1 = QLineEdit()
+        self.edtChannel_2 = QLineEdit()
+        self.edtTime = QLineEdit()
+        self.edtSaveFile = QLineEdit()
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """------------------------------------------------ QSpinBox ------------------------------------------------"""
+        self.edtDataSampling = QSpinBox()
+        self.edtExperimentTime = QSpinBox()
+        self.edtPeristaltic = QSpinBox()
+        self.edtImpulsional_A = QSpinBox()
+        self.edtImpulsional_B = QSpinBox()
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """------------------------------------------------ QPixmap -------------------------------------------------"""
+        self.imageLogo = QPixmap(Strings.imageLogoFull)
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """------------------------------------------------- Charts -------------------------------------------------"""
         self.myChartChannel1 = Chart(Strings.channel1UC)
         self.myChartChannel2 = Chart(Strings.channel2UC)
+        """----------------------------------------------------------------------------------------------------------"""
 
-        self.layoutGrid = QGridLayout(self)
-
+        """---------------------------------------------- QGroupBoxes -----------------------------------------------"""
         self.timeBoxLayout = QGroupBox(Strings.timeParameters)
         self.dataSamplingBoxLayout = QGroupBox()
         self.experimentTimeBoxLayout = QGroupBox()
         self.statusLaserBoxLayout = QGroupBox()
-
         self.fluidicBoxLayout = QGroupBox(Strings.fluidicParameters)
         self.peristalticControlBoxLayout = QGroupBox(Strings.peristalticPumpControl)
         self.injectControlBoxLayout = QGroupBox(Strings.injectionPumpControl)
@@ -102,40 +112,42 @@ class ViewDataAcquisition(QWidget):
         self.saveFileBoxLayout = QGroupBox(Strings.saveFileLC)
         self.imageBoxLayout = QGroupBox()
         self.chartBoxLayout = QGroupBox()
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """---------------------------------------------- QGridLayouts ----------------------------------------------"""
+        self.layoutGrid = QGridLayout(self)
         self.timeLayout = QGridLayout(self)
         self.dataSamplingLayout = QGridLayout(self)
         self.experimentTimeLayout = QGridLayout(self)
         self.statusLaserLayout = QGridLayout(self)
-
         self.fluidicLayout = QGridLayout(self)
         self.peristalticControlLayout = QGridLayout(self)
         self.injectControlLayout = QGridLayout(self)
         self.peristalticLayout = QGridLayout(self)
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """---------------------------------------------- QVBoxLayouts ----------------------------------------------"""
         self.btnInitLayout = QVBoxLayout(self)
         self.saveFileLayout = QVBoxLayout(self)
         self.imageLayout = QVBoxLayout(self)
         self.chartLayout = QVBoxLayout(self)
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """---------------------------------------------- QHBoxLayouts ----------------------------------------------"""
         self.btnChartLayoutChannel1 = QHBoxLayout(self)
         self.btnChartLayoutChannel2 = QHBoxLayout(self)
+        """----------------------------------------------------------------------------------------------------------"""
 
+        """--------------------------------------------- Style Functions --------------------------------------------"""
         self.setStyleButtons()
         self.setStyleSpinBox()
         self.setStyleLineEdit()
         self.setStyleLabels()
         self.setStyleLed()
-
-        self.resize(1200, 800)
-        self.centerWindowOnScreen()
-        self.setWindowTitle(Strings.sprV2)
-
-    def centerWindowOnScreen(self):
-        windowGeometry = self.frameGeometry()
-        desktopWidget = QDesktopWidget().availableGeometry().center()
-        windowGeometry.moveCenter(desktopWidget)
-        self.move(windowGeometry.topLeft())
+        self.setStylePixmap()
+        self.setStyleGroupBox()
+        self.setStyleLayouts()
+        """----------------------------------------------------------------------------------------------------------"""
 
     def mainWindow(self):
         self.layoutGrid.addWidget(self.setTimeGroup(), 0, 0, 1, 2)
