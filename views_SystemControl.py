@@ -15,8 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QFileDialog
-from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QSpinBox
+from PyQt5.QtWidgets import QWidget, QGridLayout, QGroupBox, QVBoxLayout, QPushButton, QLabel, QSpinBox, QFileDialog
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from lib import Strings
@@ -87,12 +87,23 @@ class ViewSystemControl(QWidget):
         """----------------------------------------------------------------------------------------------------------"""
 
     def mainWindow(self):
+        """Add the main widgets to the main layout.
+
+        Add the group box to the layout of the app.
+        """
         self.layoutGrid.addWidget(self.setLaserGroup(), 0, 0, 1, 2)
         self.layoutGrid.addWidget(self.setDataGroup(), 0, 2, 1, 3)
         self.layoutGrid.addWidget(self.setImageGroup(), 0, 7, 1, 1)
         self.layoutGrid.addWidget(self.setImageDeviceGroup(), 1, 0, 9, 10)
 
     def setLaserGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.laserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
 
         self.laserBoxLayout.setLayout(self.laserLayout)
@@ -100,6 +111,13 @@ class ViewSystemControl(QWidget):
         return self.laserBoxLayout
 
     def setDataGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.peristalticLayout.addWidget(self.lblPeristaltic, 0, 0)
         self.peristalticLayout.addWidget(self.edtPeristaltic, 1, 0)
         self.peristalticLayout.addWidget(self.btnPeristaltic, 0, 1, 2, 1)
@@ -127,11 +145,25 @@ class ViewSystemControl(QWidget):
         return self.dataBoxLayout
 
     def setImageGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.lblImageLogo.setPixmap(self.imageLogo)
 
         return self.lblImageLogo
 
     def setImageDeviceGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.lblImageSPRDevice.setPixmap(self.imageSPRDevice)
 
         self.imageLayout.addWidget(self.lblImageSPRDevice)

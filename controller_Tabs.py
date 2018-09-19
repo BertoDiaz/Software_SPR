@@ -576,7 +576,7 @@ class ControllerTabs:
         The impulsional A buttons are pressed or depressed according to status.
 
         Args:
-            status (Boolean): the value to change the status of the impulsional A buttons.
+            status (bool): the value to change the status of the impulsional A buttons.
         """
         self.viewSystemControl.setBtnImpulsionalAStatus(status)
         self.viewDataAcquisition.setBtnImpulsionalAStatus(status)
@@ -676,7 +676,7 @@ class ControllerTabs:
         The impulsional B buttons are pressed or depressed according to status.
 
         Args:
-            status (Boolean): the value to change the status of the impulsional B buttons.
+            status (bool): the value to change the status of the impulsional B buttons.
         """
         self.viewSystemControl.setBtnImpulsionalBStatus(status)
         self.viewDataAcquisition.setBtnImpulsionalBStatus(status)

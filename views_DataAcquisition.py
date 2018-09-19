@@ -15,8 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QFileDialog
-from PyQt5.QtWidgets import QDesktopWidget, QHBoxLayout, QGridLayout, QGroupBox, QLineEdit, QSpinBox
+from PyQt5.QtWidgets import QWidget, QGridLayout, QGroupBox, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit
+from PyQt5.QtWidgets import QSpinBox, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from lib.LedIndicatorWidget import LedIndicator
@@ -150,6 +150,10 @@ class ViewDataAcquisition(QWidget):
         """----------------------------------------------------------------------------------------------------------"""
 
     def mainWindow(self):
+        """Add the main widgets to the main layout.
+
+        Add the group box to the layout of the app.
+        """
         self.layoutGrid.addWidget(self.setTimeGroup(), 0, 0, 1, 2)
         self.layoutGrid.addWidget(self.setFluidicGroup(), 1, 0, 1, 2)
         self.layoutGrid.addWidget(self.setSaveFileGroup(), 2, 0, 1, 2)
@@ -157,6 +161,13 @@ class ViewDataAcquisition(QWidget):
         self.layoutGrid.addWidget(self.setChartGroup(), 0, 2, 4, 8)
 
     def setTimeGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.btnInitLayout.addWidget(self.lblBtnInit)
 
         self.btnInitExperiment.setLayout(self.btnInitLayout)
@@ -193,6 +204,13 @@ class ViewDataAcquisition(QWidget):
         return self.timeBoxLayout
 
     def setFluidicGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.peristalticControlLayout.addWidget(self.lblPeristaltic, 0, 0)
         self.peristalticControlLayout.addWidget(self.edtPeristaltic, 1, 0)
         self.peristalticControlLayout.addWidget(self.btnPeristaltic, 0, 1, 2, 1)
@@ -229,6 +247,13 @@ class ViewDataAcquisition(QWidget):
         return self.fluidicBoxLayout
 
     def setSaveFileGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.saveFileLayout.addWidget(self.edtSaveFile)
         self.saveFileLayout.addWidget(self.btnSaveFile)
 
@@ -237,6 +262,13 @@ class ViewDataAcquisition(QWidget):
         return self.saveFileBoxLayout
 
     def setImageGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.lblImageLogo.setPixmap(self.imageLogo)
 
         self.imageLayout.addWidget(self.lblImageLogo)
@@ -246,6 +278,13 @@ class ViewDataAcquisition(QWidget):
         return self.imageBoxLayout
 
     def setChartGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.btnChartLayoutChannel1.addWidget(self.btnAutoscaleYChannel1)
         self.btnChartLayoutChannel1.addWidget(self.btnAutoscaleXChannel1)
         self.btnChartLayoutChannel1.addWidget(self.btnChart1000Channel1)
@@ -272,6 +311,14 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setBtnInitExperimentStatus(self, status):
+        """Change the status and the text of the init experiment button.
+
+        If status is True, the text of the button is changed to STOP, in the case that status is False, the text of the
+        button is changed to START.
+
+        Args:
+            status (bool): the status of the button.
+        """
         if status:
             text = Strings.stopExperiment
 
@@ -282,6 +329,11 @@ class ViewDataAcquisition(QWidget):
         self.btnInitExperiment.setChecked(status)
 
     def getBtnInitExperimentStatus(self):
+        """Return of the status of the init experiment button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnInitExperiment.isChecked()
 
     """
@@ -297,12 +349,28 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setLedLaserStatus(self, status):
+        """Change the status of the led laser.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.ledLaser.setChecked(status)
 
     def getLedLaserStatus(self):
+        """Return of the status of the led laser.
+
+        Returns:
+            bool: the status of the led, if the led is enabled or disabled.
+        """
         return self.ledLaser.isChecked()
 
     def setLedLaserDisable(self, disable):
+        """Enable or disable the led laser.
+
+        Args:
+            disable (bool): if the value is True, the led will be disabled, in the opposite case, the led will be
+            enabled.
+        """
         self.ledLaser.setDisabled(disable)
 
     """

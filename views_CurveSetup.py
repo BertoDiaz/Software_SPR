@@ -15,8 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox, QLabel, QDesktopWidget, QHBoxLayout
-from PyQt5.QtWidgets import QGridLayout, QGroupBox, QLineEdit, QSpinBox, QDoubleSpinBox, QFileDialog
+from PyQt5.QtWidgets import QWidget, QGridLayout, QGroupBox, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit
+from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, QLocale
 from PyQt5.QtGui import QPixmap
 from lib.Chart import Chart
@@ -136,6 +136,10 @@ class ViewCurveSetup(QWidget):
         """----------------------------------------------------------------------------------------------------------"""
 
     def mainWindow(self):
+        """Add the main widgets to the main layout.
+
+        Add the group box to the layout of the app.
+        """
         self.layoutGrid.addWidget(self.setCalibrationGroup(), 0, 0, 1, 1)
         self.layoutGrid.addWidget(self.setLaserGroup(), 0, 1, 1, 1)
         self.layoutGrid.addWidget(self.setCurveGroup(), 1, 0, 1, 2)
@@ -145,6 +149,13 @@ class ViewCurveSetup(QWidget):
         self.layoutGrid.addWidget(self.setChartGroup(), 0, 2, 5, 8)
 
     def setCalibrationGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.gainALayout.addWidget(self.lblGainA)
         self.gainALayout.addWidget(self.edtGainA)
         self.gainBLayout.addWidget(self.lblGainB)
@@ -174,6 +185,13 @@ class ViewCurveSetup(QWidget):
         return self.calibrationBoxLayout
 
     def setLaserGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.btnLaserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
 
         self.btnLaserBoxLayout.setLayout(self.btnLaserLayout)
@@ -181,6 +199,13 @@ class ViewCurveSetup(QWidget):
         return self.btnLaserBoxLayout
 
     def setCurveGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.curveLayout.addWidget(self.lblInitialAngle, 0, 0)
         self.curveLayout.addWidget(self.edtInitialAngle, 0, 1)
         self.curveLayout.addWidget(self.lblAngleLongitude, 1, 0)
@@ -198,6 +223,13 @@ class ViewCurveSetup(QWidget):
         return self.curveBoxLayout
 
     def setAcquisitionGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.autoACQLayout.addWidget(self.edtAcquisition, 0, 1)
         self.autoACQLayout.addWidget(self.btnAutoAcquisition, 1, 0, 1, 3)
 
@@ -216,6 +248,13 @@ class ViewCurveSetup(QWidget):
         return self.acquisitionBoxLayout
 
     def setSaveFileGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.saveFileLayout.addWidget(self.edtSaveFile)
         self.saveFileLayout.addWidget(self.btnSaveFile)
 
@@ -224,6 +263,13 @@ class ViewCurveSetup(QWidget):
         return self.saveFileBoxLayout
 
     def setImageGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.lblImageLogo.setPixmap(self.imageLogo)
 
         self.imageLayout.addWidget(self.lblImageLogo)
@@ -233,6 +279,13 @@ class ViewCurveSetup(QWidget):
         return self.imageBoxLayout
 
     def setChartGroup(self):
+        """Add the rest of the widgets to its layout.
+
+        Add the buttons, labels, line edits, etc. to its layout.
+
+        Returns:
+            QGroupBox: return the main group box of this step.
+        """
         self.setCharts()
 
         self.chartLayout.addWidget(self.myChartChannel1)

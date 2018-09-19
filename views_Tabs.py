@@ -15,8 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QMessageBox
-from PyQt5.QtWidgets import QDesktopWidget, QTabWidget
+from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout, QDesktopWidget, QPushButton, QMessageBox
 from views_SystemControl import ViewSystemControl
 from views_CurveSetup import ViewCurveSetup
 from views_DataAcquisition import ViewDataAcquisition
