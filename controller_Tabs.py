@@ -29,6 +29,9 @@ import csv
 
 class ControllerTabs:
     def __init__(self):
+
+        """-------------------------------------------- Global Variables --------------------------------------------"""
+
         self.serialPort = None
         self.dataInit = {}
         self.laserON = 1
@@ -52,27 +55,8 @@ class ControllerTabs:
         self.myFileMeasure = None
         self.fileNameCalibration = None
         self.fileNameMeasure = None
+        self.btnLaserChecked = False
 
-        self.btnChecked = {
-            'Laser': False,
-            'Peristaltic': False,
-            'Impulsional A': False,
-            'Impulsional B': False,
-            'Reset': False,
-            'Auto Acquisition': False
-        }
-        self.btnStatus = {
-            'Laser': '',
-            'Peristaltic': '',
-            'Impulsional A': '',
-            'Impulsional B': ''
-        }
-        self.btnDisable = {
-            'Laser': False,
-            'Peristaltic': False,
-            'Impulsional A': False,
-            'Impulsional B': False
-        }
         self.values = {
             'Peristaltic': 0,
             'Impulsional A': 0,
@@ -107,6 +91,10 @@ class ControllerTabs:
             'Time': []
         }
 
+        """------------------------------------------ End Global Variables ------------------------------------------"""
+
+        """------------------------------------------------ Timers --------------------------------------------------"""
+
         self.tmrBtnImpulsional_A = QTimer()
         self.tmrBtnImpulsional_B = QTimer()
         self.tmrBtnInject_A = QTimer()
@@ -114,10 +102,18 @@ class ControllerTabs:
         self.tmrBtnReset = QTimer()
         self.tmrTimeout = QTimer()
 
+        """---------------------------------------------- End Timers ------------------------------------------------"""
+
+        """------------------------------------------------- Tabs ---------------------------------------------------"""
+
         self.viewTabs = ViewTabs(None)
         self.viewSystemControl = self.viewTabs.tab_SystemControl
         self.viewCurveSetup = self.viewTabs.tab_CurveSetup
         self.viewDataAcquisition = self.viewTabs.tab_DataAcquisition
+
+        """----------------------------------------------- End Tabs -------------------------------------------------"""
+
+        """-------------------------------------------- Init View Tabs ----------------------------------------------"""
 
         self.viewTabs.mainWindow()
         self.viewSystemControl.mainWindow()
@@ -126,10 +122,24 @@ class ControllerTabs:
 
         self.viewTabs.show()
 
+        """------------------------------------------ End Init View Tabs --------------------------------------------"""
+
+        """----------------------------------------- Init Controller Tabs -------------------------------------------"""
+
         self.run()
 
-    def run(self):
+        """--------------------------------------- End Init Controller Tabs -----------------------------------------"""
 
+    """
+    ********************************************************************************************************************
+    *                                                   Run Function                                                   *
+    ********************************************************************************************************************
+    """
+
+    def run(self):
+        """Init the app controller."""
+
+        """Init the connection with the COM port."""
         controllerConnect = ControllerConnect()
 
         if controllerConnect.finish:
@@ -137,9 +147,11 @@ class ControllerTabs:
 
         else:
 
+            """Get the serial port connected and the initial data."""
             self.serialPort = controllerConnect.serialPort
             self.dataInit = controllerConnect.dataInit
 
+            """Set the initial data in the view."""
             self.values['Peristaltic'] = self.dataInit['PER1']
             self.values['Impulsional A'] = self.dataInit['Impul1']
             self.values['Impulsional B'] = self.dataInit['Impul2']
@@ -180,17 +192,22 @@ class ControllerTabs:
             """-------------------------------------- System Control Connects ---------------------------------------"""
 
             self.viewSystemControl.btnLaser.clicked.connect(self.btnLaserChanged)
+
             btnPeristalticParameters = partial(self.btnPeristalticChanged, who=self.viewSystemControl)
             self.viewSystemControl.btnPeristaltic.clicked.connect(btnPeristalticParameters)
+
             btnImpulsionalAParameters = partial(self.btnImpulsionalAChanged, who=self.viewSystemControl)
             self.viewSystemControl.btnImpulsional_A.clicked.connect(btnImpulsionalAParameters)
+
             btnImpulsionalBParameters = partial(self.btnImpulsionalBChanged, who=self.viewSystemControl)
             self.viewSystemControl.btnImpulsional_B.clicked.connect(btnImpulsionalBParameters)
 
             edtPeristalticParameters = partial(self.edtPeristalticChanged, who=self.viewSystemControl)
             self.viewSystemControl.edtPeristaltic.valueChanged.connect(edtPeristalticParameters)
+
             edtImpulsionalAParameters = partial(self.edtImpulsionalsChanged, who=self.viewSystemControl)
             self.viewSystemControl.edtImpulsional_A.valueChanged.connect(edtImpulsionalAParameters)
+
             edtImpulsionalBParameters = partial(self.edtImpulsionalsChanged, who=self.viewSystemControl)
             self.viewSystemControl.edtImpulsional_B.valueChanged.connect(edtImpulsionalBParameters)
 
@@ -201,20 +218,16 @@ class ControllerTabs:
             self.viewCurveSetup.btnCalibrate.clicked.connect(self.btnCalibrateChanged)
             self.viewCurveSetup.btnLaser.clicked.connect(self.btnLaserChanged)
             self.viewCurveSetup.btnReset.clicked.connect(self.btnResetChanged)
-
             self.viewCurveSetup.btnAutoAcquisition.clicked.connect(self.btnAutoAcquisitionChanged)
-
             self.viewCurveSetup.btnSaveFile.clicked.connect(self.btnSaveFileCalibrationChanged)
 
             self.viewCurveSetup.edtGainA.valueChanged.connect(self.edtCalibrateChanged)
             self.viewCurveSetup.edtGainB.valueChanged.connect(self.edtCalibrateChanged)
             self.viewCurveSetup.edtOffsetA.valueChanged.connect(self.edtCalibrateChanged)
             self.viewCurveSetup.edtOffsetB.valueChanged.connect(self.edtCalibrateChanged)
-
             self.viewCurveSetup.edtInitialAngle.valueChanged.connect(self.edtCurvePerformanceChanged)
             self.viewCurveSetup.edtAngleLongitude.valueChanged.connect(self.edtCurvePerformanceChanged)
             self.viewCurveSetup.edtAngleResolution.valueChanged.connect(self.edtCurvePerformanceChanged)
-
             self.viewCurveSetup.edtDataSampling.valueChanged.connect(self.edtAcquisitionChanged)
 
             """-------------------------------------- End Curve Setup Connects --------------------------------------"""
@@ -222,20 +235,28 @@ class ControllerTabs:
             """------------------------------------- Data Acquisition Connects --------------------------------------"""
 
             self.viewDataAcquisition.btnInitExperiment.clicked.connect(self.btnInitExperimentChanged)
+
             btnPeristalticParameters = partial(self.btnPeristalticChanged, who=self.viewDataAcquisition)
             self.viewDataAcquisition.btnPeristaltic.clicked.connect(btnPeristalticParameters)
+
             btnImpulsionalAParameters = partial(self.btnImpulsionalAChanged, who=self.viewDataAcquisition)
             self.viewDataAcquisition.btnPurge_A.clicked.connect(btnImpulsionalAParameters)
+
             btnImpulsionalBParameters = partial(self.btnImpulsionalBChanged, who=self.viewDataAcquisition)
             self.viewDataAcquisition.btnPurge_B.clicked.connect(btnImpulsionalBParameters)
+
             self.viewDataAcquisition.btnInject_A.clicked.connect(self.btnInjectAChanged)
             self.viewDataAcquisition.btnInject_B.clicked.connect(self.btnInjectBChanged)
+
             btnBackPeristaltic = partial(self.btnBSFPeristalticChanged, who=self.backPeristaltic)
             self.viewDataAcquisition.btnBackPeristaltic.clicked.connect(btnBackPeristaltic)
+
             btnStopPeristaltic = partial(self.btnBSFPeristalticChanged, who=self.stopPeristaltic)
             self.viewDataAcquisition.btnStopPeristaltic.clicked.connect(btnStopPeristaltic)
+
             btnForwardPeristaltic = partial(self.btnBSFPeristalticChanged, who=self.forwardPeristaltic)
             self.viewDataAcquisition.btnForwardPeristaltic.clicked.connect(btnForwardPeristaltic)
+
             self.viewDataAcquisition.btnSaveFile.clicked.connect(self.btnSaveFileMeasureChanged)
             self.viewDataAcquisition.btnAutoscaleYChannel1.clicked.connect(self.btnAutoscaleYChannel1Changed)
             self.viewDataAcquisition.btnAutoscaleXChannel1.clicked.connect(self.btnAutoscaleXChannel1Changed)
@@ -248,17 +269,33 @@ class ControllerTabs:
 
             edtPeristalticParameters = partial(self.edtPeristalticChanged, who=self.viewDataAcquisition)
             self.viewDataAcquisition.edtPeristaltic.valueChanged.connect(edtPeristalticParameters)
+
             edtImpulsionalAParameters = partial(self.edtImpulsionalsChanged, who=self.viewDataAcquisition)
             self.viewDataAcquisition.edtImpulsional_A.valueChanged.connect(edtImpulsionalAParameters)
+
             edtImpulsionalBParameters = partial(self.edtImpulsionalsChanged, who=self.viewDataAcquisition)
             self.viewDataAcquisition.edtImpulsional_B.valueChanged.connect(edtImpulsionalBParameters)
 
             """----------------------------------- End Data Acquisition Connects ------------------------------------"""
 
+            """---------------------------------------- Serial Port Connects ----------------------------------------"""
+
             self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_multiple_data)
             self.serialPort.packet_received.connect(self.commandReceived)
 
+            """-------------------------------------- End Serial Port Connects --------------------------------------"""
+
+            """-------------------------------------- Close App Button Connect --------------------------------------"""
+
             self.viewTabs.btnExit.clicked.connect(self.exit_App)
+
+            """------------------------------------ End Close App Button Connect ------------------------------------"""
+
+    """
+    ********************************************************************************************************************
+    *                                                End Run Function                                                  *
+    ********************************************************************************************************************
+    """
 
     """
     ********************************************************************************************************************
@@ -267,15 +304,20 @@ class ControllerTabs:
     """
 
     def btnLaserChanged(self):
+        """Control the action when the laser buttons are de/pressed.
+
+        The function disable the laser buttons, if the button is de/pressed the command to switch on/off the laser is
+        sent. Also, the timeout to wait for the ACK command is activated.
+        """
         self.viewSystemControl.setBtnLaserDisable(True)
         self.viewCurveSetup.setBtnLaserDisable(True)
 
-        if not self.btnChecked['Laser']:
-            self.btnChecked['Laser'] = True
+        if not self.btnLaserChecked:
+            self.btnLaserChecked = True
             toSend = self.laserON
 
         else:
-            self.btnChecked['Laser'] = False
+            self.btnLaserChecked = False
             toSend = self.laserOFF
 
         self.serialPort.send_Laser(toSend)
@@ -287,13 +329,19 @@ class ControllerTabs:
         self.tmrTimeout.start(self.msTimeout)
 
     def laserCommandReceived(self):
+        """Control the action when ACK command is/is not received.
+
+        When the ACK command is received the laser buttons and led are activated, and the laser buttons are enabled
+        again. If the ACK command is not received and the timeout is finished, the laser buttons are put in not pressed
+        state (initial state).
+        """
         if self.btnTimeout:
-            self.btnChecked['Laser'] = not self.btnChecked['Laser']
+            self.btnLaserChecked = not self.btnLaserChecked
             self.btnTimeout = False
 
-        self.viewSystemControl.setBtnLaserStatus(self.btnChecked['Laser'])
-        self.viewCurveSetup.setBtnLaserStatus(self.btnChecked['Laser'])
-        self.viewDataAcquisition.setLedLaserStatus(self.btnChecked['Laser'])
+        self.viewSystemControl.setBtnLaserStatus(self.btnLaserChecked)
+        self.viewCurveSetup.setBtnLaserStatus(self.btnLaserChecked)
+        self.viewDataAcquisition.setLedLaserStatus(self.btnLaserChecked)
 
         self.viewSystemControl.setBtnLaserDisable(False)
         self.viewCurveSetup.setBtnLaserDisable(False)
@@ -319,6 +367,15 @@ class ControllerTabs:
     """
 
     def edtPeristalticChanged(self, who):
+        """Control the action when the peristaltic line edits are changed.
+
+        The value of the peristaltic line edit is get and set in the both peristaltic line edit, then, the status of the
+        peristaltic buttons are True, the command to switch on the peristaltic with the new value of the speed are sent
+        and the timeout to wait for the ACK command is activated.
+
+        Args:
+            who (ViewTabs): the tab where the edit line was changed.
+        """
         self.values['Peristaltic'] = who.getEdtPeristalticValue()
 
         self.viewSystemControl.setEdtPeristalticValue(self.values['Peristaltic'])
@@ -339,6 +396,14 @@ class ControllerTabs:
             self.tmrTimeout.start(self.msTimeout)
 
     def btnPeristalticChanged(self, who):
+        """Control the action when the peristaltic buttons are de/pressed.
+
+        The buttons are disabled, then, if the button is de/pressed, the command to switch on/off the peristaltic with
+        the value of the speed are sent. And the timeout to wait for the ACK command is activated.
+
+        Args:
+            who (ViewTabs): the tab where the button was pressed.
+        """
         self.viewSystemControl.setBtnPeristalticDisable(True)
         self.viewDataAcquisition.setBtnPeristalticDisable(True)
 
@@ -364,6 +429,15 @@ class ControllerTabs:
         self.tmrTimeout.start(self.msTimeout)
 
     def peristalticCommandReceived(self, who):
+        """Control the action when ACK command is/is not received in order to peristaltic.
+
+        When the ACK command is received the peristaltic buttons are activated and are enabled again. If the ACK command
+        is not received and the timeout is finished, the peristaltic buttons are put in not pressed state (initial
+        state).
+
+        Args:
+            who (ViewTabs): the tab where the button was pressed or the edit line was changed.
+        """
         if self.btnTimeout:
             status = not who.getBtnPeristalticStatus()
             self.btnTimeout = False
@@ -377,6 +451,14 @@ class ControllerTabs:
         self.viewDataAcquisition.setBtnPeristalticDisable(False)
 
     def btnBSFPeristalticChanged(self, who):
+        """Control the action when the peristaltic buttons (Back, Stop and Forward) are pressed.
+
+        If the button is pressed, the others buttons are depressed and all buttons are disabled, the command to do the
+        action is sent and the timeout to wait for the ACK command is activated.
+
+        Args:
+            who (ViewTabs): the tab where the button was pressed.
+        """
         if self.viewDataAcquisition.getBtnBSFPeristalticStatus(who):
 
             self.viewDataAcquisition.setBtnBSFPeristalticNotStatus(False, who)
@@ -393,6 +475,15 @@ class ControllerTabs:
             self.tmrTimeout.start(self.msTimeout)
 
     def bsfPeristalticCommandReceived(self, who):
+        """Control the action when ACK command is/is not received in order to (Back, Stop and Forward) peristaltic.
+
+        When the ACK command is received the peristaltic buttons are activated and are enabled again. If the ACK command
+        is not received and the timeout is finished, the peristaltic buttons are put in not pressed state (initial
+        state).
+
+        Args:
+            who (ViewTabs): the tab where the button was pressed.
+        """
         if self.btnTimeout:
             status = not self.viewDataAcquisition.getBtnBSFPeristalticStatus(who)
             self.btnTimeout = False
@@ -416,6 +507,13 @@ class ControllerTabs:
     """
 
     def edtImpulsionalsChanged(self, who):
+        """Control the action when the impulsional line edits are changed.
+
+        The value of the impulsional line edit is get and set in the both impulsional line edits.
+
+        Args:
+            who (ViewTabs): the tab where the edit line was changed.
+        """
         self.values['Impulsional A'] = who.getEdtImpulsionalAValue()
         self.values['Impulsional B'] = who.getEdtImpulsionalBValue()
 
@@ -425,6 +523,16 @@ class ControllerTabs:
         self.viewDataAcquisition.setEdtImpulsionalBValue(self.values['Impulsional B'])
 
     def btnImpulsionalAChanged(self, who):
+        """Control the action when the impulsional A buttons are pressed.
+
+        If the buttons are pressed and the line edits are other than 0, the buttons in the different tabs are changed to
+        True state, the value is adjusted to the volume of the impulsional, the command is sent and the timeout to wait
+        for the ACK command is activated. In the case that the line edits are equal to 0, the buttons are disabled and
+        a message to change the value is showed.
+
+        Args:
+            who (ViewTabs): the tab where the button was pressed.
+        """
         if who.getBtnImpulsionalAStatus():
 
             if who.getEdtImpulsionalAValue() != 0:
@@ -446,6 +554,12 @@ class ControllerTabs:
                 self.viewSystemControl.setMessageCritical(Strings.messageNotCeroImpulsionalA)
 
     def impulsionalACommandReceived(self):
+        """Control the action when ACK command is/is not received in order to impulsional A.
+
+        When the ACK command is received the time of the impulses is calculated and the timer for depressed the
+        impulsional A buttons is activated. In the case that the ACK command is not received the time of the impulses is
+        0 and the impulsional A buttons are depressed.
+        """
         if self.btnTimeout:
             timeImpulses = 0
             self.btnTimeout = False
@@ -457,10 +571,23 @@ class ControllerTabs:
         self.tmrBtnImpulsional_A.singleShot(timeImpulses, finishImpulses)
 
     def changeImpulsionalAStatus(self, status):
+        """Change the status of the impulsional A buttons.
+
+        The impulsional A buttons are pressed or depressed according to status.
+
+        Args:
+            status (Boolean): the value to change the status of the impulsional A buttons.
+        """
         self.viewSystemControl.setBtnImpulsionalAStatus(status)
         self.viewDataAcquisition.setBtnImpulsionalAStatus(status)
 
     def btnInjectAChanged(self):
+        """Control the action when the inject A button is de/pressed.
+
+        If the button is pressed, the button is disabled and the command to do one injection is sent and the timeout to
+        wait for the ACK command is activated. In the case that the button is depressed, the button is enabled and
+        depressed (initial state, status = False).
+        """
         if self.viewDataAcquisition.getBtnInjectAStatus():
             self.viewDataAcquisition.setBtnInjectADisable(True)
             toSend = 50
@@ -479,6 +606,12 @@ class ControllerTabs:
             self.viewDataAcquisition.setBtnInjectADisable(False)
 
     def injectACommandReceived(self):
+        """Control the action when ACK command is/is not received in order to inject A.
+
+        When the ACK command is received the timer for depressed the inject A button is activated for one injection. In
+        the case that the ACK command is not received the time of the injection is 0 and the inject A button is
+        depressed.
+        """
         if self.btnTimeout:
             timeImpulses = 0
             self.btnTimeout = False
@@ -490,6 +623,16 @@ class ControllerTabs:
         self.tmrBtnInject_A.singleShot(timeImpulses, finishImpulses)
 
     def btnImpulsionalBChanged(self, who):
+        """Control the action when the impulsional B buttons are pressed.
+
+        If the buttons are pressed and the line edits are other than 0, the buttons in the different tabs are changed to
+        True state, the value is adjusted to the volume of the impulsional, the command is sent and the timeout to wait
+        for the ACK command is activated. In the case that the line edits are equal to 0, the buttons are disabled and
+        a message to change the value is showed.
+
+        Args:
+            who (ViewTabs): the tab where the button was pressed.
+        """
         if who.getBtnImpulsionalBStatus():
 
             if who.getEdtImpulsionalBValue() != 0:
@@ -511,6 +654,12 @@ class ControllerTabs:
                 self.viewSystemControl.setMessageCritical(Strings.messageNotCeroImpulsionalB)
 
     def impulsionalBCommandReceived(self):
+        """Control the action when ACK command is/is not received in order to impulsional B.
+
+        When the ACK command is received the time of the impulses is calculated and the timer for depressed the
+        impulsional A buttons is activated. In the case that the ACK command is not received the time of the impulses is
+        0 and the impulsional B buttons are depressed.
+        """
         if self.btnTimeout:
             timeImpulses = 0
             self.btnTimeout = False
@@ -522,10 +671,23 @@ class ControllerTabs:
         self.tmrBtnImpulsional_B.singleShot(timeImpulses, finishImpulses)
 
     def changeImpulsionalBStatus(self, status):
+        """Change the status of the impulsional B buttons.
+
+        The impulsional B buttons are pressed or depressed according to status.
+
+        Args:
+            status (Boolean): the value to change the status of the impulsional B buttons.
+        """
         self.viewSystemControl.setBtnImpulsionalBStatus(status)
         self.viewDataAcquisition.setBtnImpulsionalBStatus(status)
 
     def btnInjectBChanged(self):
+        """Control the action when the inject B button is de/pressed.
+
+        If the button is pressed, the button is disabled and the command to do one injection is sent and the timeout to
+        wait for the ACK command is activated. In the case that the button is depressed, the button is enabled and
+        depressed (initial state, status = False).
+        """
         if self.viewDataAcquisition.getBtnInjectBStatus():
             self.viewDataAcquisition.setBtnInjectBDisable(True)
             toSend = 50
@@ -544,6 +706,12 @@ class ControllerTabs:
             self.viewDataAcquisition.setBtnInjectBDisable(False)
 
     def injectBCommandReceived(self):
+        """Control the action when ACK command is/is not received in order to inject B.
+
+        When the ACK command is received the timer for depressed the inject B button is activated for one injection. In
+        the case that the ACK command is not received the time of the injection is 0 and the inject B button is
+        depressed.
+        """
         if self.btnTimeout:
             timeImpulses = 0
             self.btnTimeout = False
@@ -583,6 +751,10 @@ class ControllerTabs:
     """
 
     def edtCalibrateChanged(self):
+        """Control the action when the calibrate line edits are changed.
+
+        The calibrate button is set to depressed (False status) and the values of the line edits are get.
+        """
         self.viewCurveSetup.setBtnCalibrateStatus(False)
 
         self.values['Gain A'] = self.viewCurveSetup.getEdtGainAValue()
@@ -591,6 +763,11 @@ class ControllerTabs:
         self.values['Offset B'] = self.viewCurveSetup.getEdtOffsetBValue()
 
     def btnCalibrateChanged(self):
+        """Control the action when the calibrate button is pressed.
+
+        When the button is pressed, the button is disabled, the command with the values of the calibration is sent and
+        the timeout to wait for the ACK command is activated.
+        """
         self.viewCurveSetup.setBtnCalibrateDisable(True)
 
         toSend = [
@@ -609,6 +786,10 @@ class ControllerTabs:
         self.tmrTimeout.start(self.msTimeout)
 
     def calibrateCommandReceived(self):
+        """Control the action when ACK command is/is not received in order to calibrate.
+
+        When the ACK command is received the calibrate button is depressed, enabled and changed the style.
+        """
         if self.btnTimeout:
             done = False
             self.btnTimeout = False
@@ -632,6 +813,10 @@ class ControllerTabs:
     """
 
     def edtCurvePerformanceChanged(self):
+        """Control the action when the curve performance line edits are changed.
+
+        The reset button is depressed (False status) and the values of the line edits are get.
+        """
         self.viewCurveSetup.setBtnResetStatus(False)
 
         self.values['Init Angle'] = self.viewCurveSetup.getEdtInitialAngleValue()
@@ -641,6 +826,12 @@ class ControllerTabs:
         self.values['Points Curve'] = int(self.viewCurveSetup.getEdtPointsCurveValue())
 
     def btnResetChanged(self):
+        """Control the action when the reset button is de/pressed.
+
+        If the button is pressed, the timer to do the reset is activated, the button is disabled, the line edits are
+        disabled, the initial values are set in the line edits and the button is depressed. If the button is depressed,
+        the button is enabled, pressed and the line edits are enabled.
+        """
         if self.viewCurveSetup.getBtnResetStatus():
             self.tmrBtnReset.singleShot(500, self.btnResetChanged)
 
@@ -685,9 +876,22 @@ class ControllerTabs:
     """
 
     def edtAcquisitionChanged(self):
+        """Control the action when the acquisition line edit is changed.
+
+        The value of the data sampling line edit is updated.
+        """
         self.values['Data Sampling'] = self.viewCurveSetup.getEdtDataSamplingValue()
 
     def btnAutoAcquisitionChanged(self):
+        """Control the action when the autoacquisition button is de/pressed.
+
+        The button and the data sampling line edit are disabled. If the autoacquisition button and laser button are
+        pressed, the command to start the acquisition is sent, the values to the charts are initialised, if the laser
+        button is depressed, the laser switch off flag is activated. In the case that the autoacquisition button is
+        depressed, the command to finish the acquisition is sent.
+        Also, if the laser switch off flag is activated, the autoacquisition button is depressed (initial status), if,
+        instead, the laser switch off flag is deactivated the timeout to wait for the ACK command is activated.
+        """
         self.viewCurveSetup.setBtnAutoAcquisitionDisable(True)
         self.viewCurveSetup.setEdtDataSamplingDisable(True)
 
@@ -734,6 +938,12 @@ class ControllerTabs:
             self.tmrTimeout.start(self.msTimeout)
 
     def acquisitionCommandReceived(self):
+        """Control the action when ACK command is/is not received in order to autoacquisition.
+
+        When the ACK command is received and the autoacquisition button is depressed, the auto save function is
+        executed. Instead, if the timeout is finished and the ACK command is not received, the autoacquisition button is
+        depressed.
+        """
         if self.btnTimeout:
             acquisitionInProcess = not self.viewCurveSetup.getBtnAutoAcquisitionStatus()
             self.btnTimeout = False

@@ -299,11 +299,11 @@ class ViewCurveSetup(QWidget):
     def setBtnCalibrateStatus(self, done):
         if done:
             self.btnCalibrate.setStyleSheet(Styles.buttonCalibrateDone)
-            self.btnCalibrate.setChecked(False)
 
         else:
             self.btnCalibrate.setStyleSheet(Styles.buttonCalibrate)
-            self.btnCalibrate.setChecked(False)
+
+        self.btnCalibrate.setChecked(False)
 
     def setBtnCalibrateDisable(self, disable):
         self.btnCalibrate.setDisabled(disable)
