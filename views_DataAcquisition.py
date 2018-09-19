@@ -103,9 +103,6 @@ class ViewDataAcquisition(QWidget):
         self.imageBoxLayout = QGroupBox()
         self.chartBoxLayout = QGroupBox()
 
-        self.filledBoxLayout_1 = QGroupBox()
-        self.filledLayout_2 = QGroupBox()
-
         self.timeLayout = QGridLayout(self)
         self.dataSamplingLayout = QGridLayout(self)
         self.experimentTimeLayout = QGridLayout(self)
@@ -128,6 +125,7 @@ class ViewDataAcquisition(QWidget):
         self.setStyleSpinBox()
         self.setStyleLineEdit()
         self.setStyleLabels()
+        self.setStyleLed()
 
         self.resize(1200, 800)
         self.centerWindowOnScreen()
@@ -145,24 +143,8 @@ class ViewDataAcquisition(QWidget):
         self.layoutGrid.addWidget(self.setSaveFileGroup(), 2, 0, 1, 2)
         self.layoutGrid.addWidget(self.setImageGroup(), 3, 0, 1, 2)
         self.layoutGrid.addWidget(self.setChartGroup(), 0, 2, 4, 8)
-        # self.layoutGrid.addWidget(self.setFilledGroup_1(), 2, 0, 5, 10)
-
-    def setFilledGroup_1(self):
-        self.filledBoxLayout_1.setStyleSheet(Styles.groupBoxFilled)
-
-        return self.filledBoxLayout_1
-
-    def setFilledGroup_2(self):
-        self.filledLayout_2.setStyleSheet(Styles.groupBoxFilled)
-
-        return self.filledLayout_2
 
     def setTimeGroup(self):
-        self.setLedLaserDisable(True)
-
-        self.dataSamplingLayout.setAlignment(Qt.AlignRight)
-        self.experimentTimeLayout.setAlignment(Qt.AlignRight)
-
         self.btnInitLayout.addWidget(self.lblBtnInit)
 
         self.btnInitExperiment.setLayout(self.btnInitLayout)
@@ -194,14 +176,11 @@ class ViewDataAcquisition(QWidget):
         self.timeLayout.addWidget(self.lblTime, 4, 2)
         self.timeLayout.addWidget(self.edtTime, 4, 3)
 
-        self.timeBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.timeBoxLayout.setLayout(self.timeLayout)
 
         return self.timeBoxLayout
 
     def setFluidicGroup(self):
-        self.peristalticControlLayout.setAlignment(Qt.AlignBottom)
-
         self.peristalticControlLayout.addWidget(self.lblPeristaltic, 0, 0)
         self.peristalticControlLayout.addWidget(self.edtPeristaltic, 1, 0)
         self.peristalticControlLayout.addWidget(self.btnPeristaltic, 0, 1, 2, 1)
@@ -213,14 +192,10 @@ class ViewDataAcquisition(QWidget):
         self.peristalticLayout.addWidget(self.lblStop, 1, 1)
         self.peristalticLayout.addWidget(self.lblForward, 1, 2)
 
-        self.peristalticLayout.setAlignment(Qt.AlignCenter)
-
-        self.peristalticBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.peristalticBoxLayout.setLayout(self.peristalticLayout)
 
         self.peristalticControlLayout.addWidget(self.peristalticBoxLayout, 2, 0, 1, 3)
 
-        self.peristalticControlBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.peristalticControlBoxLayout.setLayout(self.peristalticControlLayout)
 
         self.injectControlLayout.addWidget(self.lblImpulsional_A, 0, 0)
@@ -232,13 +207,11 @@ class ViewDataAcquisition(QWidget):
         self.injectControlLayout.addWidget(self.btnPurge_A, 3, 0)
         self.injectControlLayout.addWidget(self.btnPurge_B, 3, 1)
 
-        self.injectControlBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.injectControlBoxLayout.setLayout(self.injectControlLayout)
 
         self.fluidicLayout.addWidget(self.peristalticControlBoxLayout, 0, 0, 2, 1)
         self.fluidicLayout.addWidget(self.injectControlBoxLayout, 0, 1, 1, 1)
 
-        self.fluidicBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.fluidicBoxLayout.setLayout(self.fluidicLayout)
 
         return self.fluidicBoxLayout
@@ -247,28 +220,20 @@ class ViewDataAcquisition(QWidget):
         self.saveFileLayout.addWidget(self.edtSaveFile)
         self.saveFileLayout.addWidget(self.btnSaveFile)
 
-        self.saveFileBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.saveFileBoxLayout.setLayout(self.saveFileLayout)
 
         return self.saveFileBoxLayout
 
     def setImageGroup(self):
-        imageLogo_2 = self.imageLogo.scaledToHeight(50)
-        self.lblImageLogo.setPixmap(imageLogo_2)
-
-        self.imageLayout.setAlignment(Qt.AlignCenter)
+        self.lblImageLogo.setPixmap(self.imageLogo)
 
         self.imageLayout.addWidget(self.lblImageLogo)
 
-        self.imageBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
         self.imageBoxLayout.setLayout(self.imageLayout)
 
         return self.imageBoxLayout
 
     def setChartGroup(self):
-        self.btnChartLayoutChannel1.setAlignment(Qt.AlignRight)
-        self.btnChartLayoutChannel2.setAlignment(Qt.AlignRight)
-
         self.btnChartLayoutChannel1.addWidget(self.btnAutoscaleYChannel1)
         self.btnChartLayoutChannel1.addWidget(self.btnAutoscaleXChannel1)
         self.btnChartLayoutChannel1.addWidget(self.btnChart1000Channel1)
@@ -283,8 +248,6 @@ class ViewDataAcquisition(QWidget):
         self.chartLayout.addWidget(self.myChartChannel1)
         self.chartLayout.addLayout(self.btnChartLayoutChannel2)
         self.chartLayout.addWidget(self.myChartChannel2)
-
-        self.chartBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
 
         self.chartBoxLayout.setLayout(self.chartLayout)
 
@@ -725,15 +688,14 @@ class ViewDataAcquisition(QWidget):
 
         self.edtPeristaltic.setStyleSheet(Styles.spinBoxGeneral)
         self.edtPeristaltic.setFixedWidth(70)
+        self.edtPeristaltic.setRange(0, 100)
 
         self.edtImpulsional_A.setStyleSheet(Styles.spinBoxGeneral)
         self.edtImpulsional_A.setFixedWidth(60)
+        self.edtImpulsional_A.setRange(0, 100)
 
         self.edtImpulsional_B.setStyleSheet(Styles.spinBoxGeneral)
         self.edtImpulsional_B.setFixedWidth(60)
-
-        self.edtPeristaltic.setRange(0, 100)
-        self.edtImpulsional_A.setRange(0, 100)
         self.edtImpulsional_B.setRange(0, 100)
 
     """
@@ -826,6 +788,92 @@ class ViewDataAcquisition(QWidget):
     """
     ********************************************************************************************************************
     *                                            End Labels Styles Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                               Led Styles Functions                                               *
+    ********************************************************************************************************************
+    """
+
+    def setStyleLed(self):
+        self.setLedLaserDisable(True)
+
+    """
+    ********************************************************************************************************************
+    *                                            End Led Styles Functions                                              *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                             Pixmap Styles Functions                                              *
+    ********************************************************************************************************************
+    """
+
+    def setStylePixmap(self):
+        self.imageLogo = self.imageLogo.scaledToHeight(50)
+
+    """
+    ********************************************************************************************************************
+    *                                           End Pixmap Styles Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                            Group Box Styles Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    def setStyleGroupBox(self):
+        self.timeBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.peristalticBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.peristalticControlBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.injectControlBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.fluidicBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.saveFileBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.imageBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
+
+        self.chartBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+    """
+    ********************************************************************************************************************
+    *                                          End Group Box Styles Functions                                          *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                             Layouts Styles Functions                                             *
+    ********************************************************************************************************************
+    """
+
+    def setStyleLayouts(self):
+        self.dataSamplingLayout.setAlignment(Qt.AlignRight)
+
+        self.experimentTimeLayout.setAlignment(Qt.AlignRight)
+
+        self.peristalticControlLayout.setAlignment(Qt.AlignBottom)
+
+        self.peristalticLayout.setAlignment(Qt.AlignCenter)
+
+        self.imageLayout.setAlignment(Qt.AlignCenter)
+
+        self.btnChartLayoutChannel1.setAlignment(Qt.AlignRight)
+
+        self.btnChartLayoutChannel2.setAlignment(Qt.AlignRight)
+
+    """
+    ********************************************************************************************************************
+    *                                           End Layouts Styles Functions                                           *
     ********************************************************************************************************************
     """
 

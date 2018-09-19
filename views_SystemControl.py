@@ -68,8 +68,12 @@ class ViewSystemControl(QWidget):
 
         self.otherLayout = QHBoxLayout(self)
 
-        self.setStyleSpinBox()
         self.setStyleButtons()
+        self.setStyleLabels()
+        self.setStyleSpinBox()
+        self.setStylePixmap()
+        self.setStyleGroupBox()
+        self.setStyleLayouts()
 
         width, height = self.calculateSizeWindow()
 
@@ -80,7 +84,6 @@ class ViewSystemControl(QWidget):
     def centerWindowOnScreen(self):
         windowGeometry = self.frameGeometry()
         desktopWidget = QDesktopWidget().availableGeometry().center()
-        print(QDesktopWidget().availableGeometry().width())
         windowGeometry.moveCenter(desktopWidget)
         self.move(windowGeometry.topLeft())
 
@@ -104,19 +107,11 @@ class ViewSystemControl(QWidget):
     def setLaserGroup(self):
         self.laserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
 
-        self.laserBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.laserBoxLayout.setLayout(self.laserLayout)
 
         return self.laserBoxLayout
 
     def setDataGroup(self):
-        self.lblPeristaltic.setFixedWidth(100)
-        self.lblPeristaltic.setAlignment(Qt.AlignBottom)
-        self.lblImpulsional_A.setFixedWidth(100)
-        self.lblImpulsional_A.setAlignment(Qt.AlignBottom)
-        self.lblImpulsional_B.setFixedWidth(100)
-        self.lblImpulsional_B.setAlignment(Qt.AlignBottom)
-
         self.peristalticLayout.addWidget(self.lblPeristaltic, 0, 0)
         self.peristalticLayout.addWidget(self.edtPeristaltic, 1, 0)
         self.peristalticLayout.addWidget(self.btnPeristaltic, 0, 1, 2, 1)
@@ -129,39 +124,30 @@ class ViewSystemControl(QWidget):
         self.impulsionalBLayout.addWidget(self.edtImpulsional_B, 1, 0)
         self.impulsionalBLayout.addWidget(self.btnImpulsional_B, 0, 1, 2, 1)
 
-        self.peristalticBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.peristalticBoxLayout.setLayout(self.peristalticLayout)
 
-        self.impulsionalABoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.impulsionalABoxLayout.setLayout(self.impulsionalALayout)
 
-        self.impulsionalBBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.impulsionalBBoxLayout.setLayout(self.impulsionalBLayout)
 
         self.dataLayout.addWidget(self.peristalticBoxLayout, 0, 0)
         self.dataLayout.addWidget(self.impulsionalABoxLayout, 0, 1)
         self.dataLayout.addWidget(self.impulsionalBBoxLayout, 0, 2)
 
-        self.dataBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.dataBoxLayout.setLayout(self.dataLayout)
 
         return self.dataBoxLayout
 
     def setImageGroup(self):
-        imageLogo_2 = self.imageLogo.scaledToHeight(100)
-        self.lblImageLogo.setPixmap(imageLogo_2)
+        self.lblImageLogo.setPixmap(self.imageLogo)
 
         return self.lblImageLogo
 
     def setImageDeviceGroup(self):
-        imageLogo_2 = self.imageSPRDevice.scaledToHeight(500)
-        self.lblImageSPRDevice.setPixmap(imageLogo_2)
-
-        self.imageLayout.setAlignment(Qt.AlignCenter)
+        self.lblImageSPRDevice.setPixmap(self.imageSPRDevice)
 
         self.imageLayout.addWidget(self.lblImageSPRDevice)
 
-        self.imageBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
         self.imageBoxLayout.setLayout(self.imageLayout)
 
         return self.imageBoxLayout
@@ -313,22 +299,102 @@ class ViewSystemControl(QWidget):
 
     """
     ********************************************************************************************************************
+    *                                             Labels Styles Functions                                              *
+    ********************************************************************************************************************
+    """
+
+    def setStyleLabels(self):
+        self.lblPeristaltic.setFixedWidth(100)
+        self.lblPeristaltic.setAlignment(Qt.AlignBottom)
+
+        self.lblImpulsional_A.setFixedWidth(100)
+        self.lblImpulsional_A.setAlignment(Qt.AlignBottom)
+
+        self.lblImpulsional_B.setFixedWidth(100)
+        self.lblImpulsional_B.setAlignment(Qt.AlignBottom)
+
+    """
+    ********************************************************************************************************************
+    *                                           End Labels Styles Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
     *                                            Spin Boxes Styles Functions                                           *
     ********************************************************************************************************************
     """
 
     def setStyleSpinBox(self):
         self.edtPeristaltic.setStyleSheet(Styles.spinBoxGeneral)
-        self.edtImpulsional_A.setStyleSheet(Styles.spinBoxGeneral)
-        self.edtImpulsional_B.setStyleSheet(Styles.spinBoxGeneral)
-
         self.edtPeristaltic.setRange(0, 100)
+
+        self.edtImpulsional_A.setStyleSheet(Styles.spinBoxGeneral)
         self.edtImpulsional_A.setRange(0, 100)
+
+        self.edtImpulsional_B.setStyleSheet(Styles.spinBoxGeneral)
         self.edtImpulsional_B.setRange(0, 100)
 
     """
     ********************************************************************************************************************
     *                                          End Spin Boxes Styles Functions                                         *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                             Pixmap Styles Functions                                              *
+    ********************************************************************************************************************
+    """
+
+    def setStylePixmap(self):
+        self.imageLogo = self.imageLogo.scaledToHeight(100)
+
+        self.imageSPRDevice = self.imageSPRDevice.scaledToHeight(500)
+
+    """
+    ********************************************************************************************************************
+    *                                           End Pixmap Styles Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                            Group Box Styles Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    def setStyleGroupBox(self):
+        self.laserBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.peristalticBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.impulsionalABoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.impulsionalBBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.dataBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.imageBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
+
+    """
+    ********************************************************************************************************************
+    *                                          End Group Box Styles Functions                                          *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                             Layouts Styles Functions                                             *
+    ********************************************************************************************************************
+    """
+
+    def setStyleLayouts(self):
+        self.imageLayout.setAlignment(Qt.AlignCenter)
+
+    """
+    ********************************************************************************************************************
+    *                                           End Layouts Styles Functions                                           *
     ********************************************************************************************************************
     """
 

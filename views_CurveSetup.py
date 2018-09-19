@@ -53,23 +53,18 @@ class ViewCurveSetup(QWidget):
         self.edtAngleResolution = QDoubleSpinBox()
         self.lblFinalAngle = QLabel(Strings.finalAngle)
         self.edtFinalAngle = QLineEdit()
-        self.edtFinalAngle.setReadOnly(True)
         self.lblPointsCurve = QLabel(Strings.pointsOfCurve)
         self.edtPointsCurve = QLineEdit()
-        self.edtPointsCurve.setReadOnly(True)
 
         self.btnReset = QPushButton(Strings.reset)
 
         self.edtAcquisition = QLineEdit()
-        self.edtAcquisition.setReadOnly(True)
         self.lblDataSampling = QLabel(Strings.dataSamplingSeconds)
         self.edtDataSampling = QSpinBox()
         self.lblACQChannel_1 = QLabel(Strings.channel1dots)
         self.edtACQChannel_1 = QLineEdit()
-        self.edtACQChannel_1.setReadOnly(True)
         self.lblACQChannel_2 = QLabel(Strings.channel2dots)
         self.edtACQChannel_2 = QLineEdit()
-        self.edtACQChannel_2.setReadOnly(True)
 
         self.btnAutoAcquisition = QPushButton(Strings.automatic)
 
@@ -99,9 +94,6 @@ class ViewCurveSetup(QWidget):
 
         self.chartBoxLayout = QGroupBox()
 
-        self.filledBoxLayout_1 = QGroupBox()
-        self.filledLayout_2 = QGroupBox()
-
         self.calibrationLayout = QGridLayout(self)
         self.curveLayout = QGridLayout(self)
         self.acquisitionLayout = QGridLayout(self)
@@ -123,6 +115,10 @@ class ViewCurveSetup(QWidget):
         self.setStyleButtons()
         self.setStyleSpinBox()
         self.setStyleLineEdit()
+        self.setStyleLabels()
+        self.setStylePixmap()
+        self.setStyleGroupBox()
+        self.setStyleLayouts()
 
         self.resize(1200, 800)
         self.centerWindowOnScreen()
@@ -142,28 +138,8 @@ class ViewCurveSetup(QWidget):
         self.layoutGrid.addWidget(self.setSaveFileGroup(), 3, 0, 1, 2)
         self.layoutGrid.addWidget(self.setImageGroup(), 4, 0, 1, 2)
         self.layoutGrid.addWidget(self.setChartGroup(), 0, 2, 5, 8)
-        # self.layoutGrid.addWidget(self.setFilledGroup_1(), 3, 0, 5, 10)
-
-    def setFilledGroup_1(self):
-        self.filledBoxLayout_1.setStyleSheet(Styles.groupBoxFilled)
-
-        return self.filledBoxLayout_1
-
-    def setFilledGroup_2(self):
-        self.filledLayout_2.setStyleSheet(Styles.groupBoxFilled)
-
-        return self.filledLayout_2
 
     def setCalibrationGroup(self):
-        self.lblGainA.setFixedWidth(45)
-        self.lblGainB.setFixedWidth(45)
-        self.lblOffsetA.setFixedWidth(45)
-        self.lblOffsetB.setFixedWidth(45)
-        self.edtGainA.setFixedWidth(50)
-        self.edtGainB.setFixedWidth(50)
-        self.edtOffsetA.setFixedWidth(50)
-        self.edtOffsetB.setFixedWidth(50)
-
         self.gainALayout.addWidget(self.lblGainA)
         self.gainALayout.addWidget(self.edtGainA)
         self.gainBLayout.addWidget(self.lblGainB)
@@ -180,17 +156,14 @@ class ViewCurveSetup(QWidget):
         self.offsetLayout.addLayout(self.offsetALayout)
         self.offsetLayout.addLayout(self.offsetBLayout)
 
-        self.gainBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.gainBoxLayout.setLayout(self.gainLayout)
 
-        self.offsetBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.offsetBoxLayout.setLayout(self.offsetLayout)
 
         self.calibrationLayout.addWidget(self.gainBoxLayout, 0, 0)
         self.calibrationLayout.addWidget(self.offsetBoxLayout, 1, 0)
         self.calibrationLayout.addWidget(self.btnCalibrate, 1, 1, 1, 1)
 
-        self.calibrationBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.calibrationBoxLayout.setLayout(self.calibrationLayout)
 
         return self.calibrationBoxLayout
@@ -198,20 +171,11 @@ class ViewCurveSetup(QWidget):
     def setLaserGroup(self):
         self.btnLaserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
 
-        self.btnLaserBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.btnLaserBoxLayout.setLayout(self.btnLaserLayout)
 
         return self.btnLaserBoxLayout
 
     def setCurveGroup(self):
-        self.lblInitialAngle.setFixedWidth(100)
-        self.lblAngleLongitude.setFixedWidth(100)
-        self.lblAngleResolution.setFixedWidth(100)
-        self.lblFinalAngle.setFixedWidth(100)
-        self.lblPointsCurve.setFixedWidth(100)
-        self.edtFinalAngle.setFixedWidth(100)
-        self.edtPointsCurve.setFixedWidth(100)
-
         self.curveLayout.addWidget(self.lblInitialAngle, 0, 0)
         self.curveLayout.addWidget(self.edtInitialAngle, 0, 1)
         self.curveLayout.addWidget(self.lblAngleLongitude, 1, 0)
@@ -224,24 +188,14 @@ class ViewCurveSetup(QWidget):
         self.curveLayout.addWidget(self.edtPointsCurve, 4, 1)
         self.curveLayout.addWidget(self.btnReset, 3, 2, 2, 1)
 
-        self.curveBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.curveBoxLayout.setLayout(self.curveLayout)
 
         return self.curveBoxLayout
 
     def setAcquisitionGroup(self):
-        self.lblDataSampling.setFixedWidth(75)
-        self.lblDataSampling.setWordWrap(True)
-        self.lblACQChannel_1.setFixedWidth(50)
-        self.lblACQChannel_2.setFixedWidth(50)
-        self.edtAcquisition.setFixedWidth(50)
-        self.edtACQChannel_1.setFixedWidth(100)
-        self.edtACQChannel_2.setFixedWidth(100)
-
         self.autoACQLayout.addWidget(self.edtAcquisition, 0, 1)
         self.autoACQLayout.addWidget(self.btnAutoAcquisition, 1, 0, 1, 3)
 
-        self.autoACQBoxLayout.setStyleSheet(Styles.groupBoxAutoAcquisition)
         self.autoACQBoxLayout.setLayout(self.autoACQLayout)
 
         self.acquisitionLayout.addWidget(self.autoACQBoxLayout, 0, 0, 4, 1)
@@ -252,7 +206,6 @@ class ViewCurveSetup(QWidget):
         self.acquisitionLayout.addWidget(self.lblACQChannel_2, 3, 1)
         self.acquisitionLayout.addWidget(self.edtACQChannel_2, 3, 2)
 
-        self.acquisitionBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.acquisitionBoxLayout.setLayout(self.acquisitionLayout)
 
         return self.acquisitionBoxLayout
@@ -261,20 +214,15 @@ class ViewCurveSetup(QWidget):
         self.saveFileLayout.addWidget(self.edtSaveFile)
         self.saveFileLayout.addWidget(self.btnSaveFile)
 
-        self.saveFileBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.saveFileBoxLayout.setLayout(self.saveFileLayout)
 
         return self.saveFileBoxLayout
 
     def setImageGroup(self):
-        imageLogo_2 = self.imageLogo.scaledToHeight(50)
-        self.lblImageLogo.setPixmap(imageLogo_2)
-
-        self.imageLayout.setAlignment(Qt.AlignCenter)
+        self.lblImageLogo.setPixmap(self.imageLogo)
 
         self.imageLayout.addWidget(self.lblImageLogo)
 
-        self.imageBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
         self.imageBoxLayout.setLayout(self.imageLayout)
 
         return self.imageBoxLayout
@@ -285,7 +233,6 @@ class ViewCurveSetup(QWidget):
         self.chartLayout.addWidget(self.myChartChannel1)
         self.chartLayout.addWidget(self.myChartChannel2)
 
-        self.chartBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
         self.chartBoxLayout.setLayout(self.chartLayout)
 
         return self.chartBoxLayout
@@ -600,20 +547,139 @@ class ViewCurveSetup(QWidget):
 
     def setStyleLineEdit(self):
         self.edtFinalAngle.setStyleSheet(Styles.lineEditGeneral)
+        self.edtFinalAngle.setReadOnly(True)
+        self.edtFinalAngle.setFixedWidth(100)
 
         self.edtPointsCurve.setStyleSheet(Styles.lineEditGeneral)
+        self.edtPointsCurve.setReadOnly(True)
+        self.edtPointsCurve.setFixedWidth(100)
 
         self.edtAcquisition.setStyleSheet(Styles.lineEditGeneral)
+        self.edtAcquisition.setReadOnly(True)
+        self.edtAcquisition.setFixedWidth(50)
 
         self.edtACQChannel_1.setStyleSheet(Styles.lineEditGeneral)
+        self.edtACQChannel_1.setReadOnly(True)
+        self.edtACQChannel_1.setFixedWidth(100)
 
         self.edtACQChannel_2.setStyleSheet(Styles.lineEditGeneral)
+        self.edtACQChannel_2.setReadOnly(True)
+        self.edtACQChannel_2.setFixedWidth(100)
 
         self.edtSaveFile.setStyleSheet(Styles.lineEditGeneral)
+
+        self.edtGainA.setFixedWidth(50)
+
+        self.edtGainB.setFixedWidth(50)
+
+        self.edtOffsetA.setFixedWidth(50)
+
+        self.edtOffsetB.setFixedWidth(50)
 
     """
     ********************************************************************************************************************
     *                                          End Line Edits Styles Functions                                         *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                              Labels Styles Functions                                             *
+    ********************************************************************************************************************
+    """
+
+    def setStyleLabels(self):
+        self.lblGainA.setFixedWidth(45)
+
+        self.lblGainB.setFixedWidth(45)
+
+        self.lblOffsetA.setFixedWidth(45)
+
+        self.lblOffsetB.setFixedWidth(45)
+
+        self.lblInitialAngle.setFixedWidth(100)
+
+        self.lblAngleLongitude.setFixedWidth(100)
+
+        self.lblAngleResolution.setFixedWidth(100)
+
+        self.lblFinalAngle.setFixedWidth(100)
+
+        self.lblPointsCurve.setFixedWidth(100)
+
+        self.lblDataSampling.setFixedWidth(75)
+        self.lblDataSampling.setWordWrap(True)
+
+        self.lblACQChannel_1.setFixedWidth(50)
+
+        self.lblACQChannel_2.setFixedWidth(50)
+
+    """
+    ********************************************************************************************************************
+    *                                            End Labels Styles Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                             Pixmap Styles Functions                                              *
+    ********************************************************************************************************************
+    """
+
+    def setStylePixmap(self):
+        self.imageLogo = self.imageLogo.scaledToHeight(50)
+
+    """
+    ********************************************************************************************************************
+    *                                           End Pixmap Styles Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                            Group Box Styles Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    def setStyleGroupBox(self):
+        self.gainBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.offsetBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.calibrationBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.btnLaserBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.curveBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.autoACQBoxLayout.setStyleSheet(Styles.groupBoxAutoAcquisition)
+
+        self.acquisitionBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.saveFileBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+        self.imageBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
+
+        self.chartBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+
+    """
+    ********************************************************************************************************************
+    *                                          End Group Box Styles Functions                                          *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                             Layouts Styles Functions                                             *
+    ********************************************************************************************************************
+    """
+
+    def setStyleLayouts(self):
+        self.imageLayout.setAlignment(Qt.AlignCenter)
+
+    """
+    ********************************************************************************************************************
+    *                                           End Layouts Styles Functions                                           *
     ********************************************************************************************************************
     """
 
