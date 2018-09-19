@@ -54,6 +54,11 @@ class ViewTabs(QWidget):
         self.setWindowTitle(Strings.sprV2)
 
     def centerWindowOnScreen(self):
+        """Center the window of the app on the screen.
+
+        Get the geometry of the app window, then, calculate the center of the screen and move the app window to the
+        center of the screen.
+        """
         windowGeometry = self.frameGeometry()
         desktopWidget = QDesktopWidget().availableGeometry().center()
         windowGeometry.moveCenter(desktopWidget)
@@ -61,6 +66,14 @@ class ViewTabs(QWidget):
 
     @staticmethod
     def calculateSizeWindow():
+        """Calculate the size of the app window.
+
+        Get the width and height of the screen and set the width of the app window to the 70% of the screen and the
+        height to 80%.
+
+        Returns:
+            list: the width and height of the app window.
+        """
         widthWindow = QDesktopWidget().availableGeometry().width()
         heightWindow = QDesktopWidget().availableGeometry().height()
 
@@ -70,10 +83,21 @@ class ViewTabs(QWidget):
         return widthApp, heightApp
 
     def mainWindow(self):
+        """Add the main widgets to the main layout.
+
+        Add the tabs of the app and the exit button to the layout of the app.
+        """
         self.layout.addWidget(self.tabs)
         self.layout.addWidget(self.btnExit)
 
     def setMessageExit(self):
+        """Show a dialog with a question.
+
+        Create a dialog with the question to exit of the app.
+
+        Returns:
+            bool: True, if the answer to the question is Yes, and False in the opposite case.
+        """
         exitApp = QMessageBox.question(self, Strings.question, Strings.messageExit, QMessageBox.Yes | QMessageBox.No,
                                        QMessageBox.No)
 
