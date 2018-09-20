@@ -876,81 +876,207 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setDataChannel1(self, xData, yData):
+        """Add a new data on the chart of the channel 1.
+
+        Args:
+            xData (float): the value of the X Axis.
+            yData (float): the value of the Y Axis.
+        """
         self.myChartChannel1.setDataChart(xData, yData)
 
     def setDataChannel2(self, xData, yData):
+        """Add a new data on the chart of the channel 2.
+
+        Args:
+            xData (float): the value of the X Axis.
+            yData (float): the value of the Y Axis.
+        """
         self.myChartChannel2.setDataChart(xData, yData)
 
     def setRangeYChannel1(self, yRange, autoscale):
+        """Update the range of the Y axis on the chart of the channel 1.
+
+        Args:
+            yRange (list): the beginning and end of the Y axis.
+            autoscale (bool): if the autoscale button is activated.
+        """
         self.myChartChannel1.setRangeY(yRange, autoscale)
 
     def setRangeXChannel1(self, xRange):
+        """Update the range of the X axis on the chart of the channel 1.
+
+        Args:
+            xRange (list): the beginning and end of the X axis.
+        """
         self.myChartChannel1.setRangeX(xRange)
 
     def getRangeXChannel1(self):
+        """Return the range of the X axis of the channel 1.
+
+        Returns:
+            list: the beginning and end of the X axis.
+        """
         return self.myChartChannel1.getRangeX()
 
     def setRangeYChannel2(self, yRange, autoscale):
+        """Update the range of the Y axis on the chart of the channel 2.
+
+        Args:
+            yRange (list): the beginning and end of the Y axis.
+            autoscale (bool): if the autoscale button is activated.
+        """
         self.myChartChannel2.setRangeY(yRange, autoscale)
 
     def setRangeXChannel2(self, xRange):
+        """Update the range of the X axis on the chart of the channel 2.
+
+        Args:
+            xRange (list): the beginning and end of the X axis.
+        """
         self.myChartChannel2.setRangeX(xRange)
 
     def getRangeXChannel2(self):
+        """Return the range of the X axis of the channel 2.
+
+        Returns:
+            list: the beginning and end of the X axis.
+        """
         return self.myChartChannel2.getRangeX()
 
     def initSerieChannel1(self):
+        """Clean the serie on the chart of the channel 1."""
         self.myChartChannel1.initSerie()
 
     def initSerieChannel2(self):
+        """Clean the serie on the chart of the channel 2."""
         self.myChartChannel2.initSerie()
 
     def setBtnAutoscaleYChannel1Status(self, status):
+        """Change the status of the autoscale Y channel 1 button.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnAutoscaleYChannel1.setChecked(status)
 
     def getBtnAutoscaleYChannel1Status(self):
+        """Return the status of the autoscale Y channel 1 button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnAutoscaleYChannel1.isChecked()
 
     def setBtnAutoscaleXChannel1Status(self, status):
+        """Change the status of the autoscale X channel 1 button.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnAutoscaleXChannel1.setChecked(status)
 
     def getBtnAutoscaleXChannel1Status(self):
+        """Return the status of the autoscale X channel 1 button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnAutoscaleXChannel1.isChecked()
 
     def setBtnChart1000Channel1Status(self, status):
+        """Change the status of the x1000 channel 1 button.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnChart1000Channel1.setChecked(status)
 
     def getBtnChart1000Channel1Status(self):
+        """Return the status of the x1000 channel 1 button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnChart1000Channel1.isChecked()
 
     def setBtnChart10000Channel1Status(self, status):
+        """Change the status of the x10000 channel 1 button.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnChart10000Channel1.setChecked(status)
 
     def getBtnChart10000Channel1Status(self):
+        """Return the status of the x10000 channel 1 button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnChart10000Channel1.isChecked()
 
     def setBtnAutoscaleYChannel2Status(self, status):
+        """Change the status of the autoscale Y channel 2 button.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnAutoscaleYChannel2.setChecked(status)
 
     def getBtnAutoscaleYChannel2Status(self):
+        """Return the status of the autoscale Y channel 2 button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnAutoscaleYChannel2.isChecked()
 
     def setBtnAutoscaleXChannel2Status(self, status):
+        """Change the status of the autoscale X channel 2 button.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnAutoscaleXChannel2.setChecked(status)
 
     def getBtnAutoscaleXChannel2Status(self):
+        """Return the status of the autoscale X channel 2 button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnAutoscaleXChannel2.isChecked()
 
     def setBtnChart1000Channel2Status(self, status):
+        """Change the status of the x1000 channel 2 button.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnChart1000Channel2.setChecked(status)
 
     def getBtnChart1000Channel2Status(self):
+        """Return the status of the x1000 channel 2 button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnChart1000Channel2.isChecked()
 
     def setBtnChart10000Channel2Status(self, status):
+        """Change the status of the x10000 channel 2 button.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnChart10000Channel2.setChecked(status)
 
     def getBtnChart10000Channel2Status(self):
+        """Return the status of the x10000 channel 2 button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnChart10000Channel2.isChecked()
 
     """
@@ -966,6 +1092,7 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setStyleButtons(self):
+        """Change the style of the buttons to the custom style."""
         self.btnInitExperiment.setStyleSheet(Styles.buttonInit)
         self.btnInitExperiment.setCheckable(True)
 
@@ -1026,6 +1153,7 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setStyleSpinBox(self):
+        """Change the style of the spin boxes to the custom style."""
         self.edtDataSampling.setStyleSheet(Styles.spinBoxGeneral)
 
         self.edtExperimentTime.setStyleSheet(Styles.spinBoxGeneral)
@@ -1055,6 +1183,7 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setStyleLineEdit(self):
+        """Change the style of the line edits to the custom style."""
         self.edtDataSampling.setFixedWidth(75)
         self.edtDataSampling.setAlignment(Qt.AlignRight)
 
@@ -1088,6 +1217,7 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setStyleLabels(self):
+        """Change the style of the labels to the custom style."""
         self.lblBtnInit.setStyleSheet(Styles.labelBtnInit)
         self.lblBtnInit.setAlignment(Qt.AlignCenter)
         self.lblBtnInit.setWordWrap(True)
@@ -1142,6 +1272,7 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setStyleLed(self):
+        """Change the style of the led to the custom style."""
         self.setLedLaserDisable(True)
 
     """
@@ -1157,6 +1288,7 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setStylePixmap(self):
+        """Change the style of the pixmap to the custom style."""
         self.imageLogo = self.imageLogo.scaledToHeight(50)
 
     """
@@ -1172,6 +1304,7 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setStyleGroupBox(self):
+        """Change the style of the group boxes to the custom style."""
         self.timeBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
 
         self.peristalticBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
@@ -1201,6 +1334,7 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setStyleLayouts(self):
+        """Change the style of the layouts to the custom style."""
         self.dataSamplingLayout.setAlignment(Qt.AlignRight)
 
         self.experimentTimeLayout.setAlignment(Qt.AlignRight)
@@ -1228,9 +1362,23 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setMessageCritical(self, message):
+        """Show dialog with a message of error.
+
+        Args:
+            message (str): message to show in the dialog.
+        """
         QMessageBox.critical(self, Strings.error, message)
 
     def setMessageQuestion(self, message):
+        """Show dialog with a question.
+
+        Args:
+            message (str): question to show in the dialog.
+
+        Returns:
+            bool: return True if the answer to the question is Yes, in the opposite case, return False if the answer is
+            No.
+        """
         saveFile = QMessageBox.question(self, Strings.question, message, QMessageBox.Yes | QMessageBox.No,
                                         QMessageBox.Yes)
 
@@ -1241,6 +1389,14 @@ class ViewDataAcquisition(QWidget):
             return False
 
     def setDialogSaveFile(self, myNameFile):
+        """Show dialog to save the file with the name (myNameFile).
+
+        Args:
+            myNameFile (str): name of the file.
+
+        Returns:
+            str: name of the file.
+        """
         fileName, _ = QFileDialog.getSaveFileName(self, Strings.saveFileLC, 'C:/Users/' + getpass.getuser() +
                                                   '/Documents/' + myNameFile, '*.DAT')
 
