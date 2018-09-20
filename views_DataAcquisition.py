@@ -329,7 +329,7 @@ class ViewDataAcquisition(QWidget):
         self.btnInitExperiment.setChecked(status)
 
     def getBtnInitExperimentStatus(self):
-        """Return of the status of the init experiment button.
+        """Return the status of the init experiment button.
 
         Returns:
             bool: the status of the button, if the button is pressed or depressed.
@@ -357,7 +357,7 @@ class ViewDataAcquisition(QWidget):
         self.ledLaser.setChecked(status)
 
     def getLedLaserStatus(self):
-        """Return of the status of the led laser.
+        """Return the status of the led laser.
 
         Returns:
             bool: the status of the led, if the led is enabled or disabled.
@@ -386,23 +386,65 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setEdtChannel1Text(self, text):
+        """Change the text of the channel 1 line edit.
+
+        Convert text (float) to float with 3 decimals and to string and, then, the value of the line edit is updated.
+
+        Args:
+            text (float): the value to update the channel 1 line edit.
+        """
         text = str('{0:.3f}'.format(text))
         self.edtChannel_1.setText(text)
 
     def getEdtChannel1Text(self):
+        """Return the text of the channel 1 line edit.
+
+        Convert the text (string) of the line edit to float.
+
+        Returns:
+            float: the value of the channel 1.
+        """
         return float(self.edtChannel_1.text())
 
     def setEdtChannel2Text(self, text):
+        """Change the text of the channel 2 line edit.
+
+        Convert text (float) to float with 3 decimals and to string and, then, the value of the line edit is updated.
+
+        Args:
+            text (float): the value to update the channel 2 line edit.
+        """
         text = str('{0:.3f}'.format(text))
         self.edtChannel_2.setText(text)
 
     def getEdtChannel2Text(self):
+        """Return the text of the channel 2 line edit.
+
+        Convert the text (string) of the line edit to float.
+
+        Returns:
+            float: the value of the channel 2.
+        """
         return float(self.edtChannel_2.text())
 
     def setEdtTimeText(self, text):
+        """Change the text of the time line edit.
+
+        Convert text (int) to string and add the unit (seconds), then, the value of the line edit is updated.
+
+        Args:
+            text (int): the value to update the time line edit.
+        """
         self.edtTime.setText(str(text) + Strings.unitTime)
 
     def getEdtTimeText(self):
+        """Return the text of the time line edit.
+
+        Remove the unit (s, seconds) of the string and convert the text (string) of the line edit to int.
+
+        Returns:
+            int: the value of the time.
+        """
         text = self.edtTime.text().replace(Strings.unitTime, '')
         return int(text)
 
@@ -419,6 +461,14 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setBtnPeristalticStatus(self, status):
+        """Change the status and the text of the peristaltic button.
+
+        If status is True, the text of the button is changed to STOP, in the case that status is False, the text of
+        the button is changed to START.
+
+        Args:
+            status (bool): the status of the button.
+        """
         if status:
             text = Strings.stop
 
@@ -429,39 +479,107 @@ class ViewDataAcquisition(QWidget):
         self.btnPeristaltic.setChecked(status)
 
     def getBtnPeristalticStatus(self):
+        """Return the status of the peristaltic button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnPeristaltic.isChecked()
 
     def setBtnPeristalticDisable(self, disable):
+        """Enable or disable the peristaltic button.
+
+        Args:
+            disable (bool): if the value is True, the button will be disabled, in the opposite case, the button will be
+            enabled.
+        """
         self.btnPeristaltic.setDisabled(disable)
 
     def setBtnBackPeristalticStatus(self, status):
+        """Change the status of the back peristaltic button.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnBackPeristaltic.setChecked(status)
 
     def getBtnBackPeristalticStatus(self):
+        """Return the status of the back peristaltic button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnBackPeristaltic.isChecked()
 
     def setBtnBackPeristalticDisable(self, disable):
+        """Enable or disable the back peristaltic button.
+
+        Args:
+            disable (bool): if the value is True, the button will be disabled, in the opposite case, the button will be
+            enabled.
+        """
         self.btnBackPeristaltic.setDisabled(disable)
 
     def setBtnStopPeristalticStatus(self, status):
+        """Change the status of the stop peristaltic button.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnStopPeristaltic.setChecked(status)
 
     def getBtnStopPeristalticStatus(self):
+        """Return the status of the stop peristaltic button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnStopPeristaltic.isChecked()
 
     def setBtnStopPeristalticDisable(self, disable):
+        """Enable or disable the stop peristaltic button.
+
+        Args:
+            disable (bool): if the value is True, the button will be disabled, in the opposite case, the button will be
+            enabled.
+        """
         self.btnStopPeristaltic.setDisabled(disable)
 
     def setBtnForwardPeristalticStatus(self, status):
+        """Change the status of the forward peristaltic button.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnForwardPeristaltic.setChecked(status)
 
     def getBtnForwardPeristalticStatus(self):
+        """Return the status of the forward peristaltic button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnForwardPeristaltic.isChecked()
 
     def setBtnForwardPeristalticDisable(self, disable):
+        """Enable or disable the forward peristaltic button.
+
+        Args:
+            disable (bool): if the value is True, the button will be disabled, in the opposite case, the button will be
+            enabled.
+        """
         self.btnForwardPeristaltic.setDisabled(disable)
 
     def setBtnBSFPeristalticStatus(self, status, who):
+        """Change the status of the back, stop and forward peristaltic buttons.
+
+        Args:
+            status (bool): the status of the button.
+            who (int): what button was pressed:
+                - 0: Back button
+                - 1: Stop button
+                - 2: Forward button
+        """
         if who == 0:
             self.setBtnBackPeristalticStatus(status)
 
@@ -472,6 +590,17 @@ class ViewDataAcquisition(QWidget):
             self.setBtnForwardPeristalticStatus(status)
 
     def getBtnBSFPeristalticStatus(self, who):
+        """Return the status of the back, stop and forward peristaltic buttons.
+
+        Args:
+            who (int): what button was pressed:
+                - 0: Back button
+                - 1: Stop button
+                - 2: Forward button
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         if who == 0:
             return self.getBtnBackPeristalticStatus()
 
@@ -482,6 +611,19 @@ class ViewDataAcquisition(QWidget):
             return self.getBtnForwardPeristalticStatus()
 
     def setBtnBSFPeristalticNotStatus(self, status, who):
+        """Change the status of the back, stop and forward peristaltic buttons according to the button that was pressed.
+
+        If 'who' is equal to 0 the back button was pressed and the stop and forward buttons are depressed, if 'who' is 1
+        the stop button was pressed and the back and forward are depressed, finally, if 'who' is 2 the forward button
+        was pressed and the back and stop buttons are depressed.
+
+        Args:
+            status (bool): the status of the button.
+            who (int): what button was pressed:
+                - 0: Back button
+                - 1: Stop button
+                - 2: Forward button
+        """
         if who == 0:
             self.setBtnStopPeristalticStatus(status)
             self.setBtnForwardPeristalticStatus(status)
@@ -495,14 +637,30 @@ class ViewDataAcquisition(QWidget):
             self.setBtnStopPeristalticStatus(status)
 
     def setBtnBSFPeristalticDisable(self, disable):
+        """Enable or disable the back, stop and forward peristaltic buttons.
+
+        Args:
+            disable (bool): if the value is True, the buttons will be disabled, in the opposite case, the buttons will
+            be enabled.
+        """
         self.setBtnBackPeristalticDisable(disable)
         self.setBtnStopPeristalticDisable(disable)
         self.setBtnForwardPeristalticDisable(disable)
 
     def setEdtPeristalticValue(self, value):
+        """Change the value of the peristaltic line edit.
+
+        Args:
+            value (int): the value to update the peristaltic line edit.
+        """
         self.edtPeristaltic.setValue(value)
 
     def getEdtPeristalticValue(self):
+        """Return the value of the peristaltic line edit.
+
+        Returns:
+            int: the value of the peristaltic.
+        """
         return self.edtPeristaltic.value()
 
     """
@@ -518,29 +676,77 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setBtnImpulsionalAStatus(self, status):
+        """Change the status of the purge A button.
+
+        If status is True, purge A button is pressed and disabled, in the opposite case, the button is depressed and
+        enable.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnPurge_A.setChecked(status)
         self.setBtnImpulsionalADisable(status)
 
     def getBtnImpulsionalAStatus(self):
+        """Return the status of the purge A button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnPurge_A.isChecked()
 
     def setBtnImpulsionalADisable(self, disable):
+        """Enable or disable the purge A button.
+
+        Args:
+            disable (bool): if the value is True, the button will be disabled, in the opposite case, the button will be
+            enabled.
+        """
         self.btnPurge_A.setDisabled(disable)
 
     def setBtnInjectAStatus(self, status):
+        """Change the status of the inject A button.
+
+        If status is True, inject A button is pressed and disabled, in the opposite case, the button is depressed and
+        enable.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnInject_A.setChecked(status)
         self.setBtnInjectADisable(status)
 
     def getBtnInjectAStatus(self):
+        """Return the status of the inject A button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnInject_A.isChecked()
 
     def setBtnInjectADisable(self, disable):
+        """Enable or disable the inject A button.
+
+        Args:
+            disable (bool): if the value is True, the button will be disabled, in the opposite case, the button will be
+            enabled.
+        """
         self.btnInject_A.setDisabled(disable)
 
     def setEdtImpulsionalAValue(self, value):
+        """Change the value of the impulsional A line edit.
+
+        Args:
+            value (int): the value to update the impulsional A line edit.
+        """
         self.edtImpulsional_A.setValue(value)
 
     def getEdtImpulsionalAValue(self):
+        """Return the value of the impulsional A line edit.
+
+        Returns:
+            int: the value of the impulsional A.
+        """
         return self.edtImpulsional_A.value()
 
     """
@@ -556,29 +762,77 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setBtnImpulsionalBStatus(self, status):
+        """Change the status of the purge B button.
+
+        If status is True, purge B button is pressed and disabled, in the opposite case, the button is depressed and
+        enable.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnPurge_B.setChecked(status)
         self.setBtnImpulsionalBDisable(status)
 
     def getBtnImpulsionalBStatus(self):
+        """Return the status of the purge B button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnPurge_B.isChecked()
 
     def setBtnImpulsionalBDisable(self, disable):
+        """Enable or disable the purge B button.
+
+        Args:
+            disable (bool): if the value is True, the button will be disabled, in the opposite case, the button will be
+            enabled.
+        """
         self.btnPurge_B.setDisabled(disable)
 
     def setBtnInjectBStatus(self, status):
+        """Change the status of the inject B button.
+
+        If status is True, inject B button is pressed and disabled, in the opposite case, the button is depressed and
+        enable.
+
+        Args:
+            status (bool): the status of the button.
+        """
         self.btnInject_B.setChecked(status)
         self.setBtnInjectBDisable(status)
 
     def getBtnInjectBStatus(self):
+        """Return the status of the inject B button.
+
+        Returns:
+            bool: the status of the button, if the button is pressed or depressed.
+        """
         return self.btnInject_B.isChecked()
 
     def setBtnInjectBDisable(self, disable):
+        """Enable or disable the inject B button.
+
+        Args:
+            disable (bool): if the value is True, the button will be disabled, in the opposite case, the button will be
+            enabled.
+        """
         self.btnInject_B.setDisabled(disable)
 
     def setEdtImpulsionalBValue(self, value):
+        """Change the value of the impulsional B line edit.
+
+        Args:
+            value (int): the value to update the impulsional B line edit.
+        """
         self.edtImpulsional_B.setValue(value)
 
     def getEdtImpulsionalBValue(self):
+        """Return the value of the impulsional B line edit.
+
+        Returns:
+            int: the value of the impulsional B.
+        """
         return self.edtImpulsional_B.value()
 
     """
@@ -594,9 +848,19 @@ class ViewDataAcquisition(QWidget):
     """
 
     def setEdtSaveFileText(self, text):
+        """Change the text of the save file line edit.
+
+        Args:
+            text (str): the text to update the save file line edit.
+        """
         self.edtSaveFile.setText(text)
 
     def getEdtSaveFileText(self):
+        """Return the text of the save file line edit.
+
+        Returns:
+            str: the text of the save file.
+        """
         return self.edtSaveFile.text()
 
     """

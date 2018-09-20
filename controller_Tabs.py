@@ -457,7 +457,7 @@ class ControllerTabs:
         action is sent and the timeout to wait for the ACK command is activated.
 
         Args:
-            who (ViewTabs): the tab where the button was pressed.
+            who (int): what button was pressed.
         """
         if self.viewDataAcquisition.getBtnBSFPeristalticStatus(who):
 
@@ -482,7 +482,7 @@ class ControllerTabs:
         state).
 
         Args:
-            who (ViewTabs): the tab where the button was pressed.
+            who (int): what button was pressed.
         """
         if self.btnTimeout:
             status = not self.viewDataAcquisition.getBtnBSFPeristalticStatus(who)
