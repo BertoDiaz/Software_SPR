@@ -32,7 +32,7 @@ class ViewCurveSetup(QWidget):
 
         """---------------------------------------------- QPushButtons ----------------------------------------------"""
         self.btnCalibrate = QPushButton(Strings.calibrate)
-        self.btnLaser = QPushButton(Strings.laserOFF)
+        self.btnLaser = QPushButton(Strings.laserStart)
         self.btnReset = QPushButton(Strings.reset)
         self.btnAutoAcquisition = QPushButton(Strings.automatic)
         self.btnSaveFile = QPushButton(Strings.saveFileUC)
@@ -351,10 +351,10 @@ class ViewCurveSetup(QWidget):
 
     def setBtnLaserStatus(self, status):
         if status:
-            text = Strings.laserON
+            text = Strings.laserStop
 
         else:
-            text = Strings.laserOFF
+            text = Strings.laserStart
 
         self.btnLaser.setText(text)
         self.btnLaser.setChecked(status)

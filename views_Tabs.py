@@ -16,16 +16,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from PyQt5.QtWidgets import QWidget, QTabWidget, QVBoxLayout, QDesktopWidget, QPushButton, QMessageBox
+from PyQt5.QtGui import QColor
 from views_SystemControl import ViewSystemControl
 from views_CurveSetup import ViewCurveSetup
 from views_DataAcquisition import ViewDataAcquisition
 from lib import Strings
+from lib import Styles
 
 
 class ViewTabs(QWidget):
 
     def __init__(self, parent):
         super().__init__(parent)
+
+        p = self.palette()
+        p.setColor(self.backgroundRole(), QColor('#D8D8D8'))
+        self.setPalette(p)
 
         """---------------------------------------------- QPushButtons ----------------------------------------------"""
         self.btnExit = QPushButton(Strings.exitLC)
@@ -40,6 +46,8 @@ class ViewTabs(QWidget):
         self.tab_SystemControl = ViewSystemControl(None)
         self.tab_CurveSetup = ViewCurveSetup(None)
         self.tab_DataAcquisition = ViewDataAcquisition(None)
+
+        self.tabs.setStyleSheet(Styles.qTabBar)
 
         self.tabs.addTab(self.tab_SystemControl, Strings.systemControl)
         self.tabs.addTab(self.tab_CurveSetup, Strings.sprCurveSetup)

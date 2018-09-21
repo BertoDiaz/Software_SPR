@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from PyQt5.QtWidgets import QWidget, QGridLayout, QGroupBox, QVBoxLayout, QPushButton, QLabel, QSpinBox, QFileDialog
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QColor
 from lib import Strings
 from lib import Styles
 import getpass
@@ -30,7 +30,7 @@ class ViewSystemControl(QWidget):
         super().__init__(parent)
 
         """---------------------------------------------- QPushButtons ----------------------------------------------"""
-        self.btnLaser = QPushButton(Strings.laserOFF)
+        self.btnLaser = QPushButton(Strings.laserStart)
         self.btnPeristaltic = QPushButton(Strings.start)
         self.btnImpulsional_A = QPushButton(Strings.inject)
         self.btnImpulsional_B = QPushButton(Strings.inject)
@@ -180,10 +180,10 @@ class ViewSystemControl(QWidget):
 
     def setBtnLaserStatus(self, status):
         if status:
-            text = Strings.laserON
+            text = Strings.laserStop
 
         else:
-            text = Strings.laserOFF
+            text = Strings.laserStart
 
         self.btnLaser.setText(text)
         self.btnLaser.setChecked(status)

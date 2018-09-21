@@ -33,17 +33,22 @@ class Chart(QChartView):
         self.xRange = [0, 100]
         self.yRange = [0, 100]
 
+        self.setBackgroundBrush(QColor('#D8D8D8'))
+
         self.setRenderHint(QPainter.Antialiasing)
         self.chart.setTitle(title)
         self.chart.setTitleBrush(Qt.white)
         self.chart.setAnimationOptions(QChart.NoAnimation)
         self.chart.legend().setVisible(False)
-        self.chart.setBackgroundBrush(Qt.black)
+        # self.chart.setBackgroundBrush(Qt.black)
+        self.chart.setBackgroundBrush(QColor('#00004D'))
 
         self.curve = QLineSeries()
         pen = self.curve.pen()
 
-        pen.setColor(Qt.green)
+        # pen.setColor(Qt.green)
+        # pen.setColor(QColor('#FFE6B3'))
+        pen.setColor(QColor('#B35900'))
         pen.setWidthF(2)
         self.curve.setPen(pen)
 
