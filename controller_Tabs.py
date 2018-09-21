@@ -22,6 +22,7 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer
 from functools import partial
 from lib import Strings
+import winsound
 import datetime
 import sys
 import csv
@@ -962,26 +963,30 @@ class ControllerTabs:
 
     def acquisitionDataReceived(self, data):
         if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
-            self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
-            self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
-            self.valuesPhotodiodes['Angle'].append(self.baseX + (self.values['Automatic'] * 0.2))
 
-            self.values['Acquisition Channel 1'] = self.valuesPhotodiodes['Photodiode A'][self.values['Automatic']]
-            self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
-            self.values['Angle'] = self.valuesPhotodiodes['Angle'][self.values['Automatic']]
-
-            self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
-            self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
-            self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
-
-            self.viewCurveSetup.setDataChannel1(self.values['Angle'], self.values['Acquisition Channel 1'])
-            self.viewCurveSetup.setDataChannel2(self.values['Angle'], self.values['Acquisition Channel 2'])
-
-            self.values['Automatic'] += 1
-
-            if self.values['Angle'] > 62.00:
+            if self.values['Angle'] >= 62.00:
                 self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
                 self.btnAutoAcquisitionChanged()
+
+            else:
+                self.setBeep()
+
+                self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
+                self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
+                self.valuesPhotodiodes['Angle'].append(self.baseX + (self.values['Automatic'] * 0.2))
+
+                self.values['Acquisition Channel 1'] = self.valuesPhotodiodes['Photodiode A'][self.values['Automatic']]
+                self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
+                self.values['Angle'] = self.valuesPhotodiodes['Angle'][self.values['Automatic']]
+
+                self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
+                self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
+                self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
+
+                self.viewCurveSetup.setDataChannel1(self.values['Angle'], self.values['Acquisition Channel 1'])
+                self.viewCurveSetup.setDataChannel2(self.values['Angle'], self.values['Acquisition Channel 2'])
+
+                self.values['Automatic'] += 1
 
     """
     ********************************************************************************************************************
@@ -1488,6 +1493,10 @@ class ControllerTabs:
 
         self.tmrTimeout.stop()
         self.tmrTimeout.timeout.disconnect()
+
+    @staticmethod
+    def setBeep():
+        winsound.Beep(800, 500)
 
     def exit_App(self):
         exitApp = self.viewTabs.setMessageExit()
