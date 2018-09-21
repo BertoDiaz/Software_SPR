@@ -235,6 +235,7 @@ class ControllerTabs:
             """------------------------------------- Data Acquisition Connects --------------------------------------"""
 
             self.viewDataAcquisition.btnInitExperiment.clicked.connect(self.btnInitExperimentChanged)
+            self.viewDataAcquisition.btnLaser.clicked.connect(self.btnLaserChanged)
 
             btnPeristalticParameters = partial(self.btnPeristalticChanged, who=self.viewDataAcquisition)
             self.viewDataAcquisition.btnPeristaltic.clicked.connect(btnPeristalticParameters)
@@ -311,6 +312,7 @@ class ControllerTabs:
         """
         self.viewSystemControl.setBtnLaserDisable(True)
         self.viewCurveSetup.setBtnLaserDisable(True)
+        self.viewDataAcquisition.setBtnLaserDisable(True)
 
         if not self.btnLaserChecked:
             self.btnLaserChecked = True
@@ -341,10 +343,12 @@ class ControllerTabs:
 
         self.viewSystemControl.setBtnLaserStatus(self.btnLaserChecked)
         self.viewCurveSetup.setBtnLaserStatus(self.btnLaserChecked)
-        self.viewDataAcquisition.setLedLaserStatus(self.btnLaserChecked)
+        self.viewDataAcquisition.setBtnLaserStatus(self.btnLaserChecked)
+        self.viewCurveSetup.setLedLaserStatus(self.btnLaserChecked)
 
         self.viewSystemControl.setBtnLaserDisable(False)
         self.viewCurveSetup.setBtnLaserDisable(False)
+        self.viewDataAcquisition.setBtnLaserDisable(False)
 
     """
     ********************************************************************************************************************
@@ -1070,7 +1074,7 @@ class ControllerTabs:
 
         if self.viewDataAcquisition.getBtnInitExperimentStatus():
 
-            if self.viewDataAcquisition.getLedLaserStatus():
+            if self.viewDataAcquisition.getBtnLaserStatus():
 
                 if self.viewDataAcquisition.getBtnPeristalticStatus():
                     self.serialPort.send_Init_Experiment()
@@ -1169,7 +1173,7 @@ class ControllerTabs:
 
                 self.viewDataAcquisition.setRangeYChannel2([self.axisYMinChannel2, self.axisYMaxChannel2], autoscale)
 
-            if not self.viewDataAcquisition.getLedLaserStatus():
+            if not self.viewDataAcquisition.getBtnLaserStatus():
                 self.viewDataAcquisition.setMessageCritical(Strings.messageNecessaryLaserON)
 
             if not self.viewDataAcquisition.getBtnPeristalticStatus():

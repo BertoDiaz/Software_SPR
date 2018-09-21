@@ -19,7 +19,6 @@ from PyQt5.QtWidgets import QWidget, QGridLayout, QGroupBox, QVBoxLayout, QHBoxL
 from PyQt5.QtWidgets import QSpinBox, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
-from lib.LedIndicatorWidget import LedIndicator
 from lib.TriangleButton import TriangleButton
 from lib.RectangleButton import RectangleButton
 from lib.Chart import Chart
@@ -35,6 +34,7 @@ class ViewDataAcquisition(QWidget):
 
         """---------------------------------------------- QPushButtons ----------------------------------------------"""
         self.btnInitExperiment = QPushButton()
+        self.btnLaser = QPushButton(Strings.laserStart)
         self.btnFreeRunning = QPushButton(Strings.freeRunning)
         self.btnPeristaltic = QPushButton(Strings.start)
         self.btnInject_A = QPushButton(Strings.inject)
@@ -56,15 +56,14 @@ class ViewDataAcquisition(QWidget):
         """----------------------------------------------------------------------------------------------------------"""
 
         """--------------------------------------------- Led Indicator ----------------------------------------------"""
-        self.ledLaser = LedIndicator(self)
-        # self.ledLaser = QPushButton(Strings.laser)
+        # self.ledLaser = LedIndicator(self)
         """----------------------------------------------------------------------------------------------------------"""
 
         """------------------------------------------------ QLabels -------------------------------------------------"""
         self.lblImageLogo = QLabel(self)
         self.lblDataSampling = QLabel(Strings.dataSampling)
         self.lblExperimentTime = QLabel(Strings.experimentTime)
-        self.lblLaser = QLabel(Strings.statusLaser)
+        # self.lblLaser = QLabel(Strings.statusLaser)
         self.lblChannel_1 = QLabel(Strings.channel1LC)
         self.lblChannel_2 = QLabel(Strings.channel2LC)
         self.lblTime = QLabel(Strings.timeLC)
@@ -105,7 +104,7 @@ class ViewDataAcquisition(QWidget):
         self.timeBoxLayout = QGroupBox(Strings.timeParameters)
         self.dataSamplingBoxLayout = QGroupBox()
         self.experimentTimeBoxLayout = QGroupBox()
-        self.statusLaserBoxLayout = QGroupBox()
+        # self.statusLaserBoxLayout = QGroupBox()
         self.fluidicBoxLayout = QGroupBox(Strings.fluidicParameters)
         self.peristalticControlBoxLayout = QGroupBox(Strings.peristalticPumpControl)
         self.injectControlBoxLayout = QGroupBox(Strings.injectionPumpControl)
@@ -120,7 +119,7 @@ class ViewDataAcquisition(QWidget):
         self.timeLayout = QGridLayout(self)
         self.dataSamplingLayout = QGridLayout(self)
         self.experimentTimeLayout = QGridLayout(self)
-        self.statusLaserLayout = QGridLayout(self)
+        # self.statusLaserLayout = QGridLayout(self)
         self.fluidicLayout = QGridLayout(self)
         self.peristalticControlLayout = QGridLayout(self)
         self.injectControlLayout = QGridLayout(self)
@@ -144,7 +143,7 @@ class ViewDataAcquisition(QWidget):
         self.setStyleSpinBox()
         self.setStyleLineEdit()
         self.setStyleLabels()
-        self.setStyleLed()
+        # self.setStyleLed()
         self.setStylePixmap()
         self.setStyleGroupBox()
         self.setStyleLayouts()
@@ -184,15 +183,16 @@ class ViewDataAcquisition(QWidget):
 
         self.experimentTimeBoxLayout.setLayout(self.experimentTimeLayout)
 
-        self.statusLaserLayout.addWidget(self.lblLaser, 0, 0)
-        self.statusLaserLayout.addWidget(self.ledLaser, 1, 0)
-
-        self.statusLaserBoxLayout.setLayout(self.statusLaserLayout)
+        # self.statusLaserLayout.addWidget(self.lblLaser, 0, 0)
+        # self.statusLaserLayout.addWidget(self.ledLaser, 1, 0)
+        #
+        # self.statusLaserBoxLayout.setLayout(self.statusLaserLayout)
 
         self.timeLayout.addWidget(self.btnInitExperiment, 0, 0, 5, 1)
         self.timeLayout.addWidget(self.dataSamplingBoxLayout, 0, 1, 1, 3)
         self.timeLayout.addWidget(self.experimentTimeBoxLayout, 1, 1, 1, 3)
-        self.timeLayout.addWidget(self.statusLaserBoxLayout, 2, 1, 3, 1)
+        # self.timeLayout.addWidget(self.statusLaserBoxLayout, 2, 1, 3, 1)
+        self.timeLayout.addWidget(self.btnLaser, 2, 1, 3, 1)
         self.timeLayout.addWidget(self.lblChannel_1, 2, 2)
         self.timeLayout.addWidget(self.edtChannel_1, 2, 3)
         self.timeLayout.addWidget(self.lblChannel_2, 3, 2)
@@ -345,38 +345,29 @@ class ViewDataAcquisition(QWidget):
 
     """
     ********************************************************************************************************************
-    *                                               Laser Led Functions                                                *
+    *                                              Laser Button Functions                                              *
     ********************************************************************************************************************
     """
 
-    def setLedLaserStatus(self, status):
-        """Change the status of the led laser.
+    def setBtnLaserStatus(self, status):
+        if status:
+            text = Strings.laserStop
 
-        Args:
-            status (bool): the status of the button.
-        """
-        self.ledLaser.setChecked(status)
+        else:
+            text = Strings.laserStart
 
-    def getLedLaserStatus(self):
-        """Return the status of the led laser.
+        self.btnLaser.setText(text)
+        self.btnLaser.setChecked(status)
 
-        Returns:
-            bool: the status of the led, if the led is enabled or disabled.
-        """
-        return self.ledLaser.isChecked()
+    def getBtnLaserStatus(self):
+        return self.btnLaser.isChecked()
 
-    def setLedLaserDisable(self, disable):
-        """Enable or disable the led laser.
-
-        Args:
-            disable (bool): if the value is True, the led will be disabled, in the opposite case, the led will be
-            enabled.
-        """
-        self.ledLaser.setDisabled(disable)
+    def setBtnLaserDisable(self, disable):
+        self.btnLaser.setDisabled(disable)
 
     """
     ********************************************************************************************************************
-    *                                             End Laser Led Functions                                              *
+    *                                            End Laser Button Functions                                            *
     ********************************************************************************************************************
     """
 
@@ -1097,6 +1088,9 @@ class ViewDataAcquisition(QWidget):
         self.btnInitExperiment.setStyleSheet(Styles.buttonInit)
         self.btnInitExperiment.setCheckable(True)
 
+        self.btnLaser.setStyleSheet(Styles.buttonLaserAcquisitionSmall)
+        self.btnLaser.setCheckable(True)
+
         self.btnFreeRunning.setStyleSheet(Styles.buttonFreeRunning)
         self.btnFreeRunning.setCheckable(True)
 
@@ -1235,10 +1229,6 @@ class ViewDataAcquisition(QWidget):
 
         self.lblTime.setFixedWidth(50)
 
-        self.lblLaser.setFixedWidth(50)
-        self.lblLaser.setWordWrap(True)
-        self.lblLaser.setAlignment(Qt.AlignCenter)
-
         self.lblPeristaltic.setFixedWidth(70)
         self.lblPeristaltic.setAlignment(Qt.AlignBottom)
 
@@ -1263,22 +1253,6 @@ class ViewDataAcquisition(QWidget):
     """
     ********************************************************************************************************************
     *                                            End Labels Styles Functions                                           *
-    ********************************************************************************************************************
-    """
-
-    """
-    ********************************************************************************************************************
-    *                                               Led Styles Functions                                               *
-    ********************************************************************************************************************
-    """
-
-    def setStyleLed(self):
-        """Change the style of the led to the custom style."""
-        self.setLedLaserDisable(True)
-
-    """
-    ********************************************************************************************************************
-    *                                            End Led Styles Functions                                              *
     ********************************************************************************************************************
     """
 

@@ -18,7 +18,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from PyQt5.QtWidgets import QWidget, QGridLayout, QGroupBox, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit
 from PyQt5.QtWidgets import QSpinBox, QDoubleSpinBox, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt, QLocale
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QColor
+from lib.LedIndicatorWidget import LedIndicator
 from lib.Chart import Chart
 from lib import Strings
 from lib import Styles
@@ -36,6 +37,10 @@ class ViewCurveSetup(QWidget):
         self.btnReset = QPushButton(Strings.reset)
         self.btnAutoAcquisition = QPushButton(Strings.automatic)
         self.btnSaveFile = QPushButton(Strings.saveFileUC)
+        """----------------------------------------------------------------------------------------------------------"""
+
+        """--------------------------------------------- Led Indicator ----------------------------------------------"""
+        self.ledLaser = LedIndicator(self)
         """----------------------------------------------------------------------------------------------------------"""
 
         """------------------------------------------------ QLabels -------------------------------------------------"""
@@ -130,6 +135,7 @@ class ViewCurveSetup(QWidget):
         self.setStyleSpinBox()
         self.setStyleLineEdit()
         self.setStyleLabels()
+        self.setStyleLed()
         self.setStylePixmap()
         self.setStyleGroupBox()
         self.setStyleLayouts()
@@ -192,6 +198,7 @@ class ViewCurveSetup(QWidget):
         Returns:
             QGroupBox: return the main group box of this step.
         """
+        self.btnLaserLayout.addWidget(self.ledLaser, 0, Qt.AlignCenter)
         self.btnLaserLayout.addWidget(self.btnLaser, 0, Qt.AlignBottom)
 
         self.btnLaserBoxLayout.setLayout(self.btnLaserLayout)
@@ -340,6 +347,43 @@ class ViewCurveSetup(QWidget):
     """
     ********************************************************************************************************************
     *                                       End Calibration Parameters Functions                                       *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                               Laser Led Functions                                                *
+    ********************************************************************************************************************
+    """
+
+    def setLedLaserStatus(self, status):
+        """Change the status of the led laser.
+
+        Args:
+            status (bool): the status of the button.
+        """
+        self.ledLaser.setChecked(status)
+
+    def getLedLaserStatus(self):
+        """Return the status of the led laser.
+
+        Returns:
+            bool: the status of the led, if the led is enabled or disabled.
+        """
+        return self.ledLaser.isChecked()
+
+    def setLedLaserDisable(self, disable):
+        """Enable or disable the led laser.
+
+        Args:
+            disable (bool): if the value is True, the led will be disabled, in the opposite case, the led will be
+            enabled.
+        """
+        self.ledLaser.setDisabled(disable)
+
+    """
+    ********************************************************************************************************************
+    *                                             End Laser Led Functions                                              *
     ********************************************************************************************************************
     """
 
@@ -675,6 +719,28 @@ class ViewCurveSetup(QWidget):
     """
     ********************************************************************************************************************
     *                                            End Labels Styles Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                               Led Styles Functions                                               *
+    ********************************************************************************************************************
+    """
+
+    def setStyleLed(self):
+        """Change the style of the led to the custom style."""
+        self.setLedLaserDisable(True)
+        self.ledLaser.setFixedWidth(50)
+        self.ledLaser.setFixedHeight(50)
+        self.ledLaser.on_color_1 = QColor(255, 0, 0)
+        self.ledLaser.on_color_2 = QColor(192, 0, 0)
+        self.ledLaser.off_color_1 = QColor(28, 0, 0)
+        self.ledLaser.off_color_2 = QColor(128, 0, 0)
+
+    """
+    ********************************************************************************************************************
+    *                                            End Led Styles Functions                                              *
     ********************************************************************************************************************
     """
 

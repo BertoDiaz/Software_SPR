@@ -48,7 +48,7 @@ class Chart(QChartView):
 
         # pen.setColor(Qt.green)
         # pen.setColor(QColor('#FFE6B3'))
-        pen.setColor(QColor('#B35900'))
+        pen.setColor(QColor('#FF9933'))
         pen.setWidthF(2)
         self.curve.setPen(pen)
 

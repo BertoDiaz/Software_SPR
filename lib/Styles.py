@@ -115,6 +115,49 @@ buttonLaserSmall = 'QPushButton {' \
                    'stop: 0 ' + greenHoverLight + ', stop: 1 ' + greenHoverDark + ');' \
                    '}'
 
+buttonLaserAcquisitionSmall = 'QPushButton {' \
+                              'border-width: 1px;' \
+                              'border-style: inset;' \
+                              'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                              'stop: 0 ' + blueLight + ', stop: 1 ' + blueDark + ');' \
+                              'border-radius: 4px;' \
+                              'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                              'stop: 0 ' + blueLight + ', stop: 1 ' + blueDark + ');' \
+                              'font: bold;' \
+                              'font-size: 12px;' \
+                              'color: white;' \
+                              'height: 80px;' \
+                              'width: 80px;' \
+                              '}' \
+                              'QPushButton:hover {' \
+                              'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                              'stop: 0 ' + blueHoverLight + ', stop: 1 ' + blueHoverDark + ');' \
+                              '}' \
+                              'QPushButton:pressed {' \
+                              'border-width: 1px;' \
+                              'border-style: outset;' \
+                              'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                              'stop: 0 ' + blueHoverLight + ', stop: 1 ' + blueHoverDark + ');' \
+                              '}' \
+                              'QPushButton:checked {' \
+                              'border-width: 1px;' \
+                              'border-style: inset;' \
+                              'border-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                              'stop: 0 ' + greenLight + ', stop: 1 ' + greenDark + ');' \
+                              'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                              'stop: 0 ' + greenLight + ', stop: 1 ' + greenDark + ');' \
+                              '}' \
+                              'QPushButton:hover:checked {' \
+                              'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                              'stop: 0 ' + greenHoverLight + ', stop: 1 ' + greenHoverDark + ');' \
+                              '}' \
+                              'QPushButton:pressed:checked {' \
+                              'border-width: 1px;' \
+                              'border-style: outset;' \
+                              'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
+                              'stop: 0 ' + greenHoverLight + ', stop: 1 ' + greenHoverDark + ');' \
+                              '}'
+
 buttonPeristaltic = 'QPushButton {' \
                     'border-width: 1px;' \
                     'border-style: inset;' \
@@ -634,6 +677,10 @@ buttonChart = 'QPushButton {' \
               'background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1,' \
               'stop: 0 ' + greenHoverLight + ', stop: 1 ' + greenHoverDark + ');' \
               '}'
+
+buttonExit = 'QPushButton {' \
+             'font: bold;' \
+             '}'
 
 """
     Different border style:
