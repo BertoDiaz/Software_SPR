@@ -55,15 +55,10 @@ class ViewDataAcquisition(QWidget):
         self.btnSaveFile = QPushButton(Strings.saveFileUC)
         """----------------------------------------------------------------------------------------------------------"""
 
-        """--------------------------------------------- Led Indicator ----------------------------------------------"""
-        # self.ledLaser = LedIndicator(self)
-        """----------------------------------------------------------------------------------------------------------"""
-
         """------------------------------------------------ QLabels -------------------------------------------------"""
         self.lblImageLogo = QLabel(self)
         self.lblDataSampling = QLabel(Strings.dataSampling)
         self.lblExperimentTime = QLabel(Strings.experimentTime)
-        # self.lblLaser = QLabel(Strings.statusLaser)
         self.lblChannel_1 = QLabel(Strings.channel1LC)
         self.lblChannel_2 = QLabel(Strings.channel2LC)
         self.lblTime = QLabel(Strings.timeLC)
@@ -104,7 +99,6 @@ class ViewDataAcquisition(QWidget):
         self.timeBoxLayout = QGroupBox(Strings.timeParameters)
         self.dataSamplingBoxLayout = QGroupBox()
         self.experimentTimeBoxLayout = QGroupBox()
-        # self.statusLaserBoxLayout = QGroupBox()
         self.fluidicBoxLayout = QGroupBox(Strings.fluidicParameters)
         self.peristalticControlBoxLayout = QGroupBox(Strings.peristalticPumpControl)
         self.injectControlBoxLayout = QGroupBox(Strings.injectionPumpControl)
@@ -119,7 +113,6 @@ class ViewDataAcquisition(QWidget):
         self.timeLayout = QGridLayout(self)
         self.dataSamplingLayout = QGridLayout(self)
         self.experimentTimeLayout = QGridLayout(self)
-        # self.statusLaserLayout = QGridLayout(self)
         self.fluidicLayout = QGridLayout(self)
         self.peristalticControlLayout = QGridLayout(self)
         self.injectControlLayout = QGridLayout(self)
@@ -143,7 +136,6 @@ class ViewDataAcquisition(QWidget):
         self.setStyleSpinBox()
         self.setStyleLineEdit()
         self.setStyleLabels()
-        # self.setStyleLed()
         self.setStylePixmap()
         self.setStyleGroupBox()
         self.setStyleLayouts()
@@ -183,15 +175,9 @@ class ViewDataAcquisition(QWidget):
 
         self.experimentTimeBoxLayout.setLayout(self.experimentTimeLayout)
 
-        # self.statusLaserLayout.addWidget(self.lblLaser, 0, 0)
-        # self.statusLaserLayout.addWidget(self.ledLaser, 1, 0)
-        #
-        # self.statusLaserBoxLayout.setLayout(self.statusLaserLayout)
-
         self.timeLayout.addWidget(self.btnInitExperiment, 0, 0, 5, 1)
         self.timeLayout.addWidget(self.dataSamplingBoxLayout, 0, 1, 1, 3)
         self.timeLayout.addWidget(self.experimentTimeBoxLayout, 1, 1, 1, 3)
-        # self.timeLayout.addWidget(self.statusLaserBoxLayout, 2, 1, 3, 1)
         self.timeLayout.addWidget(self.btnLaser, 2, 1, 3, 1)
         self.timeLayout.addWidget(self.lblChannel_1, 2, 2)
         self.timeLayout.addWidget(self.edtChannel_1, 2, 3)

@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtChart import QChartView, QChart, QValueAxis, QLineSeries, QSplineSeries
+from PyQt5.QtChart import QChartView, QChart, QValueAxis, QLineSeries
 from PyQt5.QtGui import QPainter, QPen, QColor
 from PyQt5.QtCore import Qt
 
@@ -40,14 +40,11 @@ class Chart(QChartView):
         self.chart.setTitleBrush(Qt.white)
         self.chart.setAnimationOptions(QChart.NoAnimation)
         self.chart.legend().setVisible(False)
-        # self.chart.setBackgroundBrush(Qt.black)
         self.chart.setBackgroundBrush(QColor('#00004D'))
 
         self.curve = QLineSeries()
         pen = self.curve.pen()
 
-        # pen.setColor(Qt.green)
-        # pen.setColor(QColor('#FFE6B3'))
         pen.setColor(QColor('#FF9933'))
         pen.setWidthF(2)
         self.curve.setPen(pen)
