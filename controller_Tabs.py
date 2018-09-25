@@ -66,8 +66,8 @@ class ControllerTabs:
             'Gain B': 0,
             'Offset A': 0,
             'Offset B': 0,
-            'Init Angle': 0,
-            'Angle Longitude': 3,
+            'Init Angle': 58,
+            'Angle Longitude': 4,
             'Angle Resolution': 0.2,
             'Final Angle': 0,
             'Points Curve': 0,
@@ -76,6 +76,7 @@ class ControllerTabs:
             'Acquisition Channel 1': 0,
             'Acquisition Channel 2': 0,
             'Angle': 0,
+            'Experiment Time': 10000,
             'Channel 1': 0.000,
             'Channel 2': 0.000,
             'Time': 0
@@ -184,6 +185,7 @@ class ControllerTabs:
 
             self.viewCurveSetup.setEdtSaveFileText(self.myFileNameCalibration)
 
+            self.viewDataAcquisition.setEdtExperimentTimeValue(self.values['Experiment Time'])
             self.viewDataAcquisition.setEdtChannel1Text(self.values['Channel 1'])
             self.viewDataAcquisition.setEdtChannel2Text(self.values['Channel 2'])
             self.viewDataAcquisition.setEdtTimeText(self.values['Time'])
@@ -268,6 +270,8 @@ class ControllerTabs:
             self.viewDataAcquisition.btnAutoscaleXChannel2.clicked.connect(self.btnAutoscaleXChannel2Changed)
             self.viewDataAcquisition.btnChart1000Channel2.clicked.connect(self.btnChart1000Channel2Changed)
             self.viewDataAcquisition.btnChart10000Channel2.clicked.connect(self.btnChart10000Channel2Changed)
+
+            self.viewDataAcquisition.edtExperimentTime.valueChanged.connect(self.edtExperimentTimeChanged)
 
             edtPeristalticParameters = partial(self.edtPeristalticChanged, who=self.viewDataAcquisition)
             self.viewDataAcquisition.edtPeristaltic.valueChanged.connect(edtPeristalticParameters)
@@ -846,11 +850,11 @@ class ControllerTabs:
             self.viewCurveSetup.edtAngleLongitude.valueChanged.disconnect()
             self.viewCurveSetup.edtAngleResolution.valueChanged.disconnect()
 
-            self.values['Init Angle'] = 0
-            self.values['Angle Longitude'] = 3
+            self.values['Init Angle'] = 58
+            self.values['Angle Longitude'] = 4
             self.values['Angle Resolution'] = 0.2
-            self.values['Final Angle'] = 0
-            self.values['Points Curve'] = 0
+            self.values['Final Angle'] = self.values['Init Angle'] + self.values['Angle Longitude']
+            self.values['Points Curve'] = (self.values['Angle Longitude'] / self.values['Angle Resolution']) + 1
 
             self.viewCurveSetup.edtInitialAngle.setValue(self.values['Init Angle'])
             self.viewCurveSetup.edtAngleLongitude.setValue(self.values['Angle Longitude'])
@@ -1076,27 +1080,36 @@ class ControllerTabs:
     def btnInitExperimentChanged(self):
         laserSwitchOFF = False
         peristalticSwitchOFF = False
+        experimentTimeChange = False
 
         if self.viewDataAcquisition.getBtnInitExperimentStatus():
 
             if self.viewDataAcquisition.getBtnLaserStatus():
 
                 if self.viewDataAcquisition.getBtnPeristalticStatus():
-                    self.serialPort.send_Init_Experiment()
 
-                    self.viewDataAcquisition.initSerieChannel1()
-                    self.viewDataAcquisition.initSerieChannel2()
+                    if not self.viewDataAcquisition.setMessageQuestion(Strings.messageChangeExperimentTimePart1 +
+                                                                       str(self.values['Experiment Time']) +
+                                                                       Strings.messageChangeExperimentTimePart2):
 
-                    self.valuesExperiment['Channel 1'] = []
-                    self.valuesExperiment['Channel 2'] = []
+                        self.serialPort.send_Init_Experiment()
 
-                    self.values['Channel 1'] = 0.0
-                    self.values['Channel 2'] = 0.0
-                    self.values['Time'] = 0
+                        self.viewDataAcquisition.initSerieChannel1()
+                        self.viewDataAcquisition.initSerieChannel2()
 
-                    self.viewDataAcquisition.setEdtChannel1Text(self.values['Channel 1'])
-                    self.viewDataAcquisition.setEdtChannel2Text(self.values['Channel 2'])
-                    self.viewDataAcquisition.setEdtTimeText(self.values['Time'])
+                        self.valuesExperiment['Channel 1'] = []
+                        self.valuesExperiment['Channel 2'] = []
+
+                        self.values['Channel 1'] = 0.0
+                        self.values['Channel 2'] = 0.0
+                        self.values['Time'] = 0
+
+                        self.viewDataAcquisition.setEdtChannel1Text(self.values['Channel 1'])
+                        self.viewDataAcquisition.setEdtChannel2Text(self.values['Channel 2'])
+                        self.viewDataAcquisition.setEdtTimeText(self.values['Time'])
+
+                    else:
+                        experimentTimeChange = True
 
                 else:
                     peristalticSwitchOFF = True
@@ -1114,6 +1127,9 @@ class ControllerTabs:
         elif peristalticSwitchOFF:
             self.viewDataAcquisition.setBtnInitExperimentStatus(False)
             self.viewDataAcquisition.setMessageCritical(Strings.messageNecessaryPeristalticON)
+
+        elif experimentTimeChange:
+            self.viewDataAcquisition.setBtnInitExperimentStatus(False)
 
         else:
 
@@ -1187,6 +1203,21 @@ class ControllerTabs:
     """
     ********************************************************************************************************************
     *                                         End Init Experiment Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                           Experiment Time Functions                                              *
+    ********************************************************************************************************************
+    """
+
+    def edtExperimentTimeChanged(self):
+        self.values['Experiment Time'] = self.viewDataAcquisition.getEdtExperimentTimeValue()
+
+    """
+    ********************************************************************************************************************
+    *                                         End Experiment Time Functions                                            *
     ********************************************************************************************************************
     """
 

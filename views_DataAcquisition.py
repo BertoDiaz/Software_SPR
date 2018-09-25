@@ -359,6 +359,24 @@ class ViewDataAcquisition(QWidget):
 
     """
     ********************************************************************************************************************
+    *                                             Experiment Time Functions                                            *
+    ********************************************************************************************************************
+    """
+
+    def setEdtExperimentTimeValue(self, value):
+        self.edtExperimentTime.setValue(value)
+
+    def getEdtExperimentTimeValue(self):
+        return self.edtExperimentTime.value()
+
+    """
+    ********************************************************************************************************************
+    *                                           End Experiment Time Functions                                          *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
     *                                          Acquisition Values Functions                                            *
     ********************************************************************************************************************
     """
@@ -1138,6 +1156,7 @@ class ViewDataAcquisition(QWidget):
         self.edtDataSampling.setStyleSheet(Styles.spinBoxGeneral)
 
         self.edtExperimentTime.setStyleSheet(Styles.spinBoxGeneral)
+        self.edtExperimentTime.setRange(0, 100000)
 
         self.edtPeristaltic.setStyleSheet(Styles.spinBoxGeneral)
         self.edtPeristaltic.setFixedWidth(70)
