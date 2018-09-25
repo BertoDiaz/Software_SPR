@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from PyQt5.QtWidgets import QWidget, QGridLayout, QGroupBox, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit
 from PyQt5.QtWidgets import QSpinBox, QFileDialog, QMessageBox
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap, QColor
 from lib.TriangleButton import TriangleButton
 from lib.RectangleButton import RectangleButton
 from lib.Chart import Chart
@@ -136,6 +136,8 @@ class ViewDataAcquisition(QWidget):
         self.setStyleSpinBox()
         self.setStyleLineEdit()
         self.setStyleLabels()
+        self.setStyleRectangleButton()
+        self.setStyleTriangleButton()
         self.setStylePixmap()
         self.setStyleGroupBox()
         self.setStyleLayouts()
@@ -1258,6 +1260,49 @@ class ViewDataAcquisition(QWidget):
     """
     ********************************************************************************************************************
     *                                            End Labels Styles Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                         Rectangle Button Styles Functions                                        *
+    ********************************************************************************************************************
+    """
+
+    def setStyleRectangleButton(self):
+        """Change the style of the rectangle button to the custom style."""
+        self.btnStopPeristaltic.on_color_1 = QColor(4, 180, 4)
+        self.btnStopPeristaltic.on_color_2 = QColor(8, 138, 8)
+        self.btnStopPeristaltic.off_color_1 = QColor(0, 0, 0)
+        self.btnStopPeristaltic.off_color_2 = QColor(0, 0, 0)
+
+    """
+    ********************************************************************************************************************
+    *                                      End Rectangle Button Styles Functions                                       *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
+    *                                         Triangle Button Styles Functions                                         *
+    ********************************************************************************************************************
+    """
+
+    def setStyleTriangleButton(self):
+        """Change the style of the triangle button to the custom style."""
+        self.btnBackPeristaltic.on_color_1 = QColor(4, 180, 4)
+        self.btnBackPeristaltic.on_color_2 = QColor(8, 138, 8)
+        self.btnBackPeristaltic.off_color_1 = QColor(0, 0, 0)
+        self.btnBackPeristaltic.off_color_2 = QColor(0, 0, 0)
+
+        self.btnForwardPeristaltic.on_color_1 = QColor(4, 180, 4)
+        self.btnForwardPeristaltic.on_color_2 = QColor(8, 138, 8)
+        self.btnForwardPeristaltic.off_color_1 = QColor(0, 0, 0)
+        self.btnForwardPeristaltic.off_color_2 = QColor(0, 0, 0)
+
+    """
+    ********************************************************************************************************************
+    *                                      End Triangle Button Styles Functions                                        *
     ********************************************************************************************************************
     """
 

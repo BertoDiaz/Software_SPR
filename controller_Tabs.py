@@ -102,6 +102,7 @@ class ControllerTabs:
         self.tmrBtnInject_A = QTimer()
         self.tmrBtnInject_B = QTimer()
         self.tmrBtnReset = QTimer()
+        self.tmrBtnStopPeristaltic = QTimer()
         self.tmrTimeout = QTimer()
 
         """---------------------------------------------- End Timers ------------------------------------------------"""
@@ -500,8 +501,14 @@ class ControllerTabs:
         else:
             status = self.viewDataAcquisition.getBtnBSFPeristalticStatus(who)
 
+            if who == self.stopPeristaltic:
+                self.tmrBtnStopPeristaltic.singleShot(500, self.btnStopPeristalticOFF)
+
         self.viewDataAcquisition.setBtnBSFPeristalticStatus(status, who)
         self.viewDataAcquisition.setBtnBSFPeristalticDisable(False)
+
+    def btnStopPeristalticOFF(self):
+        self.viewDataAcquisition.setBtnStopPeristalticStatus(False)
 
     """
     ********************************************************************************************************************
