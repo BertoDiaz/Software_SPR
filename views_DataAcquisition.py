@@ -44,14 +44,18 @@ class ViewDataAcquisition(QWidget):
         self.btnBackPeristaltic = TriangleButton(40, Strings.backLC)
         self.btnForwardPeristaltic = TriangleButton(40, Strings.forwardLC)
         self.btnStopPeristaltic = RectangleButton(40)
-        self.btnChart1000Channel1 = QPushButton(Strings.x1000)
-        self.btnChart10000Channel1 = QPushButton(Strings.x10000)
-        self.btnAutoscaleXChannel1 = QPushButton(Strings.autoscaleX)
-        self.btnAutoscaleYChannel1 = QPushButton(Strings.autoscaleY)
-        self.btnChart1000Channel2 = QPushButton(Strings.x1000)
-        self.btnChart10000Channel2 = QPushButton(Strings.x10000)
-        self.btnAutoscaleXChannel2 = QPushButton(Strings.autoscaleX)
-        self.btnAutoscaleYChannel2 = QPushButton(Strings.autoscaleY)
+        self.btnChart1000Channel = QPushButton(Strings.x1000)
+        self.btnChart10000Channel = QPushButton(Strings.x10000)
+        self.btnAutoscaleXChannel = QPushButton(Strings.autoscaleX)
+        self.btnAutoscaleYChannel = QPushButton(Strings.autoscaleY)
+        # self.btnChart1000Channel1 = QPushButton(Strings.x1000)
+        # self.btnChart10000Channel1 = QPushButton(Strings.x10000)
+        # self.btnAutoscaleXChannel1 = QPushButton(Strings.autoscaleX)
+        # self.btnAutoscaleYChannel1 = QPushButton(Strings.autoscaleY)
+        # self.btnChart1000Channel2 = QPushButton(Strings.x1000)
+        # self.btnChart10000Channel2 = QPushButton(Strings.x10000)
+        # self.btnAutoscaleXChannel2 = QPushButton(Strings.autoscaleX)
+        # self.btnAutoscaleYChannel2 = QPushButton(Strings.autoscaleY)
         self.btnSaveFile = QPushButton(Strings.saveFileUC)
         """----------------------------------------------------------------------------------------------------------"""
 
@@ -91,8 +95,10 @@ class ViewDataAcquisition(QWidget):
         """----------------------------------------------------------------------------------------------------------"""
 
         """------------------------------------------------- Charts -------------------------------------------------"""
-        self.myChartChannel1 = Chart(Strings.channel1UC)
-        self.myChartChannel2 = Chart(Strings.channel2UC)
+        # self.myChartChannel1 = Chart(Strings.channel1UC)
+        # self.myChartChannel2 = Chart(Strings.channel2UC)
+
+        self.myChartChannel = Chart()
         """----------------------------------------------------------------------------------------------------------"""
 
         """---------------------------------------------- QGroupBoxes -----------------------------------------------"""
@@ -127,8 +133,10 @@ class ViewDataAcquisition(QWidget):
         """----------------------------------------------------------------------------------------------------------"""
 
         """---------------------------------------------- QHBoxLayouts ----------------------------------------------"""
-        self.btnChartLayoutChannel1 = QHBoxLayout(self)
-        self.btnChartLayoutChannel2 = QHBoxLayout(self)
+        # self.btnChartLayoutChannel1 = QHBoxLayout(self)
+        # self.btnChartLayoutChannel2 = QHBoxLayout(self)
+
+        self.btnChartLayoutChannel = QHBoxLayout(self)
         """----------------------------------------------------------------------------------------------------------"""
 
         """--------------------------------------------- Style Functions --------------------------------------------"""
@@ -274,20 +282,32 @@ class ViewDataAcquisition(QWidget):
         Returns:
             QGroupBox: return the main group box of this step.
         """
-        self.btnChartLayoutChannel1.addWidget(self.btnAutoscaleYChannel1)
-        self.btnChartLayoutChannel1.addWidget(self.btnAutoscaleXChannel1)
-        self.btnChartLayoutChannel1.addWidget(self.btnChart1000Channel1)
-        self.btnChartLayoutChannel1.addWidget(self.btnChart10000Channel1)
+        self.myChartChannel.setAddSerie('CHANNEL 1', '#FF9933')
+        self.myChartChannel.setAddSerie('CHANNEL 2', '#33CCFF')
 
-        self.btnChartLayoutChannel2.addWidget(self.btnAutoscaleYChannel2)
-        self.btnChartLayoutChannel2.addWidget(self.btnAutoscaleXChannel2)
-        self.btnChartLayoutChannel2.addWidget(self.btnChart1000Channel2)
-        self.btnChartLayoutChannel2.addWidget(self.btnChart10000Channel2)
+        self.btnChartLayoutChannel.addWidget(self.btnAutoscaleYChannel)
+        self.btnChartLayoutChannel.addWidget(self.btnAutoscaleXChannel)
+        self.btnChartLayoutChannel.addWidget(self.btnChart1000Channel)
+        self.btnChartLayoutChannel.addWidget(self.btnChart10000Channel)
 
-        self.chartLayout.addLayout(self.btnChartLayoutChannel1)
-        self.chartLayout.addWidget(self.myChartChannel1)
-        self.chartLayout.addLayout(self.btnChartLayoutChannel2)
-        self.chartLayout.addWidget(self.myChartChannel2)
+        # self.btnChartLayoutChannel1.addWidget(self.btnAutoscaleYChannel1)
+        # self.btnChartLayoutChannel1.addWidget(self.btnAutoscaleXChannel1)
+        # self.btnChartLayoutChannel1.addWidget(self.btnChart1000Channel1)
+        # self.btnChartLayoutChannel1.addWidget(self.btnChart10000Channel1)
+
+        # self.btnChartLayoutChannel2.addWidget(self.btnAutoscaleYChannel2)
+        # self.btnChartLayoutChannel2.addWidget(self.btnAutoscaleXChannel2)
+        # self.btnChartLayoutChannel2.addWidget(self.btnChart1000Channel2)
+        # self.btnChartLayoutChannel2.addWidget(self.btnChart10000Channel2)
+
+        # self.chartLayout.addLayout(self.btnChartLayoutChannel1)
+        # self.chartLayout.addWidget(self.myChartChannel1)
+
+        # self.chartLayout.addLayout(self.btnChartLayoutChannel2)
+        # self.chartLayout.addWidget(self.myChartChannel2)
+
+        self.chartLayout.addLayout(self.btnChartLayoutChannel)
+        self.chartLayout.addWidget(self.myChartChannel)
 
         self.chartBoxLayout.setLayout(self.chartLayout)
 
@@ -873,209 +893,311 @@ class ViewDataAcquisition(QWidget):
     ********************************************************************************************************************
     """
 
-    def setDataChannel1(self, xData, yData):
+    def setDataChannel(self, xData, yData1, yData2):
         """Add a new data on the chart of the channel 1.
 
         Args:
             xData (float): the value of the X Axis.
-            yData (float): the value of the Y Axis.
+            yData1 (float): the value of the Y Axis.
         """
-        self.myChartChannel1.setDataChart(xData, yData)
+        self.myChartChannel.setDataChart(xData, yData1, yData2)
 
-    def setDataChannel2(self, xData, yData):
-        """Add a new data on the chart of the channel 2.
+    def initSeries(self):
+        """Clean the serie on the chart of the channel 1."""
+        self.myChartChannel.initSeries()
 
-        Args:
-            xData (float): the value of the X Axis.
-            yData (float): the value of the Y Axis.
-        """
-        self.myChartChannel2.setDataChart(xData, yData)
-
-    def setRangeYChannel1(self, yRange, autoscale):
+    def setRangeY(self, yRange, autoscale):
         """Update the range of the Y axis on the chart of the channel 1.
 
         Args:
             yRange (list): the beginning and end of the Y axis.
             autoscale (bool): if the autoscale button is activated.
         """
-        self.myChartChannel1.setRangeY(yRange, autoscale)
+        self.myChartChannel.setRangeY(yRange, autoscale)
 
-    def setRangeXChannel1(self, xRange):
+    def setRangeX(self, xRange):
         """Update the range of the X axis on the chart of the channel 1.
 
         Args:
             xRange (list): the beginning and end of the X axis.
         """
-        self.myChartChannel1.setRangeX(xRange)
+        self.myChartChannel.setRangeX(xRange)
 
-    def getRangeXChannel1(self):
+    def getRangeX(self):
         """Return the range of the X axis of the channel 1.
 
         Returns:
             list: the beginning and end of the X axis.
         """
-        return self.myChartChannel1.getRangeX()
+        return self.myChartChannel.getRangeX()
 
-    def setRangeYChannel2(self, yRange, autoscale):
-        """Update the range of the Y axis on the chart of the channel 2.
-
-        Args:
-            yRange (list): the beginning and end of the Y axis.
-            autoscale (bool): if the autoscale button is activated.
-        """
-        self.myChartChannel2.setRangeY(yRange, autoscale)
-
-    def setRangeXChannel2(self, xRange):
-        """Update the range of the X axis on the chart of the channel 2.
-
-        Args:
-            xRange (list): the beginning and end of the X axis.
-        """
-        self.myChartChannel2.setRangeX(xRange)
-
-    def getRangeXChannel2(self):
-        """Return the range of the X axis of the channel 2.
-
-        Returns:
-            list: the beginning and end of the X axis.
-        """
-        return self.myChartChannel2.getRangeX()
-
-    def initSerieChannel1(self):
-        """Clean the serie on the chart of the channel 1."""
-        self.myChartChannel1.initSerie()
-
-    def initSerieChannel2(self):
-        """Clean the serie on the chart of the channel 2."""
-        self.myChartChannel2.initSerie()
-
-    def setBtnAutoscaleYChannel1Status(self, status):
+    def setBtnAutoscaleYStatus(self, status):
         """Change the status of the autoscale Y channel 1 button.
 
         Args:
             status (bool): the status of the button.
         """
-        self.btnAutoscaleYChannel1.setChecked(status)
+        self.btnAutoscaleYChannel.setChecked(status)
 
-    def getBtnAutoscaleYChannel1Status(self):
+    def getBtnAutoscaleYStatus(self):
         """Return the status of the autoscale Y channel 1 button.
 
         Returns:
             bool: the status of the button, if the button is pressed or depressed.
         """
-        return self.btnAutoscaleYChannel1.isChecked()
+        return self.btnAutoscaleYChannel.isChecked()
 
-    def setBtnAutoscaleXChannel1Status(self, status):
+    def setBtnAutoscaleXStatus(self, status):
         """Change the status of the autoscale X channel 1 button.
 
         Args:
             status (bool): the status of the button.
         """
-        self.btnAutoscaleXChannel1.setChecked(status)
+        self.btnAutoscaleXChannel.setChecked(status)
 
-    def getBtnAutoscaleXChannel1Status(self):
+    def getBtnAutoscaleXStatus(self):
         """Return the status of the autoscale X channel 1 button.
 
         Returns:
             bool: the status of the button, if the button is pressed or depressed.
         """
-        return self.btnAutoscaleXChannel1.isChecked()
+        return self.btnAutoscaleXChannel.isChecked()
 
-    def setBtnChart1000Channel1Status(self, status):
+    def setBtnChart1000Status(self, status):
         """Change the status of the x1000 channel 1 button.
 
         Args:
             status (bool): the status of the button.
         """
-        self.btnChart1000Channel1.setChecked(status)
+        self.btnChart1000Channel.setChecked(status)
 
-    def getBtnChart1000Channel1Status(self):
+    def getBtnChart1000Status(self):
         """Return the status of the x1000 channel 1 button.
 
         Returns:
             bool: the status of the button, if the button is pressed or depressed.
         """
-        return self.btnChart1000Channel1.isChecked()
+        return self.btnChart1000Channel.isChecked()
 
-    def setBtnChart10000Channel1Status(self, status):
+    def setBtnChart10000Status(self, status):
         """Change the status of the x10000 channel 1 button.
 
         Args:
             status (bool): the status of the button.
         """
-        self.btnChart10000Channel1.setChecked(status)
+        self.btnChart10000Channel.setChecked(status)
 
-    def getBtnChart10000Channel1Status(self):
+    def getBtnChart10000Status(self):
         """Return the status of the x10000 channel 1 button.
 
         Returns:
             bool: the status of the button, if the button is pressed or depressed.
         """
-        return self.btnChart10000Channel1.isChecked()
+        return self.btnChart10000Channel.isChecked()
 
-    def setBtnAutoscaleYChannel2Status(self, status):
-        """Change the status of the autoscale Y channel 2 button.
+    # def setDataChannel1(self, xData, yData):
+    #     """Add a new data on the chart of the channel 1.
+    #
+    #     Args:
+    #         xData (float): the value of the X Axis.
+    #         yData (float): the value of the Y Axis.
+    #     """
+    #     self.myChartChannel1.setDataChart(xData, yData)
+    #
+    # def setDataChannel2(self, xData, yData):
+    #     """Add a new data on the chart of the channel 2.
+    #
+    #     Args:
+    #         xData (float): the value of the X Axis.
+    #         yData (float): the value of the Y Axis.
+    #     """
+    #     self.myChartChannel2.setDataChart(xData, yData)
 
-        Args:
-            status (bool): the status of the button.
-        """
-        self.btnAutoscaleYChannel2.setChecked(status)
+    # def setRangeYChannel1(self, yRange, autoscale):
+    #     """Update the range of the Y axis on the chart of the channel 1.
+    #
+    #     Args:
+    #         yRange (list): the beginning and end of the Y axis.
+    #         autoscale (bool): if the autoscale button is activated.
+    #     """
+    #     self.myChartChannel1.setRangeY(yRange, autoscale)
+    #
+    # def setRangeXChannel1(self, xRange):
+    #     """Update the range of the X axis on the chart of the channel 1.
+    #
+    #     Args:
+    #         xRange (list): the beginning and end of the X axis.
+    #     """
+    #     self.myChartChannel1.setRangeX(xRange)
+    #
+    # def getRangeXChannel1(self):
+    #     """Return the range of the X axis of the channel 1.
+    #
+    #     Returns:
+    #         list: the beginning and end of the X axis.
+    #     """
+    #     return self.myChartChannel1.getRangeX()
+    #
+    # def setRangeYChannel2(self, yRange, autoscale):
+    #     """Update the range of the Y axis on the chart of the channel 2.
+    #
+    #     Args:
+    #         yRange (list): the beginning and end of the Y axis.
+    #         autoscale (bool): if the autoscale button is activated.
+    #     """
+    #     self.myChartChannel2.setRangeY(yRange, autoscale)
+    #
+    # def setRangeXChannel2(self, xRange):
+    #     """Update the range of the X axis on the chart of the channel 2.
+    #
+    #     Args:
+    #         xRange (list): the beginning and end of the X axis.
+    #     """
+    #     self.myChartChannel2.setRangeX(xRange)
+    #
+    # def getRangeXChannel2(self):
+    #     """Return the range of the X axis of the channel 2.
+    #
+    #     Returns:
+    #         list: the beginning and end of the X axis.
+    #     """
+    #     return self.myChartChannel2.getRangeX()
 
-    def getBtnAutoscaleYChannel2Status(self):
-        """Return the status of the autoscale Y channel 2 button.
+    # def initSerieChannel1(self):
+    #     """Clean the serie on the chart of the channel 1."""
+    #     self.myChartChannel1.initSerie()
+    #
+    # def initSerieChannel2(self):
+    #     """Clean the serie on the chart of the channel 2."""
+    #     self.myChartChannel2.initSerie()
 
-        Returns:
-            bool: the status of the button, if the button is pressed or depressed.
-        """
-        return self.btnAutoscaleYChannel2.isChecked()
-
-    def setBtnAutoscaleXChannel2Status(self, status):
-        """Change the status of the autoscale X channel 2 button.
-
-        Args:
-            status (bool): the status of the button.
-        """
-        self.btnAutoscaleXChannel2.setChecked(status)
-
-    def getBtnAutoscaleXChannel2Status(self):
-        """Return the status of the autoscale X channel 2 button.
-
-        Returns:
-            bool: the status of the button, if the button is pressed or depressed.
-        """
-        return self.btnAutoscaleXChannel2.isChecked()
-
-    def setBtnChart1000Channel2Status(self, status):
-        """Change the status of the x1000 channel 2 button.
-
-        Args:
-            status (bool): the status of the button.
-        """
-        self.btnChart1000Channel2.setChecked(status)
-
-    def getBtnChart1000Channel2Status(self):
-        """Return the status of the x1000 channel 2 button.
-
-        Returns:
-            bool: the status of the button, if the button is pressed or depressed.
-        """
-        return self.btnChart1000Channel2.isChecked()
-
-    def setBtnChart10000Channel2Status(self, status):
-        """Change the status of the x10000 channel 2 button.
-
-        Args:
-            status (bool): the status of the button.
-        """
-        self.btnChart10000Channel2.setChecked(status)
-
-    def getBtnChart10000Channel2Status(self):
-        """Return the status of the x10000 channel 2 button.
-
-        Returns:
-            bool: the status of the button, if the button is pressed or depressed.
-        """
-        return self.btnChart10000Channel2.isChecked()
+    # def setBtnAutoscaleYChannel1Status(self, status):
+    #     """Change the status of the autoscale Y channel 1 button.
+    #
+    #     Args:
+    #         status (bool): the status of the button.
+    #     """
+    #     self.btnAutoscaleYChannel1.setChecked(status)
+    #
+    # def getBtnAutoscaleYChannel1Status(self):
+    #     """Return the status of the autoscale Y channel 1 button.
+    #
+    #     Returns:
+    #         bool: the status of the button, if the button is pressed or depressed.
+    #     """
+    #     return self.btnAutoscaleYChannel1.isChecked()
+    #
+    # def setBtnAutoscaleXChannel1Status(self, status):
+    #     """Change the status of the autoscale X channel 1 button.
+    #
+    #     Args:
+    #         status (bool): the status of the button.
+    #     """
+    #     self.btnAutoscaleXChannel1.setChecked(status)
+    #
+    # def getBtnAutoscaleXChannel1Status(self):
+    #     """Return the status of the autoscale X channel 1 button.
+    #
+    #     Returns:
+    #         bool: the status of the button, if the button is pressed or depressed.
+    #     """
+    #     return self.btnAutoscaleXChannel1.isChecked()
+    #
+    # def setBtnChart1000Channel1Status(self, status):
+    #     """Change the status of the x1000 channel 1 button.
+    #
+    #     Args:
+    #         status (bool): the status of the button.
+    #     """
+    #     self.btnChart1000Channel1.setChecked(status)
+    #
+    # def getBtnChart1000Channel1Status(self):
+    #     """Return the status of the x1000 channel 1 button.
+    #
+    #     Returns:
+    #         bool: the status of the button, if the button is pressed or depressed.
+    #     """
+    #     return self.btnChart1000Channel1.isChecked()
+    #
+    # def setBtnChart10000Channel1Status(self, status):
+    #     """Change the status of the x10000 channel 1 button.
+    #
+    #     Args:
+    #         status (bool): the status of the button.
+    #     """
+    #     self.btnChart10000Channel1.setChecked(status)
+    #
+    # def getBtnChart10000Channel1Status(self):
+    #     """Return the status of the x10000 channel 1 button.
+    #
+    #     Returns:
+    #         bool: the status of the button, if the button is pressed or depressed.
+    #     """
+    #     return self.btnChart10000Channel1.isChecked()
+    #
+    # def setBtnAutoscaleYChannel2Status(self, status):
+    #     """Change the status of the autoscale Y channel 2 button.
+    #
+    #     Args:
+    #         status (bool): the status of the button.
+    #     """
+    #     self.btnAutoscaleYChannel2.setChecked(status)
+    #
+    # def getBtnAutoscaleYChannel2Status(self):
+    #     """Return the status of the autoscale Y channel 2 button.
+    #
+    #     Returns:
+    #         bool: the status of the button, if the button is pressed or depressed.
+    #     """
+    #     return self.btnAutoscaleYChannel2.isChecked()
+    #
+    # def setBtnAutoscaleXChannel2Status(self, status):
+    #     """Change the status of the autoscale X channel 2 button.
+    #
+    #     Args:
+    #         status (bool): the status of the button.
+    #     """
+    #     self.btnAutoscaleXChannel2.setChecked(status)
+    #
+    # def getBtnAutoscaleXChannel2Status(self):
+    #     """Return the status of the autoscale X channel 2 button.
+    #
+    #     Returns:
+    #         bool: the status of the button, if the button is pressed or depressed.
+    #     """
+    #     return self.btnAutoscaleXChannel2.isChecked()
+    #
+    # def setBtnChart1000Channel2Status(self, status):
+    #     """Change the status of the x1000 channel 2 button.
+    #
+    #     Args:
+    #         status (bool): the status of the button.
+    #     """
+    #     self.btnChart1000Channel2.setChecked(status)
+    #
+    # def getBtnChart1000Channel2Status(self):
+    #     """Return the status of the x1000 channel 2 button.
+    #
+    #     Returns:
+    #         bool: the status of the button, if the button is pressed or depressed.
+    #     """
+    #     return self.btnChart1000Channel2.isChecked()
+    #
+    # def setBtnChart10000Channel2Status(self, status):
+    #     """Change the status of the x10000 channel 2 button.
+    #
+    #     Args:
+    #         status (bool): the status of the button.
+    #     """
+    #     self.btnChart10000Channel2.setChecked(status)
+    #
+    # def getBtnChart10000Channel2Status(self):
+    #     """Return the status of the x10000 channel 2 button.
+    #
+    #     Returns:
+    #         bool: the status of the button, if the button is pressed or depressed.
+    #     """
+    #     return self.btnChart10000Channel2.isChecked()
 
     """
     ********************************************************************************************************************
@@ -1117,29 +1239,41 @@ class ViewDataAcquisition(QWidget):
 
         self.btnSaveFile.setStyleSheet(Styles.buttonSaveFile)
 
-        self.btnAutoscaleYChannel1.setStyleSheet(Styles.buttonChart)
-        self.btnAutoscaleYChannel1.setCheckable(True)
+        self.btnAutoscaleYChannel.setStyleSheet(Styles.buttonChart)
+        self.btnAutoscaleYChannel.setCheckable(True)
 
-        self.btnAutoscaleXChannel1.setStyleSheet(Styles.buttonChart)
-        self.btnAutoscaleXChannel1.setCheckable(True)
+        self.btnAutoscaleXChannel.setStyleSheet(Styles.buttonChart)
+        self.btnAutoscaleXChannel.setCheckable(True)
 
-        self.btnChart1000Channel1.setStyleSheet(Styles.buttonChart)
-        self.btnChart1000Channel1.setCheckable(True)
+        self.btnChart1000Channel.setStyleSheet(Styles.buttonChart)
+        self.btnChart1000Channel.setCheckable(True)
 
-        self.btnChart10000Channel1.setStyleSheet(Styles.buttonChart)
-        self.btnChart10000Channel1.setCheckable(True)
+        self.btnChart10000Channel.setStyleSheet(Styles.buttonChart)
+        self.btnChart10000Channel.setCheckable(True)
 
-        self.btnAutoscaleYChannel2.setStyleSheet(Styles.buttonChart)
-        self.btnAutoscaleYChannel2.setCheckable(True)
-
-        self.btnAutoscaleXChannel2.setStyleSheet(Styles.buttonChart)
-        self.btnAutoscaleXChannel2.setCheckable(True)
-
-        self.btnChart1000Channel2.setStyleSheet(Styles.buttonChart)
-        self.btnChart1000Channel2.setCheckable(True)
-
-        self.btnChart10000Channel2.setStyleSheet(Styles.buttonChart)
-        self.btnChart10000Channel2.setCheckable(True)
+        # self.btnAutoscaleYChannel1.setStyleSheet(Styles.buttonChart)
+        # self.btnAutoscaleYChannel1.setCheckable(True)
+        #
+        # self.btnAutoscaleXChannel1.setStyleSheet(Styles.buttonChart)
+        # self.btnAutoscaleXChannel1.setCheckable(True)
+        #
+        # self.btnChart1000Channel1.setStyleSheet(Styles.buttonChart)
+        # self.btnChart1000Channel1.setCheckable(True)
+        #
+        # self.btnChart10000Channel1.setStyleSheet(Styles.buttonChart)
+        # self.btnChart10000Channel1.setCheckable(True)
+        #
+        # self.btnAutoscaleYChannel2.setStyleSheet(Styles.buttonChart)
+        # self.btnAutoscaleYChannel2.setCheckable(True)
+        #
+        # self.btnAutoscaleXChannel2.setStyleSheet(Styles.buttonChart)
+        # self.btnAutoscaleXChannel2.setCheckable(True)
+        #
+        # self.btnChart1000Channel2.setStyleSheet(Styles.buttonChart)
+        # self.btnChart1000Channel2.setCheckable(True)
+        #
+        # self.btnChart10000Channel2.setStyleSheet(Styles.buttonChart)
+        # self.btnChart10000Channel2.setCheckable(True)
 
     """
     ********************************************************************************************************************
@@ -1370,9 +1504,11 @@ class ViewDataAcquisition(QWidget):
 
         self.imageLayout.setAlignment(Qt.AlignCenter)
 
-        self.btnChartLayoutChannel1.setAlignment(Qt.AlignRight)
+        self.btnChartLayoutChannel.setAlignment(Qt.AlignRight)
 
-        self.btnChartLayoutChannel2.setAlignment(Qt.AlignRight)
+        # self.btnChartLayoutChannel1.setAlignment(Qt.AlignRight)
+
+        # self.btnChartLayoutChannel2.setAlignment(Qt.AlignRight)
 
     """
     ********************************************************************************************************************

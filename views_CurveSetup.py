@@ -87,8 +87,9 @@ class ViewCurveSetup(QWidget):
         """----------------------------------------------------------------------------------------------------------"""
 
         """------------------------------------------------- Charts -------------------------------------------------"""
-        self.myChartChannel1 = Chart(Strings.channel1UC)
-        self.myChartChannel2 = Chart(Strings.channel2UC)
+        # self.myChartChannel1 = Chart(Strings.channel1UC)
+        # self.myChartChannel2 = Chart(Strings.channel2UC)
+        self.myChartChannel = Chart()
         """----------------------------------------------------------------------------------------------------------"""
 
         """---------------------------------------------- QGroupBoxes -----------------------------------------------"""
@@ -293,10 +294,10 @@ class ViewCurveSetup(QWidget):
         Returns:
             QGroupBox: return the main group box of this step.
         """
-        self.setCharts()
-
-        self.chartLayout.addWidget(self.myChartChannel1)
-        self.chartLayout.addWidget(self.myChartChannel2)
+        self.setCharts('CHANNEL 1', '#FF9933', 'CHANNEL 2', '#33CCFF')
+        self.chartLayout.addWidget(self.myChartChannel)
+        # self.chartLayout.addWidget(self.myChartChannel1)
+        # self.chartLayout.addWidget(self.myChartChannel2)
 
         self.chartBoxLayout.setLayout(self.chartLayout)
 
@@ -549,28 +550,42 @@ class ViewCurveSetup(QWidget):
     ********************************************************************************************************************
     """
 
-    def setCharts(self):
-        self.myChartChannel1.setAxisXName(Strings.angleOfIncidence)
-        self.myChartChannel1.setAxisYName(Strings.signalAmplitude)
-        self.myChartChannel1.setRangeX([58.00, 62.00])
-        self.myChartChannel1.setAxisXTickCount(9)
+    def setCharts(self, name1, color1, name2, color2):
+        self.myChartChannel.setAxisXName(Strings.angleOfIncidence)
+        self.myChartChannel.setAxisYName(Strings.signalAmplitude)
+        self.myChartChannel.setRangeX([58.00, 62.00])
+        self.myChartChannel.setAxisXTickCount(9)
 
-        self.myChartChannel2.setAxisXName(Strings.angleOfIncidence)
-        self.myChartChannel2.setAxisYName(Strings.signalAmplitude)
-        self.myChartChannel2.setRangeX([58.00, 62.00])
-        self.myChartChannel2.setAxisXTickCount(9)
+        # self.myChartChannel1.setAxisXName(Strings.angleOfIncidence)
+        # self.myChartChannel1.setAxisYName(Strings.signalAmplitude)
+        # self.myChartChannel1.setRangeX([58.00, 62.00])
+        # self.myChartChannel1.setAxisXTickCount(9)
 
-    def setDataChannel1(self, xData, yData):
-        self.myChartChannel1.setDataChart(xData, yData)
+        # self.myChartChannel2.setAxisXName(Strings.angleOfIncidence)
+        # self.myChartChannel2.setAxisYName(Strings.signalAmplitude)
+        # self.myChartChannel2.setRangeX([58.00, 62.00])
+        # self.myChartChannel2.setAxisXTickCount(9)
 
-    def setDataChannel2(self, xData, yData):
-        self.myChartChannel2.setDataChart(xData, yData)
+        self.myChartChannel.setAddSerie(name1, color1)
+        self.myChartChannel.setAddSerie(name2, color2)
 
-    def initSerieChannel1(self):
-        self.myChartChannel1.initSerie()
+    def setDataChannel(self, xData, yData1, yData2):
+        self.myChartChannel.setDataChart(xData, yData1, yData2)
 
-    def initSerieChannel2(self):
-        self.myChartChannel2.initSerie()
+    def initSerieChannel(self):
+        self.myChartChannel.initSeries()
+
+    # def setDataChannel1(self, xData, yData):
+    #     self.myChartChannel1.setDataChart(xData, yData)
+    #
+    # def setDataChannel2(self, xData, yData):
+    #     self.myChartChannel2.setDataChart(xData, yData)
+    #
+    # def initSerieChannel1(self):
+    #     self.myChartChannel1.initSerie()
+    #
+    # def initSerieChannel2(self):
+    #     self.myChartChannel2.initSerie()
 
     """
     ********************************************************************************************************************

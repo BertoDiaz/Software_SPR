@@ -46,10 +46,12 @@ class ControllerTabs:
         self.bufferWaitACK = Queue()
         self.btnTimeout = False
         self.baseX = 58.00
-        self.axisYMaxChannel1 = 0
-        self.axisYMinChannel1 = 0
-        self.axisYMaxChannel2 = 0
-        self.axisYMinChannel2 = 0
+        self.axisYMax = 0
+        self.axisYMin = 0
+        # self.axisYMaxChannel1 = 0
+        # self.axisYMinChannel1 = 0
+        # self.axisYMaxChannel2 = 0
+        # self.axisYMinChannel2 = 0
         self.myFileNameCalibration = datetime.datetime.now().strftime('%d-%m-%Y') + '_calibration.DAT'
         self.myFileNameMeasure = datetime.datetime.now().strftime('%d-%m-%Y') + '_measure.DAT'
         self.myFileCalibration = None
@@ -263,14 +265,18 @@ class ControllerTabs:
             self.viewDataAcquisition.btnForwardPeristaltic.clicked.connect(btnForwardPeristaltic)
 
             self.viewDataAcquisition.btnSaveFile.clicked.connect(self.btnSaveFileMeasureChanged)
-            self.viewDataAcquisition.btnAutoscaleYChannel1.clicked.connect(self.btnAutoscaleYChannel1Changed)
-            self.viewDataAcquisition.btnAutoscaleXChannel1.clicked.connect(self.btnAutoscaleXChannel1Changed)
-            self.viewDataAcquisition.btnChart1000Channel1.clicked.connect(self.btnChart1000Channel1Changed)
-            self.viewDataAcquisition.btnChart10000Channel1.clicked.connect(self.btnChart10000Channel1Changed)
-            self.viewDataAcquisition.btnAutoscaleYChannel2.clicked.connect(self.btnAutoscaleYChannel2Changed)
-            self.viewDataAcquisition.btnAutoscaleXChannel2.clicked.connect(self.btnAutoscaleXChannel2Changed)
-            self.viewDataAcquisition.btnChart1000Channel2.clicked.connect(self.btnChart1000Channel2Changed)
-            self.viewDataAcquisition.btnChart10000Channel2.clicked.connect(self.btnChart10000Channel2Changed)
+            self.viewDataAcquisition.btnAutoscaleYChannel.clicked.connect(self.btnAutoscaleYChanged)
+            self.viewDataAcquisition.btnAutoscaleXChannel.clicked.connect(self.btnAutoscaleXChanged)
+            self.viewDataAcquisition.btnChart1000Channel.clicked.connect(self.btnChart1000Changed)
+            self.viewDataAcquisition.btnChart10000Channel.clicked.connect(self.btnChart10000Changed)
+            # self.viewDataAcquisition.btnAutoscaleYChannel1.clicked.connect(self.btnAutoscaleYChannel1Changed)
+            # self.viewDataAcquisition.btnAutoscaleXChannel1.clicked.connect(self.btnAutoscaleXChannel1Changed)
+            # self.viewDataAcquisition.btnChart1000Channel1.clicked.connect(self.btnChart1000Channel1Changed)
+            # self.viewDataAcquisition.btnChart10000Channel1.clicked.connect(self.btnChart10000Channel1Changed)
+            # self.viewDataAcquisition.btnAutoscaleYChannel2.clicked.connect(self.btnAutoscaleYChannel2Changed)
+            # self.viewDataAcquisition.btnAutoscaleXChannel2.clicked.connect(self.btnAutoscaleXChannel2Changed)
+            # self.viewDataAcquisition.btnChart1000Channel2.clicked.connect(self.btnChart1000Channel2Changed)
+            # self.viewDataAcquisition.btnChart10000Channel2.clicked.connect(self.btnChart10000Channel2Changed)
 
             self.viewDataAcquisition.edtExperimentTime.valueChanged.connect(self.edtExperimentTimeChanged)
 
@@ -920,8 +926,10 @@ class ControllerTabs:
 
                 self.serialPort.send_Auto_Acquisition(toSend)
 
-                self.viewCurveSetup.initSerieChannel1()
-                self.viewCurveSetup.initSerieChannel2()
+                # self.viewCurveSetup.initSerieChannel1()
+                # self.viewCurveSetup.initSerieChannel2()
+
+                self.viewCurveSetup.initSerieChannel()
 
                 self.valuesPhotodiodes['Photodiode A'] = []
                 self.valuesPhotodiodes['Photodiode B'] = []
@@ -975,29 +983,36 @@ class ControllerTabs:
     def acquisitionDataReceived(self, data):
         if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
 
-            if self.values['Angle'] >= 62.00:
+            self.setBeep()
+
+            self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
+            self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
+            self.valuesPhotodiodes['Angle'].append(self.baseX + (self.values['Automatic'] * 0.2))
+
+            self.values['Acquisition Channel 1'] = self.valuesPhotodiodes['Photodiode A'][self.values['Automatic']]
+            self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
+            self.values['Angle'] = self.valuesPhotodiodes['Angle'][self.values['Automatic']]
+
+            self.values['Automatic'] += 1
+
+            self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
+            self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
+            self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
+
+            # self.viewCurveSetup.setDataChannel1(self.values['Angle'], self.values['Acquisition Channel 1'])
+            # self.viewCurveSetup.setDataChannel2(self.values['Angle'], self.values['Acquisition Channel 2'])
+
+            # valueX1 = self.values['Acquisition Channel 1'] - self.valuesPhotodiodes['Photodiode A'][0]
+            # valueX2 = self.values['Acquisition Channel 2'] - self.valuesPhotodiodes['Photodiode B'][0]
+
+            valueX1 = self.values['Acquisition Channel 1']
+            valueX2 = self.values['Acquisition Channel 2']
+
+            self.viewCurveSetup.setDataChannel(self.values['Angle'], valueX1, valueX2)
+
+            if self.values['Automatic'] >= self.values['Points Curve']:
                 self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
                 self.btnAutoAcquisitionChanged()
-
-            else:
-                self.setBeep()
-
-                self.valuesPhotodiodes['Photodiode A'].append(int(data[1] + data[2]))
-                self.valuesPhotodiodes['Photodiode B'].append(int(data[3] + data[4]))
-                self.valuesPhotodiodes['Angle'].append(self.baseX + (self.values['Automatic'] * 0.2))
-
-                self.values['Acquisition Channel 1'] = self.valuesPhotodiodes['Photodiode A'][self.values['Automatic']]
-                self.values['Acquisition Channel 2'] = self.valuesPhotodiodes['Photodiode B'][self.values['Automatic']]
-                self.values['Angle'] = self.valuesPhotodiodes['Angle'][self.values['Automatic']]
-
-                self.viewCurveSetup.setEdtACQChannel1Text(self.values['Acquisition Channel 1'])
-                self.viewCurveSetup.setEdtACQChannel2Text(self.values['Acquisition Channel 2'])
-                self.viewCurveSetup.setEdtAcquisitionText(self.values['Automatic'])
-
-                self.viewCurveSetup.setDataChannel1(self.values['Angle'], self.values['Acquisition Channel 1'])
-                self.viewCurveSetup.setDataChannel2(self.values['Angle'], self.values['Acquisition Channel 2'])
-
-                self.values['Automatic'] += 1
 
     """
     ********************************************************************************************************************
@@ -1101,8 +1116,10 @@ class ControllerTabs:
 
                         self.serialPort.send_Init_Experiment()
 
-                        self.viewDataAcquisition.initSerieChannel1()
-                        self.viewDataAcquisition.initSerieChannel2()
+                        # self.viewDataAcquisition.initSerieChannel1()
+                        # self.viewDataAcquisition.initSerieChannel2()
+
+                        self.viewDataAcquisition.initSeries()
 
                         self.valuesExperiment['Channel 1'] = []
                         self.valuesExperiment['Channel 2'] = []
@@ -1174,32 +1191,48 @@ class ControllerTabs:
             self.viewDataAcquisition.setEdtChannel2Text(self.values['Channel 2'])
             self.viewDataAcquisition.setEdtTimeText(self.values['Time'])
 
-            self.viewDataAcquisition.setDataChannel1(self.values['Time'], self.values['Channel 1'])
-            self.viewDataAcquisition.setDataChannel2(self.values['Time'], self.values['Channel 2'])
+            # self.viewDataAcquisition.setDataChannel1(self.values['Time'], self.values['Channel 1'])
+            # self.viewDataAcquisition.setDataChannel2(self.values['Time'], self.values['Channel 2'])
+
+            valueX1 = self.values['Channel 1'] - self.valuesExperiment['Channel 1'][0]
+            valueX2 = self.values['Channel 2'] - self.valuesExperiment['Channel 2'][0]
+
+            self.viewDataAcquisition.setDataChannel(self.values['Time'], valueX1, valueX2)
 
             self.values['Time'] += 1
 
-            if self.viewDataAcquisition.getBtnAutoscaleYChannel1Status():
-                if self.values['Channel 1'] > self.axisYMaxChannel1:
-                    self.axisYMaxChannel1 = self.values['Channel 1']
+            if self.viewDataAcquisition.getBtnAutoscaleYStatus():
+                if self.values['Channel 1'] > self.axisYMax:
+                    self.axisYMax = self.values['Channel 1']
 
-                if self.values['Channel 1'] < self.axisYMinChannel1:
-                    self.axisYMinChannel1 = self.values['Channel 1']
-
-                autoscale = True
-
-                self.viewDataAcquisition.setRangeYChannel1([self.axisYMinChannel1, self.axisYMaxChannel1], autoscale)
-
-            if self.viewDataAcquisition.getBtnAutoscaleYChannel2Status():
-                if self.values['Channel 2'] > self.axisYMaxChannel2:
-                    self.axisYMaxChannel2 = self.values['Channel 2']
-
-                if self.values['Channel 2'] < self.axisYMinChannel2:
-                    self.axisYMinChannel2 = self.values['Channel 2']
+                if self.values['Channel 1'] < self.axisYMin:
+                    self.axisYMin = self.values['Channel 1']
 
                 autoscale = True
 
-                self.viewDataAcquisition.setRangeYChannel2([self.axisYMinChannel2, self.axisYMaxChannel2], autoscale)
+                self.viewDataAcquisition.setRangeY([self.axisYMin, self.axisYMax], autoscale)
+
+            # if self.viewDataAcquisition.getBtnAutoscaleYChannel1Status():
+            #     if self.values['Channel 1'] > self.axisYMaxChannel1:
+            #         self.axisYMaxChannel1 = self.values['Channel 1']
+            #
+            #     if self.values['Channel 1'] < self.axisYMinChannel1:
+            #         self.axisYMinChannel1 = self.values['Channel 1']
+            #
+            #     autoscale = True
+            #
+            #     self.viewDataAcquisition.setRangeYChannel1([self.axisYMinChannel1, self.axisYMaxChannel1], autoscale)
+            #
+            # if self.viewDataAcquisition.getBtnAutoscaleYChannel2Status():
+            #     if self.values['Channel 2'] > self.axisYMaxChannel2:
+            #         self.axisYMaxChannel2 = self.values['Channel 2']
+            #
+            #     if self.values['Channel 2'] < self.axisYMinChannel2:
+            #         self.axisYMinChannel2 = self.values['Channel 2']
+            #
+            #     autoscale = True
+            #
+            #     self.viewDataAcquisition.setRangeYChannel2([self.axisYMinChannel2, self.axisYMaxChannel2], autoscale)
 
             if not self.viewDataAcquisition.getBtnLaserStatus():
                 self.viewDataAcquisition.setMessageCritical(Strings.messageNecessaryLaserON)
@@ -1291,201 +1324,305 @@ class ControllerTabs:
     ********************************************************************************************************************
     """
 
-    def btnAutoscaleYChannel1Changed(self):
-        if self.viewDataAcquisition.getBtnAutoscaleYChannel1Status():
+    def btnAutoscaleYChanged(self):
+        if self.viewDataAcquisition.getBtnAutoscaleYStatus():
 
             if len(self.valuesExperiment['Channel 1']) > 100:
-                initChannel1 = len(self.valuesExperiment['Channel 1']) - 100
+                init = len(self.valuesExperiment['Channel 1']) - 100
 
             else:
-                initChannel1 = 0
+                init = 0
 
             if len(self.valuesExperiment['Channel 1']) > 0:
-                self.axisYMinChannel1 = self.valuesExperiment['Channel 1'][initChannel1]
-                self.axisYMaxChannel1 = self.valuesExperiment['Channel 1'][initChannel1]
+                self.axisYMin = min(self.valuesExperiment['Channel 1'][init], self.valuesExperiment['Channel 2'][init])
+                self.axisYMax = max(self.valuesExperiment['Channel 1'][init], self.valuesExperiment['Channel 2'][init])
 
-                for i in range(initChannel1, len(self.valuesExperiment['Channel 1'])):
+                for i in range(init, len(self.valuesExperiment['Channel 1'])):
 
-                    if self.valuesExperiment['Channel 1'][i] > self.axisYMaxChannel1:
-                        self.axisYMaxChannel1 = self.valuesExperiment['Channel 1'][i]
+                    if self.valuesExperiment['Channel 1'][i] > self.axisYMax:
+                        self.axisYMax = self.valuesExperiment['Channel 1'][i]
 
-                    if self.valuesExperiment['Channel 1'][i] < self.axisYMinChannel1:
-                        self.axisYMinChannel1 = self.valuesExperiment['Channel 1'][i]
+                    if self.valuesExperiment['Channel 2'][i] > self.axisYMax:
+                        self.axisYMax = self.valuesExperiment['Channel 2'][i]
+
+                    if self.valuesExperiment['Channel 1'][i] < self.axisYMin:
+                        self.axisYMin = self.valuesExperiment['Channel 1'][i]
+
+                    if self.valuesExperiment['Channel 2'][i] < self.axisYMin:
+                        self.axisYMin = self.valuesExperiment['Channel 1'][i]
 
             else:
-                self.axisYMinChannel1 = 0
-                self.axisYMaxChannel1 = 0
+                self.axisYMin = 0
+                self.axisYMax = 0
 
             autoscale = True
 
         else:
-            self.axisYMinChannel1 = 0
-            self.axisYMaxChannel1 = 100
+            self.axisYMin = 0
+            self.axisYMax = 100
 
             autoscale = False
 
-        self.viewDataAcquisition.setRangeYChannel1([self.axisYMinChannel1, self.axisYMaxChannel1], autoscale)
+        self.viewDataAcquisition.setRangeY([self.axisYMin, self.axisYMax], autoscale)
 
-    def btnAutoscaleXChannel1Changed(self):
-        if self.viewDataAcquisition.getBtnAutoscaleXChannel1Status():
+    def btnAutoscaleXChanged(self):
+        if self.viewDataAcquisition.getBtnAutoscaleXStatus():
 
-            self.viewDataAcquisition.setBtnChart1000Channel1Status(False)
-            self.viewDataAcquisition.setBtnChart10000Channel1Status(False)
+            self.viewDataAcquisition.setBtnChart1000Status(False)
+            self.viewDataAcquisition.setBtnChart10000Status(False)
 
-            rangeXChannel1 = self.viewDataAcquisition.getRangeXChannel1()
-            rangeXChannel1[0] = 0
-
-            if self.values['Time'] is not 0:
-                rangeXChannel1[1] = self.values['Time']
-
-            else:
-                rangeXChannel1[1] = 100
-
-            self.viewDataAcquisition.setRangeXChannel1(rangeXChannel1)
-
-    def btnChart1000Channel1Changed(self):
-        if self.viewDataAcquisition.getBtnChart1000Channel1Status():
-
-            self.viewDataAcquisition.setBtnAutoscaleXChannel1Status(False)
-            self.viewDataAcquisition.setBtnChart10000Channel1Status(False)
-
-            rangeXChannel1 = self.viewDataAcquisition.getRangeXChannel1()
-
-            if self.values['Time'] > 1000:
-                rangeXChannel1[0] = self.values['Time'] - 1000
-
-            else:
-                rangeXChannel1[1] = 1000
-
-            self.viewDataAcquisition.setRangeXChannel1(rangeXChannel1)
-
-        else:
-            if not self.viewDataAcquisition.getBtnAutoscaleYChannel1Status()\
-                    and not self.viewDataAcquisition.getBtnChart10000Channel1Status():
-
-                self.viewDataAcquisition.setBtnAutoscaleXChannel1Status(True)
-                self.btnAutoscaleXChannel1Changed()
-
-    def btnChart10000Channel1Changed(self):
-        if self.viewDataAcquisition.getBtnChart10000Channel1Status():
-
-            self.viewDataAcquisition.setBtnAutoscaleXChannel1Status(False)
-            self.viewDataAcquisition.setBtnChart1000Channel1Status(False)
-
-            rangeXChannel1 = self.viewDataAcquisition.getRangeXChannel1()
-
-            if rangeXChannel1[1] > 10000:
-                rangeXChannel1[0] = rangeXChannel1[1] - 10000
-
-            else:
-                rangeXChannel1[1] = 10000
-
-            self.viewDataAcquisition.setRangeXChannel1(rangeXChannel1)
-
-        else:
-            if not self.viewDataAcquisition.getBtnAutoscaleYChannel1Status()\
-                    and not self.viewDataAcquisition.getBtnChart1000Channel1Status():
-
-                self.viewDataAcquisition.setBtnAutoscaleXChannel1Status(True)
-                self.btnAutoscaleXChannel1Changed()
-
-    def btnAutoscaleYChannel2Changed(self):
-        if self.viewDataAcquisition.getBtnAutoscaleYChannel2Status():
-
-            if len(self.valuesExperiment['Channel 2']) > 100:
-                initChannel2 = len(self.valuesExperiment['Channel 2']) - 100
-
-            else:
-                initChannel2 = 0
-
-            if len(self.valuesExperiment['Channel 2']) > 0:
-                self.axisYMinChannel2 = self.valuesExperiment['Channel 2'][initChannel2]
-                self.axisYMaxChannel2 = self.valuesExperiment['Channel 2'][initChannel2]
-
-                for i in range(initChannel2, len(self.valuesExperiment['Channel 2'])):
-
-                    if self.valuesExperiment['Channel 2'][i] > self.axisYMaxChannel2:
-                        self.axisYMaxChannel2 = self.valuesExperiment['Channel 2'][i]
-
-                    if self.valuesExperiment['Channel 2'][i] < self.axisYMinChannel2:
-                        self.axisYMinChannel2 = self.valuesExperiment['Channel 2'][i]
-
-            else:
-                self.axisYMinChannel2 = 0
-                self.axisYMaxChannel2 = 0
-
-            autoscale = True
-
-        else:
-            self.axisYMinChannel2 = 0
-            self.axisYMaxChannel2 = 100
-
-            autoscale = False
-
-        self.viewDataAcquisition.setRangeYChannel2([self.axisYMinChannel2, self.axisYMaxChannel2], autoscale)
-
-    def btnAutoscaleXChannel2Changed(self):
-        if self.viewDataAcquisition.getBtnAutoscaleXChannel2Status():
-
-            self.viewDataAcquisition.setBtnChart1000Channel2Status(False)
-            self.viewDataAcquisition.setBtnChart10000Channel2Status(False)
-
-            rangeXChannel2 = self.viewDataAcquisition.getRangeXChannel2()
-            rangeXChannel2[0] = 0
+            rangeX = self.viewDataAcquisition.getRangeX()
+            rangeX[0] = 0
 
             if self.values['Time'] is not 0:
-                rangeXChannel2[1] = self.values['Time']
+                rangeX[1] = self.values['Time']
 
             else:
-                rangeXChannel2[1] = 100
+                rangeX[1] = 100
 
-            self.viewDataAcquisition.setRangeXChannel2(rangeXChannel2)
+            self.viewDataAcquisition.setRangeX(rangeX)
 
-    def btnChart1000Channel2Changed(self):
-        if self.viewDataAcquisition.getBtnChart1000Channel2Status():
+    def btnChart1000Changed(self):
+        if self.viewDataAcquisition.getBtnChart1000Status():
 
-            self.viewDataAcquisition.setBtnAutoscaleXChannel2Status(False)
-            self.viewDataAcquisition.setBtnChart10000Channel2Status(False)
+            self.viewDataAcquisition.setBtnAutoscaleXStatus(False)
+            self.viewDataAcquisition.setBtnChart10000Status(False)
 
-            rangeXChannel2 = self.viewDataAcquisition.getRangeXChannel2()
+            rangeX = self.viewDataAcquisition.getRangeX()
 
             if self.values['Time'] > 1000:
-                rangeXChannel2[0] = self.values['Time'] - 1000
+                rangeX[0] = self.values['Time'] - 1000
 
             else:
-                rangeXChannel2[1] = 1000
+                rangeX[1] = 1000
 
-            self.viewDataAcquisition.setRangeXChannel2(rangeXChannel2)
+            self.viewDataAcquisition.setRangeX(rangeX)
 
         else:
-            if not self.viewDataAcquisition.getBtnAutoscaleYChannel2Status()\
-                    and not self.viewDataAcquisition.getBtnChart10000Channel2Status():
+            if not self.viewDataAcquisition.getBtnAutoscaleYStatus()\
+                    and not self.viewDataAcquisition.getBtnChart10000Status():
 
-                self.viewDataAcquisition.setBtnAutoscaleXChannel2Status(True)
-                self.btnAutoscaleXChannel2Changed()
+                self.viewDataAcquisition.setBtnAutoscaleXStatus(True)
+                self.btnAutoscaleXChanged()
 
-    def btnChart10000Channel2Changed(self):
-        if self.viewDataAcquisition.getBtnChart10000Channel2Status():
+    def btnChart10000Changed(self):
+        if self.viewDataAcquisition.getBtnChart10000Status():
 
-            self.viewDataAcquisition.setBtnAutoscaleXChannel2Status(False)
-            self.viewDataAcquisition.setBtnChart1000Channel2Status(False)
+            self.viewDataAcquisition.setBtnAutoscaleXStatus(False)
+            self.viewDataAcquisition.setBtnChart1000Status(False)
 
-            rangeXChannel2 = self.viewDataAcquisition.getRangeXChannel2()
+            rangeX = self.viewDataAcquisition.getRangeX()
 
-            if rangeXChannel2[1] > 10000:
-                rangeXChannel2[0] = rangeXChannel2[1] - 10000
+            if rangeX[1] > 10000:
+                rangeX[0] = rangeX[1] - 10000
 
             else:
-                rangeXChannel2[1] = 10000
+                rangeX[1] = 10000
 
-            self.viewDataAcquisition.setRangeXChannel2(rangeXChannel2)
+            self.viewDataAcquisition.setRangeX(rangeX)
 
         else:
-            if not self.viewDataAcquisition.getBtnAutoscaleYChannel2Status()\
-                    and not self.viewDataAcquisition.getBtnChart1000Channel2Status():
+            if not self.viewDataAcquisition.getBtnAutoscaleYStatus()\
+                    and not self.viewDataAcquisition.getBtnChart1000Status():
 
-                self.viewDataAcquisition.setBtnAutoscaleXChannel2Status(True)
-                self.btnAutoscaleXChannel2Changed()
+                self.viewDataAcquisition.setBtnAutoscaleXStatus(True)
+                self.btnAutoscaleXChanged()
+
+    # def btnAutoscaleYChannel1Changed(self):
+    #     if self.viewDataAcquisition.getBtnAutoscaleYChannel1Status():
+    #
+    #         if len(self.valuesExperiment['Channel 1']) > 100:
+    #             initChannel1 = len(self.valuesExperiment['Channel 1']) - 100
+    #
+    #         else:
+    #             initChannel1 = 0
+    #
+    #         if len(self.valuesExperiment['Channel 1']) > 0:
+    #             self.axisYMinChannel1 = self.valuesExperiment['Channel 1'][initChannel1]
+    #             self.axisYMaxChannel1 = self.valuesExperiment['Channel 1'][initChannel1]
+    #
+    #             for i in range(initChannel1, len(self.valuesExperiment['Channel 1'])):
+    #
+    #                 if self.valuesExperiment['Channel 1'][i] > self.axisYMaxChannel1:
+    #                     self.axisYMaxChannel1 = self.valuesExperiment['Channel 1'][i]
+    #
+    #                 if self.valuesExperiment['Channel 1'][i] < self.axisYMinChannel1:
+    #                     self.axisYMinChannel1 = self.valuesExperiment['Channel 1'][i]
+    #
+    #         else:
+    #             self.axisYMinChannel1 = 0
+    #             self.axisYMaxChannel1 = 0
+    #
+    #         autoscale = True
+    #
+    #     else:
+    #         self.axisYMinChannel1 = 0
+    #         self.axisYMaxChannel1 = 100
+    #
+    #         autoscale = False
+    #
+    #     self.viewDataAcquisition.setRangeYChannel1([self.axisYMinChannel1, self.axisYMaxChannel1], autoscale)
+    #
+    # def btnAutoscaleXChannel1Changed(self):
+    #     if self.viewDataAcquisition.getBtnAutoscaleXChannel1Status():
+    #
+    #         self.viewDataAcquisition.setBtnChart1000Channel1Status(False)
+    #         self.viewDataAcquisition.setBtnChart10000Channel1Status(False)
+    #
+    #         rangeXChannel1 = self.viewDataAcquisition.getRangeXChannel1()
+    #         rangeXChannel1[0] = 0
+    #
+    #         if self.values['Time'] is not 0:
+    #             rangeXChannel1[1] = self.values['Time']
+    #
+    #         else:
+    #             rangeXChannel1[1] = 100
+    #
+    #         self.viewDataAcquisition.setRangeXChannel1(rangeXChannel1)
+    #
+    # def btnChart1000Channel1Changed(self):
+    #     if self.viewDataAcquisition.getBtnChart1000Channel1Status():
+    #
+    #         self.viewDataAcquisition.setBtnAutoscaleXChannel1Status(False)
+    #         self.viewDataAcquisition.setBtnChart10000Channel1Status(False)
+    #
+    #         rangeXChannel1 = self.viewDataAcquisition.getRangeXChannel1()
+    #
+    #         if self.values['Time'] > 1000:
+    #             rangeXChannel1[0] = self.values['Time'] - 1000
+    #
+    #         else:
+    #             rangeXChannel1[1] = 1000
+    #
+    #         self.viewDataAcquisition.setRangeXChannel1(rangeXChannel1)
+    #
+    #     else:
+    #         if not self.viewDataAcquisition.getBtnAutoscaleYChannel1Status()\
+    #                 and not self.viewDataAcquisition.getBtnChart10000Channel1Status():
+    #
+    #             self.viewDataAcquisition.setBtnAutoscaleXChannel1Status(True)
+    #             self.btnAutoscaleXChannel1Changed()
+    #
+    # def btnChart10000Channel1Changed(self):
+    #     if self.viewDataAcquisition.getBtnChart10000Channel1Status():
+    #
+    #         self.viewDataAcquisition.setBtnAutoscaleXChannel1Status(False)
+    #         self.viewDataAcquisition.setBtnChart1000Channel1Status(False)
+    #
+    #         rangeXChannel1 = self.viewDataAcquisition.getRangeXChannel1()
+    #
+    #         if rangeXChannel1[1] > 10000:
+    #             rangeXChannel1[0] = rangeXChannel1[1] - 10000
+    #
+    #         else:
+    #             rangeXChannel1[1] = 10000
+    #
+    #         self.viewDataAcquisition.setRangeXChannel1(rangeXChannel1)
+    #
+    #     else:
+    #         if not self.viewDataAcquisition.getBtnAutoscaleYChannel1Status()\
+    #                 and not self.viewDataAcquisition.getBtnChart1000Channel1Status():
+    #
+    #             self.viewDataAcquisition.setBtnAutoscaleXChannel1Status(True)
+    #             self.btnAutoscaleXChannel1Changed()
+    #
+    # def btnAutoscaleYChannel2Changed(self):
+    #     if self.viewDataAcquisition.getBtnAutoscaleYChannel2Status():
+    #
+    #         if len(self.valuesExperiment['Channel 2']) > 100:
+    #             initChannel2 = len(self.valuesExperiment['Channel 2']) - 100
+    #
+    #         else:
+    #             initChannel2 = 0
+    #
+    #         if len(self.valuesExperiment['Channel 2']) > 0:
+    #             self.axisYMinChannel2 = self.valuesExperiment['Channel 2'][initChannel2]
+    #             self.axisYMaxChannel2 = self.valuesExperiment['Channel 2'][initChannel2]
+    #
+    #             for i in range(initChannel2, len(self.valuesExperiment['Channel 2'])):
+    #
+    #                 if self.valuesExperiment['Channel 2'][i] > self.axisYMaxChannel2:
+    #                     self.axisYMaxChannel2 = self.valuesExperiment['Channel 2'][i]
+    #
+    #                 if self.valuesExperiment['Channel 2'][i] < self.axisYMinChannel2:
+    #                     self.axisYMinChannel2 = self.valuesExperiment['Channel 2'][i]
+    #
+    #         else:
+    #             self.axisYMinChannel2 = 0
+    #             self.axisYMaxChannel2 = 0
+    #
+    #         autoscale = True
+    #
+    #     else:
+    #         self.axisYMinChannel2 = 0
+    #         self.axisYMaxChannel2 = 100
+    #
+    #         autoscale = False
+    #
+    #     self.viewDataAcquisition.setRangeYChannel2([self.axisYMinChannel2, self.axisYMaxChannel2], autoscale)
+    #
+    # def btnAutoscaleXChannel2Changed(self):
+    #     if self.viewDataAcquisition.getBtnAutoscaleXChannel2Status():
+    #
+    #         self.viewDataAcquisition.setBtnChart1000Channel2Status(False)
+    #         self.viewDataAcquisition.setBtnChart10000Channel2Status(False)
+    #
+    #         rangeXChannel2 = self.viewDataAcquisition.getRangeXChannel2()
+    #         rangeXChannel2[0] = 0
+    #
+    #         if self.values['Time'] is not 0:
+    #             rangeXChannel2[1] = self.values['Time']
+    #
+    #         else:
+    #             rangeXChannel2[1] = 100
+    #
+    #         self.viewDataAcquisition.setRangeXChannel2(rangeXChannel2)
+    #
+    # def btnChart1000Channel2Changed(self):
+    #     if self.viewDataAcquisition.getBtnChart1000Channel2Status():
+    #
+    #         self.viewDataAcquisition.setBtnAutoscaleXChannel2Status(False)
+    #         self.viewDataAcquisition.setBtnChart10000Channel2Status(False)
+    #
+    #         rangeXChannel2 = self.viewDataAcquisition.getRangeXChannel2()
+    #
+    #         if self.values['Time'] > 1000:
+    #             rangeXChannel2[0] = self.values['Time'] - 1000
+    #
+    #         else:
+    #             rangeXChannel2[1] = 1000
+    #
+    #         self.viewDataAcquisition.setRangeXChannel2(rangeXChannel2)
+    #
+    #     else:
+    #         if not self.viewDataAcquisition.getBtnAutoscaleYChannel2Status()\
+    #                 and not self.viewDataAcquisition.getBtnChart10000Channel2Status():
+    #
+    #             self.viewDataAcquisition.setBtnAutoscaleXChannel2Status(True)
+    #             self.btnAutoscaleXChannel2Changed()
+    #
+    # def btnChart10000Channel2Changed(self):
+    #     if self.viewDataAcquisition.getBtnChart10000Channel2Status():
+    #
+    #         self.viewDataAcquisition.setBtnAutoscaleXChannel2Status(False)
+    #         self.viewDataAcquisition.setBtnChart1000Channel2Status(False)
+    #
+    #         rangeXChannel2 = self.viewDataAcquisition.getRangeXChannel2()
+    #
+    #         if rangeXChannel2[1] > 10000:
+    #             rangeXChannel2[0] = rangeXChannel2[1] - 10000
+    #
+    #         else:
+    #             rangeXChannel2[1] = 10000
+    #
+    #         self.viewDataAcquisition.setRangeXChannel2(rangeXChannel2)
+    #
+    #     else:
+    #         if not self.viewDataAcquisition.getBtnAutoscaleYChannel2Status()\
+    #                 and not self.viewDataAcquisition.getBtnChart1000Channel2Status():
+    #
+    #             self.viewDataAcquisition.setBtnAutoscaleXChannel2Status(True)
+    #             self.btnAutoscaleXChannel2Changed()
 
     """
     ********************************************************************************************************************

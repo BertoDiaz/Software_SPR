@@ -15,14 +15,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtChart import QChartView, QChart, QValueAxis, QLineSeries
-from PyQt5.QtGui import QPainter, QPen, QColor
+from PyQt5.QtChart import QChartView, QChart, QValueAxis, QLineSeries, QLegend
+from PyQt5.QtGui import QPainter, QPen, QColor, QBrush
 from PyQt5.QtCore import Qt
 
 
 class Chart(QChartView):
 
-    def __init__(self, title):
+    def __init__(self):
         self.chart = QChart()
 
         QChartView.__init__(self, self.chart)
@@ -31,25 +31,30 @@ class Chart(QChartView):
         self.axisY = QValueAxis()
 
         self.xRange = [0, 100]
-        self.yRange = [0, 100]
+        self.yRange = [-10, 100]
+
+        self.curve = []
 
         self.setBackgroundBrush(QColor('#D8D8D8'))
 
         self.setRenderHint(QPainter.Antialiasing)
-        self.chart.setTitle(title)
-        self.chart.setTitleBrush(Qt.white)
+        # self.chart.setTitle(title)
+        # self.chart.setTitleBrush(Qt.white)
         self.chart.setAnimationOptions(QChart.NoAnimation)
-        self.chart.legend().setVisible(False)
+        self.chart.legend().setVisible(True)
+        self.chart.legend().setAlignment(Qt.AlignBottom)
+        self.chart.legend().setLabelColor(Qt.white)
+        self.chart.legend().setMarkerShape(QLegend.MarkerShapeFromSeries)
         self.chart.setBackgroundBrush(QColor('#00004D'))
 
-        self.curve = QLineSeries()
-        pen = self.curve.pen()
-
-        pen.setColor(QColor('#FF9933'))
-        pen.setWidthF(2)
-        self.curve.setPen(pen)
-
-        self.chart.addSeries(self.curve)
+        # self.curve = QLineSeries()
+        # pen = self.curve.pen()
+        #
+        # pen.setColor(QColor('#FF9933'))
+        # pen.setWidthF(2)
+        # self.curve.setPen(pen)
+        #
+        # self.chart.addSeries(self.curve)
 
         penAxisGrid = QPen(QColor('#F2F2F2'))
         penAxisGrid.setWidthF(0.5)
@@ -68,7 +73,7 @@ class Chart(QChartView):
         self.axisY.setLabelsColor(Qt.white)
 
         self.axisX.setMinorTickCount(4)
-        self.axisY.setMinorTickCount(1)
+        self.axisY.setMinorTickCount(4)
 
         self.axisX.setTitleBrush(Qt.white)
         self.axisY.setTitleBrush(Qt.white)
@@ -77,14 +82,41 @@ class Chart(QChartView):
         self.axisY.setTitleText('Signal Amplitude')
 
         self.axisX.setTickCount(11)
-        self.axisY.setTickCount(6)
+        self.axisY.setTickCount(12)
         self.axisX.setRange(self.xRange[0], self.xRange[1])
         self.axisY.setRange(self.yRange[0], self.yRange[1])
 
-        self.chart.setAxisX(self.axisX, self.curve)
-        self.chart.setAxisY(self.axisY, self.curve)
+        # self.chart.setAxisX(self.axisX, self.curve)
+        # self.chart.setAxisY(self.axisY, self.curve)
 
-    def setDataChart(self, xData, yData):
+    def setAddSerie(self, name, color):
+        self.curve.append(QLineSeries())
+        pen = self.curve[len(self.curve)-1].pen()
+
+        pen.setColor(QColor(color))
+        pen.setWidthF(2)
+        self.curve[len(self.curve)-1].setPen(pen)
+
+        self.curve[len(self.curve) - 1].setName(name)
+
+        self.chart.addSeries(self.curve[len(self.curve)-1])
+
+        self.chart.setAxisX(self.axisX, self.curve[len(self.curve)-1])
+        self.chart.setAxisY(self.axisY, self.curve[len(self.curve)-1])
+
+    # def setDataChart(self, xData, yData):
+    #     if xData > self.xRange[1]:
+    #         addValue = xData - self.xRange[1]
+    #
+    #         if self.xRange[0] is not 0:
+    #             self.xRange[0] = self.xRange[0] + addValue
+    #
+    #         self.xRange[1] = self.xRange[1] + addValue
+    #         self.axisX.setRange(self.xRange[0], self.xRange[1])
+    #
+    #     self.curve.append(xData, yData)
+
+    def setDataChart(self, xData, yData1, yData2):
         if xData > self.xRange[1]:
             addValue = xData - self.xRange[1]
 
@@ -94,7 +126,8 @@ class Chart(QChartView):
             self.xRange[1] = self.xRange[1] + addValue
             self.axisX.setRange(self.xRange[0], self.xRange[1])
 
-        self.curve.append(xData, yData)
+        self.curve[0].append(xData, yData1)
+        self.curve[1].append(xData, yData2)
 
     def setRangeY(self, yRange, autoscale):
         if autoscale:
@@ -123,3 +156,7 @@ class Chart(QChartView):
 
     def initSerie(self):
         self.curve.clear()
+
+    def initSeries(self):
+        self.curve[0].clear()
+        self.curve[1].clear()
