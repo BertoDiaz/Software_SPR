@@ -48,6 +48,10 @@ class ControllerTabs:
         self.baseX = 58.00
         self.axisYMax = 0
         self.axisYMin = 0
+        self.axisXMax = 0
+        self.axisXMin = 0
+        self.offsetChannel1 = 0
+        self.offsetChannel2 = 0
         # self.axisYMaxChannel1 = 0
         # self.axisYMinChannel1 = 0
         # self.axisYMaxChannel2 = 0
@@ -92,7 +96,9 @@ class ControllerTabs:
         self.valuesExperiment = {
             'Channel 1': [],
             'Channel 2': [],
-            'Time': []
+            'Time': [],
+            'Raw Channel 1': [],
+            'Raw Channel 2': []
         }
 
         """------------------------------------------ End Global Variables ------------------------------------------"""
@@ -1123,6 +1129,8 @@ class ControllerTabs:
 
                         self.valuesExperiment['Channel 1'] = []
                         self.valuesExperiment['Channel 2'] = []
+                        self.valuesExperiment['Raw Channel 1'] = []
+                        self.valuesExperiment['Raw Channel 2'] = []
 
                         self.values['Channel 1'] = 0.0
                         self.values['Channel 2'] = 0.0
@@ -1180,9 +1188,19 @@ class ControllerTabs:
 
     def experimentDataReceived(self, data):
         if self.viewDataAcquisition.getBtnInitExperimentStatus():
-            self.valuesExperiment['Channel 1'].append(float(data[1] + data[2]))
-            self.valuesExperiment['Channel 2'].append(float(data[3] + data[4]))
+
+            self.valuesExperiment['Raw Channel 1'].append(float(data[1] + data[2]))
+            self.valuesExperiment['Raw Channel 2'].append(float(data[3] + data[4]))
             self.valuesExperiment['Time'].append(self.values['Time'])
+
+            if self.values['Time'] == 0:
+                self.offsetChannel1 = self.valuesExperiment['Raw Channel 1'][0]
+                self.offsetChannel2 = self.valuesExperiment['Raw Channel 2'][0]
+
+            self.valuesExperiment['Channel 1'].append(self.valuesExperiment['Raw Channel 1'][self.values['Time']] -
+                                                      self.offsetChannel1)
+            self.valuesExperiment['Channel 2'].append(self.valuesExperiment['Raw Channel 2'][self.values['Time']] -
+                                                      self.offsetChannel2)
 
             self.values['Channel 1'] = self.valuesExperiment['Channel 1'][self.values['Time']]
             self.values['Channel 2'] = self.valuesExperiment['Channel 2'][self.values['Time']]
@@ -1194,23 +1212,69 @@ class ControllerTabs:
             # self.viewDataAcquisition.setDataChannel1(self.values['Time'], self.values['Channel 1'])
             # self.viewDataAcquisition.setDataChannel2(self.values['Time'], self.values['Channel 2'])
 
-            valueX1 = self.values['Channel 1'] - self.valuesExperiment['Channel 1'][0]
-            valueX2 = self.values['Channel 2'] - self.valuesExperiment['Channel 2'][0]
+            # valueX1 = self.values['Channel 1'] - self.valuesExperiment['Channel 1'][0]
+            # valueX2 = self.values['Channel 2'] - self.valuesExperiment['Raw Channel 2'][0]
 
-            self.viewDataAcquisition.setDataChannel(self.values['Time'], valueX1, valueX2)
+            self.viewDataAcquisition.setDataChannel(self.values['Time'], self.values['Channel 1'],
+                                                    self.values['Channel 2'])
 
             self.values['Time'] += 1
 
             if self.viewDataAcquisition.getBtnAutoscaleYStatus():
-                if self.values['Channel 1'] > self.axisYMax:
-                    self.axisYMax = self.values['Channel 1']
 
-                if self.values['Channel 1'] < self.axisYMin:
-                    self.axisYMin = self.values['Channel 1']
+                if self.viewDataAcquisition.getBtnChart1000Status():
+
+                    if self.axisXMax < (self.values['Time'] - 1000):
+                        self.btnAutoscaleYChanged()
+
+                    else:
+
+                        if self.values['Channel 1'] > self.axisYMax or self.values['Channel 2'] > self.axisYMax:
+                            self.axisYMax = max(self.values['Channel 1'], self.values['Channel 2'])
+
+                        if self.values['Channel 1'] < self.axisYMin or self.values['Channel 2'] < self.axisYMin:
+                            self.axisYMin = min(self.values['Channel 1'], self.values['Channel 2'])
+
+                elif self.viewDataAcquisition.getBtnChart10000Status():
+
+                    if self.axisXMax < (self.values['Time'] - 10000):
+                        self.btnAutoscaleYChanged()
+
+                    else:
+
+                        if self.values['Channel 1'] > self.axisYMax or self.values['Channel 2'] > self.axisYMax:
+                            self.axisYMax = max(self.values['Channel 1'], self.values['Channel 2'])
+
+                        if self.values['Channel 1'] < self.axisYMin or self.values['Channel 2'] < self.axisYMin:
+                            self.axisYMin = min(self.values['Channel 1'], self.values['Channel 2'])
+
+                else:
+
+                    if self.values['Channel 1'] > self.axisYMax or self.values['Channel 2'] > self.axisYMax:
+                        self.axisYMax = max(self.values['Channel 1'], self.values['Channel 2'])
+
+                    if self.values['Channel 1'] < self.axisYMin or self.values['Channel 2'] < self.axisYMin:
+                        self.axisYMin = min(self.values['Channel 1'], self.values['Channel 2'])
 
                 autoscale = True
 
                 self.viewDataAcquisition.setRangeY([self.axisYMin, self.axisYMax], autoscale)
+
+            # if self.viewDataAcquisition.getBtnChart1000Status():
+            #     rangeX = self.viewDataAcquisition.getRangeX()
+            #
+            #     if self.values['Time'] > 1000:
+            #         rangeX[0] = self.values['Time'] - 1000
+            #
+            #         self.viewDataAcquisition.setRangeX(rangeX)
+            #
+            # elif self.viewDataAcquisition.getBtnChart10000Status():
+            #     rangeX = self.viewDataAcquisition.getRangeX()
+            #
+            #     if self.values['Time'] > 10000:
+            #         rangeX[0] = self.values['Time'] - 10000
+            #
+            #         self.viewDataAcquisition.setRangeX(rangeX)
 
             # if self.viewDataAcquisition.getBtnAutoscaleYChannel1Status():
             #     if self.values['Channel 1'] > self.axisYMaxChannel1:
@@ -1273,9 +1337,9 @@ class ControllerTabs:
 
             myData = [[Strings.timeUC, Strings.channel1UC, Strings.channel2UC]]
 
-            for i in range(0, len(self.valuesExperiment['Channel 1'])):
-                myData.append([self.valuesExperiment['Time'][i], self.valuesExperiment['Channel 1'][i],
-                               self.valuesExperiment['Channel 2'][i]])
+            for i in range(0, len(self.valuesExperiment['Raw Channel 1'])):
+                myData.append([self.valuesExperiment['Time'][i], self.valuesExperiment['Raw Channel 1'][i],
+                               self.valuesExperiment['Raw Channel 2'][i]])
 
             with self.myFileMeasure:
                 writer = csv.writer(self.myFileMeasure, delimiter='\t')
@@ -1297,13 +1361,13 @@ class ControllerTabs:
         if self.fileNameMeasure != '':
             self.myFileMeasure = open(self.fileNameMeasure, Strings.write)
 
-            if len(self.valuesExperiment['Channel 1']) > 0:
+            if len(self.valuesExperiment['Raw Channel 1']) > 0:
 
                 myData = [[Strings.timeUC, Strings.channel1UC, Strings.channel2UC]]
 
-                for i in range(0, len(self.valuesExperiment['Channel 1'])):
-                    myData.append([self.valuesExperiment['Time'][i], self.valuesExperiment['Channel 1'][i],
-                                   self.valuesExperiment['Channel 2'][i]])
+                for i in range(0, len(self.valuesExperiment['Raw Channel 1'])):
+                    myData.append([self.valuesExperiment['Time'][i], self.valuesExperiment['Raw Channel 1'][i],
+                                   self.valuesExperiment['Raw Channel 2'][i]])
 
                 with self.myFileMeasure:
                     writer = csv.writer(self.myFileMeasure, delimiter='\t')
@@ -1327,8 +1391,21 @@ class ControllerTabs:
     def btnAutoscaleYChanged(self):
         if self.viewDataAcquisition.getBtnAutoscaleYStatus():
 
-            if len(self.valuesExperiment['Channel 1']) > 100:
-                init = len(self.valuesExperiment['Channel 1']) - 100
+            if self.viewDataAcquisition.getBtnChart1000Status():
+
+                if len(self.valuesExperiment['Channel 1']) >= 1000:
+                    init = len(self.valuesExperiment['Channel 1']) - 1000
+
+                else:
+                    init = 0
+
+            elif self.viewDataAcquisition.getBtnChart10000Status():
+
+                if len(self.valuesExperiment['Channel 1']) >= 10000:
+                    init = len(self.valuesExperiment['Channel 1']) - 10000
+
+                else:
+                    init = 0
 
             else:
                 init = 0
@@ -1339,17 +1416,19 @@ class ControllerTabs:
 
                 for i in range(init, len(self.valuesExperiment['Channel 1'])):
 
-                    if self.valuesExperiment['Channel 1'][i] > self.axisYMax:
-                        self.axisYMax = self.valuesExperiment['Channel 1'][i]
+                    if self.valuesExperiment['Channel 1'][i] > self.axisYMax or self.valuesExperiment['Channel 2'][i] >\
+                            self.axisYMax:
+                        self.axisYMax = max(self.valuesExperiment['Channel 1'][i],
+                                            self.valuesExperiment['Channel 2'][i])
 
-                    if self.valuesExperiment['Channel 2'][i] > self.axisYMax:
-                        self.axisYMax = self.valuesExperiment['Channel 2'][i]
+                        self.axisXMax = i
 
-                    if self.valuesExperiment['Channel 1'][i] < self.axisYMin:
-                        self.axisYMin = self.valuesExperiment['Channel 1'][i]
+                    if self.valuesExperiment['Channel 1'][i] < self.axisYMin or self.valuesExperiment['Channel 2'][i] <\
+                            self.axisYMin:
+                        self.axisYMin = min(self.valuesExperiment['Channel 1'][i],
+                                            self.valuesExperiment['Channel 2'][i])
 
-                    if self.valuesExperiment['Channel 2'][i] < self.axisYMin:
-                        self.axisYMin = self.valuesExperiment['Channel 1'][i]
+                        self.axisXMin = i
 
             else:
                 self.axisYMin = 0
@@ -1358,7 +1437,7 @@ class ControllerTabs:
             autoscale = True
 
         else:
-            self.axisYMin = 0
+            self.axisYMin = -100
             self.axisYMax = 100
 
             autoscale = False
@@ -1371,10 +1450,13 @@ class ControllerTabs:
             self.viewDataAcquisition.setBtnChart1000Status(False)
             self.viewDataAcquisition.setBtnChart10000Status(False)
 
+            if self.viewDataAcquisition.getBtnAutoscaleYStatus():
+                self.btnAutoscaleYChanged()
+
             rangeX = self.viewDataAcquisition.getRangeX()
             rangeX[0] = 0
 
-            if self.values['Time'] is not 0:
+            if 0 < self.values['Time'] > 100:
                 rangeX[1] = self.values['Time']
 
             else:
@@ -1388,12 +1470,17 @@ class ControllerTabs:
             self.viewDataAcquisition.setBtnAutoscaleXStatus(False)
             self.viewDataAcquisition.setBtnChart10000Status(False)
 
+            if self.viewDataAcquisition.getBtnAutoscaleYStatus():
+                self.btnAutoscaleYChanged()
+
             rangeX = self.viewDataAcquisition.getRangeX()
 
             if self.values['Time'] > 1000:
                 rangeX[0] = self.values['Time'] - 1000
+                rangeX[1] = self.values['Time']
 
             else:
+                rangeX[0] = 0
                 rangeX[1] = 1000
 
             self.viewDataAcquisition.setRangeX(rangeX)
@@ -1411,12 +1498,16 @@ class ControllerTabs:
             self.viewDataAcquisition.setBtnAutoscaleXStatus(False)
             self.viewDataAcquisition.setBtnChart1000Status(False)
 
+            if self.viewDataAcquisition.getBtnAutoscaleYStatus():
+                self.btnAutoscaleYChanged()
+
             rangeX = self.viewDataAcquisition.getRangeX()
 
-            if rangeX[1] > 10000:
-                rangeX[0] = rangeX[1] - 10000
+            if self.values['Time'] > 10000:
+                rangeX[0] = self.values['Time'] - 10000
 
             else:
+                rangeX[0] = 0
                 rangeX[1] = 10000
 
             self.viewDataAcquisition.setRangeX(rangeX)

@@ -31,7 +31,7 @@ class Chart(QChartView):
         self.axisY = QValueAxis()
 
         self.xRange = [0, 100]
-        self.yRange = [-10, 100]
+        self.yRange = [-100, 100]
 
         self.curve = []
 
@@ -82,7 +82,7 @@ class Chart(QChartView):
         self.axisY.setTitleText('Signal Amplitude')
 
         self.axisX.setTickCount(11)
-        self.axisY.setTickCount(12)
+        self.axisY.setTickCount(11)
         self.axisX.setRange(self.xRange[0], self.xRange[1])
         self.axisY.setRange(self.yRange[0], self.yRange[1])
 
@@ -131,7 +131,34 @@ class Chart(QChartView):
 
     def setRangeY(self, yRange, autoscale):
         if autoscale:
-            self.axisY.setRange(yRange[0] - (yRange[0] * 0.10), yRange[1] * 1.10)
+
+            if yRange[0] == 0 and yRange[1] == 0:
+                yRange[0] = -0.50
+                yRange[1] = 0.50
+
+            elif yRange[0] == 0:
+                yRange[0] = -0.10
+                yRange[1] = yRange[1] * 1.10
+
+            elif yRange[1] == 0:
+                yRange[0] = yRange[0] * 1.10
+                yRange[1] = 0.10
+
+            else:
+
+                if yRange[0] < 0:
+                    yRange[0] = yRange[0] * 1.10
+
+                else:
+                    yRange[0] = yRange[0] - (yRange[0] * 0.10)
+
+                if yRange[1] < 0:
+                    yRange[1] = yRange[1] - (yRange[1] * 0.10)
+
+                else:
+                    yRange[1] = yRange[1] * 1.10
+
+            self.axisY.setRange(yRange[0], yRange[1])
 
         else:
             self.axisY.setRange(yRange[0], yRange[1])
