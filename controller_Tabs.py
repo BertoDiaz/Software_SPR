@@ -1022,6 +1022,10 @@ class ControllerTabs:
                 self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
                 self.btnAutoAcquisitionChanged()
 
+        else:
+            for value in data:
+                pass
+
     """
     ********************************************************************************************************************
     *                                         End Acquisition Mode Functions                                           *
@@ -1305,6 +1309,10 @@ class ControllerTabs:
 
             if not self.viewDataAcquisition.getBtnPeristalticStatus():
                 self.viewDataAcquisition.setMessageCritical(Strings.messageNecessaryPeristalticON)
+
+        else:
+            for value in data:
+                pass
 
     """
     ********************************************************************************************************************
@@ -1753,6 +1761,9 @@ class ControllerTabs:
 
                 elif value == Strings.experimentCommand:
                     self.experimentDataReceived(data)
+
+                else:
+                    pass
 
     def setTimeout(self, messageTimeout, functionTimeout):
         self.btnTimeout = True
