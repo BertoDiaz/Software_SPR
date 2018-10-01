@@ -364,6 +364,8 @@ class ControllerTabs:
         self.viewDataAcquisition.setBtnLaserStatus(self.btnLaserChecked)
         self.viewCurveSetup.setLedLaserStatus(self.btnLaserChecked)
 
+        self.viewSystemControl.setChangeImage(self.btnLaserChecked)
+
         self.viewSystemControl.setBtnLaserDisable(False)
         self.viewCurveSetup.setBtnLaserDisable(False)
         self.viewDataAcquisition.setBtnLaserDisable(False)

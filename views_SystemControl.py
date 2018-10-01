@@ -52,7 +52,7 @@ class ViewSystemControl(QWidget):
 
         """------------------------------------------------ QPixmap -------------------------------------------------"""
         self.imageLogo = QPixmap(Strings.imageLogoHalf)
-        self.imageSPRDevice = QPixmap(Strings.imageSPRDevice)
+        self.imageSPRDevice = QPixmap(Strings.imageSPRFrontGreen)
         """----------------------------------------------------------------------------------------------------------"""
 
         """---------------------------------------------- QGroupBoxes -----------------------------------------------"""
@@ -289,6 +289,27 @@ class ViewSystemControl(QWidget):
 
     """
     ********************************************************************************************************************
+    *                                              Image Control Functions                                             *
+    ********************************************************************************************************************
+    """
+
+    def setChangeImage(self, switchON):
+        if switchON:
+            self.imageSPRDevice.load(Strings.imageSPRFrontRed)
+
+        else:
+            self.imageSPRDevice.load(Strings.imageSPRFrontGreen)
+
+        self.lblImageSPRDevice.setPixmap(self.imageSPRDevice)
+
+    """
+    ********************************************************************************************************************
+    *                                            End Image Control Functions                                           *
+    ********************************************************************************************************************
+    """
+
+    """
+    ********************************************************************************************************************
     *                                             Buttons Styles Functions                                             *
     ********************************************************************************************************************
     """
@@ -406,6 +427,7 @@ class ViewSystemControl(QWidget):
 
     def setStyleLayouts(self):
         self.imageLayout.setAlignment(Qt.AlignCenter)
+        self.imageLayout.setContentsMargins(0, 0, 0, 0)
 
     """
     ********************************************************************************************************************
