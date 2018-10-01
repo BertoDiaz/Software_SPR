@@ -104,17 +104,17 @@ class Chart(QChartView):
         self.chart.setAxisX(self.axisX, self.curve[len(self.curve)-1])
         self.chart.setAxisY(self.axisY, self.curve[len(self.curve)-1])
 
-    # def setDataChart(self, xData, yData):
-    #     if xData > self.xRange[1]:
-    #         addValue = xData - self.xRange[1]
-    #
-    #         if self.xRange[0] is not 0:
-    #             self.xRange[0] = self.xRange[0] + addValue
-    #
-    #         self.xRange[1] = self.xRange[1] + addValue
-    #         self.axisX.setRange(self.xRange[0], self.xRange[1])
-    #
-    #     self.curve.append(xData, yData)
+    def setDataChartNormal(self, xData, yData):
+        if xData > self.xRange[1]:
+            addValue = xData - self.xRange[1]
+
+            if self.xRange[0] is not 0:
+                self.xRange[0] = self.xRange[0] + addValue
+
+            self.xRange[1] = self.xRange[1] + addValue
+            self.axisX.setRange(self.xRange[0], self.xRange[1])
+
+        self.curve.append(xData, yData)
 
     def setDataChart(self, xData, yData1, yData2):
         if xData > self.xRange[1]:
@@ -168,6 +168,9 @@ class Chart(QChartView):
 
     def getRangeX(self):
         return self.xRange
+
+    def setRangeY(self, yRange):
+        self.axisY.setRange(yRange[0], yRange[1])
 
     def setAxisXName(self, name):
         self.axisX.setTitleText(name)

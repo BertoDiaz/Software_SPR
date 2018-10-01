@@ -554,6 +554,7 @@ class ViewCurveSetup(QWidget):
         self.myChartChannel.setAxisXName(Strings.angleOfIncidence)
         self.myChartChannel.setAxisYName(Strings.signalAmplitude)
         self.myChartChannel.setRangeX([58.00, 62.00])
+        self.myChartChannel.setRangeY([0, 100])
         self.myChartChannel.setAxisXTickCount(9)
 
         # self.myChartChannel1.setAxisXName(Strings.angleOfIncidence)
