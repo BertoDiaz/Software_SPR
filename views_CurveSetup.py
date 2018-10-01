@@ -89,7 +89,7 @@ class ViewCurveSetup(QWidget):
         """------------------------------------------------- Charts -------------------------------------------------"""
         # self.myChartChannel1 = Chart(Strings.channel1UC)
         # self.myChartChannel2 = Chart(Strings.channel2UC)
-        self.myChartChannel = Chart()
+        self.myChart = Chart()
         """----------------------------------------------------------------------------------------------------------"""
 
         """---------------------------------------------- QGroupBoxes -----------------------------------------------"""
@@ -295,7 +295,7 @@ class ViewCurveSetup(QWidget):
             QGroupBox: return the main group box of this step.
         """
         self.setCharts('CHANNEL 1', '#FF9933', 'CHANNEL 2', '#33CCFF')
-        self.chartLayout.addWidget(self.myChartChannel)
+        self.chartLayout.addWidget(self.myChart)
         # self.chartLayout.addWidget(self.myChartChannel1)
         # self.chartLayout.addWidget(self.myChartChannel2)
 
@@ -456,10 +456,10 @@ class ViewCurveSetup(QWidget):
         return int(self.edtFinalAngle.text())
 
     def setEdtPointsCurveValue(self, text):
-        self.edtPointsCurve.setText(str(text))
+        self.edtPointsCurve.setText('%.4f' % text)
 
     def getEdtPointsCurveValue(self):
-        return int(self.edtPointsCurve.text())
+        return float(self.edtPointsCurve.text())
 
     """
     ********************************************************************************************************************
@@ -551,11 +551,11 @@ class ViewCurveSetup(QWidget):
     """
 
     def setCharts(self, name1, color1, name2, color2):
-        self.myChartChannel.setAxisXName(Strings.angleOfIncidence)
-        self.myChartChannel.setAxisYName(Strings.signalAmplitude)
-        self.myChartChannel.setRangeX([58.00, 62.00])
-        self.myChartChannel.setRangeY([0, 100])
-        self.myChartChannel.setAxisXTickCount(9)
+        self.myChart.setAxisXName(Strings.angleOfIncidence)
+        self.myChart.setAxisYName(Strings.signalAmplitude)
+        self.myChart.setRangeX([58.00, 62.00])
+        self.myChart.setRangeY([0, 100])
+        self.myChart.setAxisXTickCount(9)
 
         # self.myChartChannel1.setAxisXName(Strings.angleOfIncidence)
         # self.myChartChannel1.setAxisYName(Strings.signalAmplitude)
@@ -567,14 +567,17 @@ class ViewCurveSetup(QWidget):
         # self.myChartChannel2.setRangeX([58.00, 62.00])
         # self.myChartChannel2.setAxisXTickCount(9)
 
-        self.myChartChannel.setAddSerie(name1, color1)
-        self.myChartChannel.setAddSerie(name2, color2)
+        self.myChart.setAddSerie(name1, color1)
+        self.myChart.setAddSerie(name2, color2)
 
-    def setDataChannel(self, xData, yData1, yData2):
-        self.myChartChannel.setDataChart(xData, yData1, yData2)
+    def setDataChart(self, xData, yData1, yData2):
+        self.myChart.setDataChart(xData, yData1, yData2)
 
-    def initSerieChannel(self):
-        self.myChartChannel.initSeries()
+    def initSerieChart(self):
+        self.myChart.initSeries()
+
+    def setChangeRangeX(self, xRange):
+        self.myChart.setRangeX(xRange)
 
     # def setDataChannel1(self, xData, yData):
     #     self.myChartChannel1.setDataChart(xData, yData)

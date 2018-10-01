@@ -859,8 +859,8 @@ class ControllerTabs:
         """Control the action when the reset button is de/pressed.
 
         If the button is pressed, the timer to do the reset is activated, the button is disabled, the line edits are
-        disabled, the initial values are set in the line edits and the button is depressed. If the button is depressed,
-        the button is enabled, pressed and the line edits are enabled.
+        disabled, the values are calculated, set in the line edits, set in the chart and the button is depressed. If the
+        button is depressed, the button is enabled, pressed and the line edits are enabled.
         """
         if self.viewCurveSetup.getBtnResetStatus():
             self.tmrBtnReset.singleShot(500, self.btnResetChanged)
@@ -871,17 +871,13 @@ class ControllerTabs:
             self.viewCurveSetup.edtAngleLongitude.valueChanged.disconnect()
             self.viewCurveSetup.edtAngleResolution.valueChanged.disconnect()
 
-            self.values['Init Angle'] = 58
-            self.values['Angle Longitude'] = 4
-            self.values['Angle Resolution'] = 0.2
             self.values['Final Angle'] = self.values['Init Angle'] + self.values['Angle Longitude']
             self.values['Points Curve'] = (self.values['Angle Longitude'] / self.values['Angle Resolution']) + 1
 
-            self.viewCurveSetup.edtInitialAngle.setValue(self.values['Init Angle'])
-            self.viewCurveSetup.edtAngleLongitude.setValue(self.values['Angle Longitude'])
-            self.viewCurveSetup.edtAngleResolution.setValue(self.values['Angle Resolution'])
-            self.viewCurveSetup.edtFinalAngle.setText(str(self.values['Final Angle']))
-            self.viewCurveSetup.edtPointsCurve.setText(str(self.values['Points Curve']))
+            self.viewCurveSetup.setChangeRangeX([self.values['Init Angle'], self.values['Final Angle']])
+
+            self.viewCurveSetup.setEdtFinalAngleValue(self.values['Final Angle'])
+            self.viewCurveSetup.setEdtPointsCurveValue(self.values['Points Curve'])
 
             self.viewCurveSetup.setBtnResetStatus(False)
 
@@ -937,7 +933,7 @@ class ControllerTabs:
                 # self.viewCurveSetup.initSerieChannel1()
                 # self.viewCurveSetup.initSerieChannel2()
 
-                self.viewCurveSetup.initSerieChannel()
+                self.viewCurveSetup.initSerieChart()
 
                 self.valuesPhotodiodes['Photodiode A'] = []
                 self.valuesPhotodiodes['Photodiode B'] = []
@@ -1016,15 +1012,14 @@ class ControllerTabs:
             valueX1 = self.values['Acquisition Channel 1']
             valueX2 = self.values['Acquisition Channel 2']
 
-            self.viewCurveSetup.setDataChannel(self.values['Angle'], valueX1, valueX2)
+            self.viewCurveSetup.setDataChart(self.values['Angle'], valueX1, valueX2)
 
             if self.values['Automatic'] >= self.values['Points Curve']:
                 self.viewCurveSetup.setBtnAutoAcquisitionInProcess(False)
                 self.btnAutoAcquisitionChanged()
 
         else:
-            for value in data:
-                pass
+            pass
 
     """
     ********************************************************************************************************************
@@ -1221,8 +1216,8 @@ class ControllerTabs:
             # valueX1 = self.values['Channel 1'] - self.valuesExperiment['Channel 1'][0]
             # valueX2 = self.values['Channel 2'] - self.valuesExperiment['Raw Channel 2'][0]
 
-            self.viewDataAcquisition.setDataChannel(self.values['Time'], self.values['Channel 1'],
-                                                    self.values['Channel 2'])
+            self.viewDataAcquisition.setDataChart(self.values['Time'], self.values['Channel 1'],
+                                                  self.values['Channel 2'])
 
             self.values['Time'] += 1
 
@@ -1311,8 +1306,7 @@ class ControllerTabs:
                 self.viewDataAcquisition.setMessageCritical(Strings.messageNecessaryPeristalticON)
 
         else:
-            for value in data:
-                pass
+            pass
 
     """
     ********************************************************************************************************************
