@@ -98,6 +98,9 @@ class ViewTabs(QWidget):
         self.layout.addWidget(self.tabs)
         self.layout.addWidget(self.btnExit)
 
+    def setTabEnable(self, tab, enable):
+        self.tabs.setTabEnabled(tab, enable)
+
     def setMessageExit(self):
         """Show a dialog with a question.
 

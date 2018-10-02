@@ -64,6 +64,12 @@ class ControllerTabs:
         self.fileNameMeasure = None
         self.btnLaserChecked = False
 
+        self.tabs = {
+            'System Control': 0,
+            'Curve Setup': 1,
+            'Data Acquisition': 2
+        }
+
         self.values = {
             'Peristaltic': 0,
             'Impulsional A': 0,
@@ -983,6 +989,7 @@ class ControllerTabs:
                 self.autoSaveFileCalibration()
 
         self.viewCurveSetup.setBtnAutoAcquisitionInProcess(acquisitionInProcess)
+        self.viewTabs.setTabEnable(self.tabs['Data Acquisition'], not acquisitionInProcess)
 
     def acquisitionDataReceived(self, data):
         if self.viewCurveSetup.getBtnAutoAcquisitionStatus():
@@ -1176,8 +1183,7 @@ class ControllerTabs:
 
     def initExperimentCommandReceived(self):
         if self.btnTimeout:
-            self.viewDataAcquisition.setBtnInitExperimentStatus(not self.viewDataAcquisition.
-                                                                getBtnInitExperimentStatus())
+            initExperiment = not self.viewDataAcquisition.getBtnInitExperimentStatus()
             self.btnTimeout = False
 
         else:
@@ -1185,7 +1191,10 @@ class ControllerTabs:
             if not self.viewDataAcquisition.getBtnInitExperimentStatus():
                 self.autoSaveFileMeasure()
 
-            self.viewDataAcquisition.setBtnInitExperimentStatus(self.viewDataAcquisition.getBtnInitExperimentStatus())
+            initExperiment = self.viewDataAcquisition.getBtnInitExperimentStatus()
+
+        self.viewDataAcquisition.setBtnInitExperimentStatus(initExperiment)
+        self.viewTabs.setTabEnable(self.tabs['Curve Setup'], not initExperiment)
 
     def experimentDataReceived(self, data):
         if self.viewDataAcquisition.getBtnInitExperimentStatus():
