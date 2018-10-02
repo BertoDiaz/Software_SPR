@@ -567,11 +567,13 @@ class ViewCurveSetup(QWidget):
         # self.myChartChannel2.setRangeX([58.00, 62.00])
         # self.myChartChannel2.setAxisXTickCount(9)
 
+        self.myChart.setAddScatterSerie(color1)
         self.myChart.setAddSerie(name1, color1)
+        self.myChart.setAddScatterSerie(color2)
         self.myChart.setAddSerie(name2, color2)
 
     def setDataChart(self, xData, yData1, yData2):
-        self.myChart.setDataChart(xData, yData1, yData2)
+        self.myChart.setDataChartScatter(xData, yData1, yData2)
 
     def initSerieChart(self):
         self.myChart.initSeries()

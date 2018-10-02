@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from PyQt5.QtChart import QChartView, QChart, QValueAxis, QLineSeries, QLegend
+from PyQt5.QtChart import QChartView, QChart, QValueAxis, QLineSeries, QLegend, QScatterSeries
 from PyQt5.QtGui import QPainter, QPen, QColor, QBrush
 from PyQt5.QtCore import Qt
 
@@ -34,6 +34,7 @@ class Chart(QChartView):
         self.yRange = [-100, 100]
 
         self.curve = []
+        self.scatterCurve = []
 
         self.setBackgroundBrush(QColor('#D8D8D8'))
 
@@ -104,7 +105,35 @@ class Chart(QChartView):
         self.chart.setAxisX(self.axisX, self.curve[len(self.curve)-1])
         self.chart.setAxisY(self.axisY, self.curve[len(self.curve)-1])
 
-    def setDataChartNormal(self, xData, yData):
+    def setAddScatterSerie(self, color):
+        self.scatterCurve.append(QScatterSeries())
+
+        pen = self.scatterCurve[len(self.scatterCurve) - 1].pen()
+        pen.setColor(QColor(color))
+        pen.setWidthF(1)
+        self.scatterCurve[len(self.scatterCurve) - 1].setPen(pen)
+        self.scatterCurve[len(self.scatterCurve) - 1].setColor(QColor(color))
+        self.scatterCurve[len(self.scatterCurve) - 1].setMarkerSize(10)
+
+        self.chart.addSeries(self.scatterCurve[len(self.scatterCurve) - 1])
+
+        self.chart.setAxisX(self.axisX, self.scatterCurve[len(self.scatterCurve) - 1])
+        self.chart.setAxisY(self.axisY, self.scatterCurve[len(self.scatterCurve) - 1])
+
+    # def setDataChartNormal(self, xData, yData1, yData2):
+    #     if xData > self.xRange[1]:
+    #         addValue = xData - self.xRange[1]
+    #
+    #         if self.xRange[0] is not 0:
+    #             self.xRange[0] = self.xRange[0] + addValue
+    #
+    #         self.xRange[1] = self.xRange[1] + addValue
+    #         self.axisX.setRange(self.xRange[0], self.xRange[1])
+    #
+    #     self.curve.append(xData, yData)
+    #     self.scatterCurve.append(xData, yData)
+
+    def setDataChartScatter(self, xData, yData1, yData2):
         if xData > self.xRange[1]:
             addValue = xData - self.xRange[1]
 
@@ -114,7 +143,10 @@ class Chart(QChartView):
             self.xRange[1] = self.xRange[1] + addValue
             self.axisX.setRange(self.xRange[0], self.xRange[1])
 
-        self.curve.append(xData, yData)
+        self.curve[0].append(xData, yData1)
+        self.curve[1].append(xData, yData2)
+        self.scatterCurve[0].append(xData, yData1)
+        self.scatterCurve[1].append(xData, yData2)
 
     def setDataChart(self, xData, yData1, yData2):
         if xData > self.xRange[1]:
