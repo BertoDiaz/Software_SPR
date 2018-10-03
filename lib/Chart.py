@@ -201,9 +201,6 @@ class Chart(QChartView):
     def getRangeX(self):
         return self.xRange
 
-    def setRangeY(self, yRange):
-        self.axisY.setRange(yRange[0], yRange[1])
-
     def setAxisXName(self, name):
         self.axisX.setTitleText(name)
 

@@ -893,7 +893,7 @@ class ViewDataAcquisition(QWidget):
     ********************************************************************************************************************
     """
 
-    def setDataChannel(self, xData, yData1, yData2):
+    def setDataChart(self, xData, yData1, yData2):
         """Add a new data on the chart of the channel 1.
 
         Args:
