@@ -57,6 +57,10 @@ class ViewCurveSetup(QWidget):
         self.lblDataSampling = QLabel(Strings.dataSamplingSeconds)
         self.lblACQChannel_1 = QLabel(Strings.channel1dots)
         self.lblACQChannel_2 = QLabel(Strings.channel2dots)
+        self.lblDerivativeChannel1 = QLabel(Strings.channel1dots)
+        self.lblDerivativeChannel2 = QLabel(Strings.channel2dots)
+        self.lblIntensity = QLabel(Strings.intensity)
+        self.lblDerivative = QLabel(Strings.derivative)
         """----------------------------------------------------------------------------------------------------------"""
 
         """------------------------------------------------ QLineEdit -----------------------------------------------"""
@@ -66,6 +70,10 @@ class ViewCurveSetup(QWidget):
         self.edtACQChannel_1 = QLineEdit()
         self.edtACQChannel_2 = QLineEdit()
         self.edtSaveFile = QLineEdit()
+        self.edtDerivativeChannel1Intensity = QLineEdit()
+        self.edtDerivativeChannel2Intensity = QLineEdit()
+        self.edtDerivativeChannel1Value = QLineEdit()
+        self.edtDerivativeChannel2Value = QLineEdit()
         """----------------------------------------------------------------------------------------------------------"""
 
         """------------------------------------------------ QSpinBox ------------------------------------------------"""
@@ -87,8 +95,6 @@ class ViewCurveSetup(QWidget):
         """----------------------------------------------------------------------------------------------------------"""
 
         """------------------------------------------------- Charts -------------------------------------------------"""
-        # self.myChartChannel1 = Chart(Strings.channel1UC)
-        # self.myChartChannel2 = Chart(Strings.channel2UC)
         self.myChart = Chart()
         """----------------------------------------------------------------------------------------------------------"""
 
@@ -102,7 +108,8 @@ class ViewCurveSetup(QWidget):
         self.acquisitionBoxLayout = QGroupBox(Strings.acquisitionMode)
         self.autoACQBoxLayout = QGroupBox()
         self.saveFileBoxLayout = QGroupBox(Strings.saveFileLC)
-        self.imageBoxLayout = QGroupBox()
+        # self.imageBoxLayout = QGroupBox()
+        self.derivativeBoxLayout = QGroupBox(Strings.result)
         self.chartBoxLayout = QGroupBox()
         """----------------------------------------------------------------------------------------------------------"""
 
@@ -112,6 +119,7 @@ class ViewCurveSetup(QWidget):
         self.curveLayout = QGridLayout(self)
         self.acquisitionLayout = QGridLayout(self)
         self.autoACQLayout = QGridLayout(self)
+        self.derivativeLayout = QGridLayout(self)
         """----------------------------------------------------------------------------------------------------------"""
 
         """---------------------------------------------- QVBoxLayouts ----------------------------------------------"""
@@ -120,7 +128,7 @@ class ViewCurveSetup(QWidget):
         self.btnCalibrateLayout = QVBoxLayout(self)
         self.btnLaserLayout = QVBoxLayout(self)
         self.saveFileLayout = QVBoxLayout(self)
-        self.imageLayout = QVBoxLayout(self)
+        # self.imageLayout = QVBoxLayout(self)
         self.chartLayout = QVBoxLayout(self)
         """----------------------------------------------------------------------------------------------------------"""
 
@@ -152,7 +160,8 @@ class ViewCurveSetup(QWidget):
         self.layoutGrid.addWidget(self.setCurveGroup(), 1, 0, 1, 2)
         self.layoutGrid.addWidget(self.setAcquisitionGroup(), 2, 0, 1, 2)
         self.layoutGrid.addWidget(self.setSaveFileGroup(), 3, 0, 1, 2)
-        self.layoutGrid.addWidget(self.setImageGroup(), 4, 0, 1, 2)
+        # self.layoutGrid.addWidget(self.setImageGroup(), 4, 0, 1, 2)
+        self.layoutGrid.addWidget(self.setResultGroup(), 4, 0, 1, 2)
         self.layoutGrid.addWidget(self.setChartGroup(), 0, 2, 5, 8)
 
     def setCalibrationGroup(self):
@@ -183,8 +192,8 @@ class ViewCurveSetup(QWidget):
 
         self.offsetBoxLayout.setLayout(self.offsetLayout)
 
-        self.calibrationLayout.addWidget(self.gainBoxLayout, 0, 0)
-        self.calibrationLayout.addWidget(self.offsetBoxLayout, 1, 0)
+        self.calibrationLayout.addWidget(self.gainBoxLayout, 0, 0, 1, 1)
+        self.calibrationLayout.addWidget(self.offsetBoxLayout, 1, 0, 1, 1)
         self.calibrationLayout.addWidget(self.btnCalibrate, 1, 1, 1, 1)
 
         self.calibrationBoxLayout.setLayout(self.calibrationLayout)
@@ -270,7 +279,33 @@ class ViewCurveSetup(QWidget):
 
         return self.saveFileBoxLayout
 
-    def setImageGroup(self):
+    # def setImageGroup(self):
+    #     """Add the rest of the widgets to its layout.
+    #
+    #     Add the buttons, labels, line edits, etc. to its layout.
+    #
+    #     Returns:
+    #         QGroupBox: return the main group box of this step.
+    #     """
+    #     # self.lblImageLogo.setPixmap(self.imageLogo)
+    #
+    #     self.imageLayout.addWidget(self.lblDerivativeChannel1, 0, 0)
+    #     self.imageLayout.addWidget(self.edtDerivativeChannel1Intensity, 0, 1)
+    #     self.imageLayout.addWidget(self.edtDerivativeChannel1Value, 0, 2)
+    #
+    #     self.imageLayout.addWidget(self.lblDerivativeChannel2, 1, 0)
+    #     self.imageLayout.addWidget(self.edtDerivativeChannel2Intensity, 1, 1)
+    #     self.imageLayout.addWidget(self.edtDerivativeChannel2Value, 1, 2)
+    #
+    #     # self.imageLayout.addWidget(self.lblImageLogo)
+    #
+    #     # self.imageLayout.addLayout(self.derivativeLayout)
+    #
+    #     self.imageBoxLayout.setLayout(self.imageLayout)
+    #
+    #     return self.imageBoxLayout
+
+    def setResultGroup(self):
         """Add the rest of the widgets to its layout.
 
         Add the buttons, labels, line edits, etc. to its layout.
@@ -278,13 +313,20 @@ class ViewCurveSetup(QWidget):
         Returns:
             QGroupBox: return the main group box of this step.
         """
-        self.lblImageLogo.setPixmap(self.imageLogo)
+        self.derivativeLayout.addWidget(self.lblIntensity, 0, 1)
+        self.derivativeLayout.addWidget(self.lblDerivative, 0, 2)
 
-        self.imageLayout.addWidget(self.lblImageLogo)
+        self.derivativeLayout.addWidget(self.lblDerivativeChannel1, 1, 0)
+        self.derivativeLayout.addWidget(self.edtDerivativeChannel1Intensity, 1, 1)
+        self.derivativeLayout.addWidget(self.edtDerivativeChannel1Value, 1, 2)
 
-        self.imageBoxLayout.setLayout(self.imageLayout)
+        self.derivativeLayout.addWidget(self.lblDerivativeChannel2, 2, 0)
+        self.derivativeLayout.addWidget(self.edtDerivativeChannel2Intensity, 2, 1)
+        self.derivativeLayout.addWidget(self.edtDerivativeChannel2Value, 2, 2)
 
-        return self.imageBoxLayout
+        self.derivativeBoxLayout.setLayout(self.derivativeLayout)
+
+        return self.derivativeBoxLayout
 
     def setChartGroup(self):
         """Add the rest of the widgets to its layout.
@@ -294,10 +336,18 @@ class ViewCurveSetup(QWidget):
         Returns:
             QGroupBox: return the main group box of this step.
         """
+        # self.derivativeLayout.addWidget(self.lblDerivativeChannel1, 0, 0)
+        # self.derivativeLayout.addWidget(self.edtDerivativeChannel1Intensity, 0, 1)
+        # self.derivativeLayout.addWidget(self.edtDerivativeChannel1Value, 0, 2)
+        #
+        # self.derivativeLayout.addWidget(self.lblDerivativeChannel2, 0, 3)
+        # self.derivativeLayout.addWidget(self.edtDerivativeChannel2Intensity, 0, 4)
+        # self.derivativeLayout.addWidget(self.edtDerivativeChannel2Value, 0, 5)
+
         self.setCharts('CHANNEL 1', '#FF9933', 'CHANNEL 2', '#33CCFF')
+
+        # self.chartLayout.addLayout(self.derivativeLayout)
         self.chartLayout.addWidget(self.myChart)
-        # self.chartLayout.addWidget(self.myChartChannel1)
-        # self.chartLayout.addWidget(self.myChartChannel2)
 
         self.chartBoxLayout.setLayout(self.chartLayout)
 
@@ -699,6 +749,22 @@ class ViewCurveSetup(QWidget):
 
         self.edtOffsetB.setFixedWidth(50)
 
+        self.edtDerivativeChannel1Intensity.setStyleSheet(Styles.lineEditGeneral)
+        self.edtDerivativeChannel1Intensity.setReadOnly(True)
+        self.edtDerivativeChannel1Intensity.setFixedWidth(100)
+
+        self.edtDerivativeChannel2Intensity.setStyleSheet(Styles.lineEditGeneral)
+        self.edtDerivativeChannel2Intensity.setReadOnly(True)
+        self.edtDerivativeChannel2Intensity.setFixedWidth(100)
+
+        self.edtDerivativeChannel1Value.setStyleSheet(Styles.lineEditGeneral)
+        self.edtDerivativeChannel1Value.setReadOnly(True)
+        self.edtDerivativeChannel1Value.setFixedWidth(100)
+
+        self.edtDerivativeChannel2Value.setStyleSheet(Styles.lineEditGeneral)
+        self.edtDerivativeChannel2Value.setReadOnly(True)
+        self.edtDerivativeChannel2Value.setFixedWidth(100)
+
     """
     ********************************************************************************************************************
     *                                          End Line Edits Styles Functions                                         *
@@ -736,6 +802,14 @@ class ViewCurveSetup(QWidget):
         self.lblACQChannel_1.setFixedWidth(50)
 
         self.lblACQChannel_2.setFixedWidth(50)
+
+        self.lblDerivativeChannel1.setFixedWidth(50)
+
+        self.lblDerivativeChannel2.setFixedWidth(50)
+
+        self.lblIntensity.setAlignment(Qt.AlignCenter)
+
+        self.lblDerivative.setAlignment(Qt.AlignCenter)
 
     """
     ********************************************************************************************************************
@@ -787,7 +861,7 @@ class ViewCurveSetup(QWidget):
     """
 
     def setStyleGroupBox(self):
-        self.gainBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+        self.gainBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutTitle)
 
         self.offsetBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
 
@@ -803,7 +877,9 @@ class ViewCurveSetup(QWidget):
 
         self.saveFileBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
 
-        self.imageBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
+        # self.imageBoxLayout.setStyleSheet(Styles.groupBoxGeneralWithoutBorder)
+        # self.imageBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
+        self.derivativeBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
 
         self.chartBoxLayout.setStyleSheet(Styles.groupBoxGeneral)
 
@@ -820,7 +896,30 @@ class ViewCurveSetup(QWidget):
     """
 
     def setStyleLayouts(self):
-        self.imageLayout.setAlignment(Qt.AlignCenter)
+        # self.layoutGrid = QGridLayout(self)
+        self.calibrationLayout.setContentsMargins(5, 5, 5, 5)
+        self.calibrationLayout.setSpacing(5)
+
+        self.gainLayout.setContentsMargins(5, 5, 5, 5)
+        self.gainLayout.setSpacing(5)
+
+        self.offsetLayout.setContentsMargins(5, 5, 5, 5)
+        self.offsetLayout.setSpacing(5)
+
+        self.btnLaserLayout.setContentsMargins(5, 5, 5, 5)
+        self.btnLaserLayout.setSpacing(5)
+        # self.curveLayout = QGridLayout(self)
+        # self.acquisitionLayout = QGridLayout(self)
+        # self.autoACQLayout = QGridLayout(self)
+        # self.derivativeLayout = QGridLayout(self)
+
+        # self.imageLayout.setAlignment(Qt.AlignCenter)
+        # self.imageLayout.setAlignment(Qt.AlignLeft)
+
+        self.derivativeLayout.setAlignment(Qt.AlignLeft)
+        # self.derivativeLayout.setContentsMargins(10, 10, 5, 0)
+
+        self.chartLayout.setContentsMargins(2, 2, 2, 2)
 
     """
     ********************************************************************************************************************

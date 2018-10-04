@@ -83,7 +83,7 @@ buttonLaserSmall = 'QPushButton {' \
                    'font: bold;' \
                    'font-size: 12px;' \
                    'color: white;' \
-                   'height: 70px;' \
+                   'height: 60px;' \
                    'width: 80px;' \
                    '}' \
                    'QPushButton:hover {' \
@@ -300,7 +300,7 @@ buttonCalibrate = 'QPushButton {' \
                   'font: bold;' \
                   'font-size: 12px;' \
                   'color: white;' \
-                  'height: 70px;' \
+                  'height: 60px;' \
                   'width: 80px;' \
                   'margin-top: 8px;' \
                   '}' \
@@ -707,7 +707,7 @@ groupBoxGeneral = 'QGroupBox {' \
                   '}'
 
 groupBoxGeneralWithoutBorder = 'QGroupBox {' \
-                               'border: 0px outset #948682;' \
+                               'border: 0px outset #737373;' \
                                'border-radius: 5px;' \
                                'margin-top: 7px;' \
                                '}' \
@@ -716,8 +716,13 @@ groupBoxGeneralWithoutBorder = 'QGroupBox {' \
                                'left: 10px;' \
                                '}'
 
+groupBoxGeneralWithoutTitle = 'QGroupBox {' \
+                              'border: 2px outset #737373;' \
+                              'border-radius: 5px;' \
+                              '}'
+
 groupBoxAutoAcquisition = 'QGroupBox {' \
-                          'border: 2px outset #948682;' \
+                          'border: 2px outset #737373;' \
                           'border-radius: 5px;' \
                           '}'
 
