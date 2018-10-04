@@ -27,27 +27,6 @@ class SerialPort(QObject):
         super(SerialPort, self).__init__()
         self.ports = []
         self.serialData = ''
-        # self.commands = {
-        #     'CurveTemporal': '|'.encode().hex(),
-        #     'GainOffset': ':'.encode().hex(),
-        #     # 'Laser': '#'.encode().hex(),
-        #     'TimeAverage': '&'.encode().hex(),
-        #     'StopTemporal': '['.encode().hex(),
-        #     'StopTechnical': '.'.encode().hex(),
-        #     'ControlPeris': '*'.encode().hex(),
-        #     'ControlImpulA': '!'.encode().hex(),
-        #     'ControlImpulB': '+'.encode().hex(),
-        #     'BackPeris': '<'.encode().hex(),
-        #     'StopPeris': '='.encode().hex(),
-        #     'ForwardPeris': '>'.encode().hex(),
-        #     'TimePulsesPumps': '_'.encode().hex(),
-        #     'VolumePurge': 'a7',
-        #     'PurgeImpulA': '{'.encode().hex(),
-        #     'PurgeImpulB': '}'.encode().hex(),
-        #     'IAmAlive': '?'.encode().hex(),
-        #     'PowerDown': '/'.encode().hex()
-        # }
-
         self.commands = {
             'CurveTemporal': '|',
             'GainOffset': ':',

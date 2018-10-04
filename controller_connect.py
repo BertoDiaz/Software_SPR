@@ -89,7 +89,8 @@ class ControllerConnect:
                 self.connected = self.serialPort.open_port(port_found[1])
                 self.view.setPortFound(port_found[1])
 
-                self.serialPort.serialPort.readyRead.connect(self.receive_I_am_alive)
+                self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_multiple_data)
+                self.serialPort.packet_received.connect(self.receive_I_am_alive)
 
                 self.numberOfItem = port_found[1]
 
@@ -134,7 +135,8 @@ class ControllerConnect:
 
             self.byConnectButton = 2
 
-            self.serialPort.serialPort.readyRead.connect(self.receive_I_am_alive)
+            self.serialPort.serialPort.readyRead.connect(self.serialPort.receive_multiple_data)
+            self.serialPort.packet_received.connect(self.receive_I_am_alive)
 
             self.serialPort.send_I_am_alive()
 
@@ -155,7 +157,6 @@ class ControllerConnect:
         if not self.doneDisconnectIamAlive:
             self.timer_send_I_am_alive.stop()
             self.timer_disconnect_I_am_alive.stop()
-            self.serialPort.serialPort.readyRead.disconnect(self.receive_I_am_alive)
 
         self.connected = False
 
@@ -164,39 +165,42 @@ class ControllerConnect:
     def receive_port(self):
         self.bufferReceive = self.serialPort.receive_port()
 
-    def receive_I_am_alive(self):
-        while self.bufferReceive != Strings.ackCommand:
-            self.bufferReceive = self.serialPort.receive_port()
+    def receive_I_am_alive(self, data):
+        for value in data:
+            if value == Strings.ackCommand:
 
-        self.timer_send_I_am_alive.stop()
-        self.timer_disconnect_I_am_alive.stop()
-        self.serialPort.serialPort.readyRead.disconnect(self.receive_I_am_alive)
-        self.doneDisconnectIamAlive = 1
-        self.serialPort.serialPort.readyRead.connect(self.receive_port)
+                self.serialPort.serialPort.readyRead.disconnect()
+                self.serialPort.packet_received.disconnect()
 
-        if not self.byConnectButton:
-            addValue = (100 - self.progressBarValue) / 5
+                self.timer_send_I_am_alive.stop()
+                self.timer_disconnect_I_am_alive.stop()
+                self.doneDisconnectIamAlive = 1
 
-            for i in range(0, 5):
-                self.progressBarValue = self.progressBarValue + addValue
-                self.load_progress_bar()
+                if not self.byConnectButton:
+                    addValue = (100 - self.progressBarValue) / 5
 
-        if self.progressBarDeleted:
-            self.byConnectButton = 1
+                    for i in range(0, 5):
+                        self.progressBarValue = self.progressBarValue + addValue
+                        self.load_progress_bar()
 
-        self.view.mainWindow(self.connected, self.byConnectButton)
+                if self.progressBarDeleted:
+                    self.byConnectButton = 1
 
-        self.loadedFile = self.load_file()
+                self.view.mainWindow(self.connected, self.byConnectButton)
 
-        self.timer_exit_app.timeout.connect(self.exit_App)
-        self.timer_exit_app.start(1000)
+                self.loadedFile = self.load_file()
+
+                self.timer_exit_app.timeout.connect(self.exit_App)
+                self.timer_exit_app.start(1000)
+
+            else:
+                pass
 
     def disconnect_receive_I_am_alive(self):
         self.timer_send_I_am_alive.timeout.disconnect()
         self.timer_send_I_am_alive.stop()
         self.timer_disconnect_I_am_alive.timeout.disconnect()
         self.timer_disconnect_I_am_alive.stop()
-        self.serialPort.serialPort.readyRead.disconnect()
         self.doneDisconnectIamAlive = 1
         self.close_port()
         sleep(1)

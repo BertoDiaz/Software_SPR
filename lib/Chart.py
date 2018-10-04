@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from PyQt5.QtChart import QChartView, QChart, QValueAxis, QLineSeries, QLegend, QScatterSeries
-from PyQt5.QtGui import QPainter, QPen, QColor, QBrush
+from PyQt5.QtGui import QPainter, QPen, QColor
 from PyQt5.QtCore import Qt
 
 
@@ -39,23 +39,12 @@ class Chart(QChartView):
         self.setBackgroundBrush(QColor('#D8D8D8'))
 
         self.setRenderHint(QPainter.Antialiasing)
-        # self.chart.setTitle(title)
-        # self.chart.setTitleBrush(Qt.white)
         self.chart.setAnimationOptions(QChart.NoAnimation)
         self.chart.legend().setVisible(True)
         self.chart.legend().setAlignment(Qt.AlignBottom)
         self.chart.legend().setLabelColor(Qt.white)
         self.chart.legend().setMarkerShape(QLegend.MarkerShapeFromSeries)
         self.chart.setBackgroundBrush(QColor('#00004D'))
-
-        # self.curve = QLineSeries()
-        # pen = self.curve.pen()
-        #
-        # pen.setColor(QColor('#FF9933'))
-        # pen.setWidthF(2)
-        # self.curve.setPen(pen)
-        #
-        # self.chart.addSeries(self.curve)
 
         penAxisGrid = QPen(QColor('#F2F2F2'))
         penAxisGrid.setWidthF(0.5)
@@ -87,9 +76,6 @@ class Chart(QChartView):
         self.axisX.setRange(self.xRange[0], self.xRange[1])
         self.axisY.setRange(self.yRange[0], self.yRange[1])
 
-        # self.chart.setAxisX(self.axisX, self.curve)
-        # self.chart.setAxisY(self.axisY, self.curve)
-
     def setAddSerie(self, name, color):
         self.curve.append(QLineSeries())
         pen = self.curve[len(self.curve)-1].pen()
@@ -119,19 +105,6 @@ class Chart(QChartView):
 
         self.chart.setAxisX(self.axisX, self.scatterCurve[len(self.scatterCurve) - 1])
         self.chart.setAxisY(self.axisY, self.scatterCurve[len(self.scatterCurve) - 1])
-
-    # def setDataChartNormal(self, xData, yData1, yData2):
-    #     if xData > self.xRange[1]:
-    #         addValue = xData - self.xRange[1]
-    #
-    #         if self.xRange[0] is not 0:
-    #             self.xRange[0] = self.xRange[0] + addValue
-    #
-    #         self.xRange[1] = self.xRange[1] + addValue
-    #         self.axisX.setRange(self.xRange[0], self.xRange[1])
-    #
-    #     self.curve.append(xData, yData)
-    #     self.scatterCurve.append(xData, yData)
 
     def setDataChartScatter(self, xData, yData1, yData2):
         if xData > self.xRange[1]:

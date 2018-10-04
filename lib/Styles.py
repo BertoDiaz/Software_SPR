@@ -15,20 +15,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-# blueLight = '#99CCFF'
-# blueDark = '#66B3FF'
 blueLight = '#0080FF'
 blueDark = '#0174DF'
-# blueHoverLight = '#0080FF'
-# blueHoverDark = '#0174DF'
 blueHoverLight = '#0169CB'
 blueHoverDark = '#014F98'
-# greenLight = '#85E085'
-# greenDark = '#5DD55D'
 greenLight = '#04B404'
 greenDark = '#088A08'
-# greenHoverLight = '#04B404'
-# greenHoverDark = '#088A08'
 greenHoverLight = '#099009'
 greenHoverDark = '#066006'
 orangeLight = '#FAAC58'

@@ -1,6 +1,6 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QPointF, pyqtProperty, Qt
+from PyQt5.QtGui import QColor, QPainter, QPen, QRadialGradient, QBrush
+from PyQt5.QtWidgets import QAbstractButton
 
 
 class LedIndicator(QAbstractButton):

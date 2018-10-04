@@ -52,10 +52,6 @@ class ControllerTabs:
         self.axisXMin = 0
         self.offsetChannel1 = 0
         self.offsetChannel2 = 0
-        # self.axisYMaxChannel1 = 0
-        # self.axisYMinChannel1 = 0
-        # self.axisYMaxChannel2 = 0
-        # self.axisYMinChannel2 = 0
         self.myFileNameCalibration = datetime.datetime.now().strftime('%d-%m-%Y') + '_calibration.DAT'
         self.myFileNameMeasure = datetime.datetime.now().strftime('%d-%m-%Y') + '_measure.DAT'
         self.myFileCalibration = None
@@ -281,14 +277,6 @@ class ControllerTabs:
             self.viewDataAcquisition.btnAutoscaleXChannel.clicked.connect(self.btnAutoscaleXChanged)
             self.viewDataAcquisition.btnChart1000Channel.clicked.connect(self.btnChart1000Changed)
             self.viewDataAcquisition.btnChart10000Channel.clicked.connect(self.btnChart10000Changed)
-            # self.viewDataAcquisition.btnAutoscaleYChannel1.clicked.connect(self.btnAutoscaleYChannel1Changed)
-            # self.viewDataAcquisition.btnAutoscaleXChannel1.clicked.connect(self.btnAutoscaleXChannel1Changed)
-            # self.viewDataAcquisition.btnChart1000Channel1.clicked.connect(self.btnChart1000Channel1Changed)
-            # self.viewDataAcquisition.btnChart10000Channel1.clicked.connect(self.btnChart10000Channel1Changed)
-            # self.viewDataAcquisition.btnAutoscaleYChannel2.clicked.connect(self.btnAutoscaleYChannel2Changed)
-            # self.viewDataAcquisition.btnAutoscaleXChannel2.clicked.connect(self.btnAutoscaleXChannel2Changed)
-            # self.viewDataAcquisition.btnChart1000Channel2.clicked.connect(self.btnChart1000Channel2Changed)
-            # self.viewDataAcquisition.btnChart10000Channel2.clicked.connect(self.btnChart10000Channel2Changed)
 
             self.viewDataAcquisition.edtExperimentTime.valueChanged.connect(self.edtExperimentTimeChanged)
 

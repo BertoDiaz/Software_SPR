@@ -53,7 +53,6 @@ class TriangleButton(QAbstractButton):
                 QPointF(self.size * 0.05, self.size - (self.size * 0.05))
             ]
 
-            # gradientPen = QLinearGradient(QPointF(0, 0), QPointF(100, 100))
             gradient = QLinearGradient(0, 0, 100, 100)
 
         else:
@@ -63,7 +62,6 @@ class TriangleButton(QAbstractButton):
                 QPointF(self.size - (self.size * 0.05), self.size - (self.size * 0.05))
             ]
 
-            # gradientPen = QLinearGradient(100, 0, 0, 100)
             gradient = QLinearGradient(100, 0, 0, 100)
 
         pen.setWidth(self.size * 0.04)
@@ -71,16 +69,12 @@ class TriangleButton(QAbstractButton):
         painter.setRenderHint(QPainter.Antialiasing)
 
         if self.isChecked():
-            # gradientPen.setColorAt(0, QColor(189, 189, 189))
-            # gradientPen.setColorAt(1, QColor(110, 110, 110))
             color = QColor(110, 110, 110)
 
             gradient.setColorAt(0, self.on_color_1)
             gradient.setColorAt(1, self.on_color_2)
 
         else:
-            # gradientPen.setColorAt(1, QColor(189, 189, 189))
-            # gradientPen.setColorAt(0, QColor(110, 110, 110))
             color = QColor(189, 189, 189)
 
             gradient.setColorAt(0, self.off_color_1)
